@@ -4,16 +4,36 @@
 
 A local [Model Context Protocol](https://modelcontextprotocol.io) server that gives AI agents genuinely better web research: multi-provider search, three-tier page extraction, and deep research — without locking you into a single search API.
 
+[![npm version](https://img.shields.io/npm/v/better-web-search-mcp?color=cb3837)](https://www.npmjs.com/package/better-web-search-mcp)
+[![npm downloads](https://img.shields.io/npm/dm/better-web-search-mcp)](https://www.npmjs.com/package/better-web-search-mcp)
 [![Node >=20](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
 [![MCP](https://img.shields.io/badge/MCP-stdio-blue)](https://modelcontextprotocol.io)
+[![CI](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/actions/workflows/ci.yml/badge.svg)](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Smithery](https://smithery.ai/badge/@PhantomPixelDev/better-web-search-mcp)](https://smithery.ai/server/@PhantomPixelDev/better-web-search-mcp)
 
-## Zero-config quick start (30s)
+## Install via npx (no install)
 
 ```bash
+npx -y better-web-search-mcp --help   # keyless — DuckDuckGo works immediately
+npx -y better-web-search-mcp          # start MCP stdio server
+```
+
+Or install globally:
+
+```bash
+npm i -g better-web-search-mcp
+better-web-search-mcp --help
+better-web-search-mcp --version
+```
+
+## Zero-config quick start from source (30s)
+
+```bash
+git clone https://github.com/PhantomPixelDev/BetterWebSearch-MCP.git
+cd BetterWebSearch-MCP
 npm install
 npm run build
-# keyless — DuckDuckGo works immediately
 npx better-web-search-mcp --help
 BRAVE_API_KEY= npx better-web-search-mcp   # still works, DuckDuckGo fallback
 ```
@@ -186,6 +206,33 @@ Scripts use deterministic mocks for most CI tests; the live `npx tsx scripts/smo
 | `npm run dev` | `tsx watch src/index.ts` |
 | `npm test` | `vitest run` |
 | `npm run lint` | `tsc --noEmit` |
+| `npm run check:publish` | `npm pack --dry-run` (what will ship to npm) |
+| `npm run version:patch` | bump patch + tag (e.g. 0.1.0 → 0.1.1) |
+| `npm run release:patch` | version:patch + publish + push --follow-tags |
+
+## Publishing to npm (maintainers)
+
+```bash
+# 1. Stay on main, working tree clean
+npm run lint && npm test && npm run build
+
+# 2. Bump version (updates package.json + CHANGELOG + git tag)
+npm run version:patch   # or version:minor / version:major
+# Manually add entry to CHANGELOG.md, then:
+git add CHANGELOG.md && git commit --amend --no-edit
+
+# 3. Publish (requires NPM_TOKEN env or `npm login`)
+npm publish --access public
+# or: npm run release:patch   # does version:patch + publish + git push --follow-tags
+
+# 4. Push + create GitHub Release (auto via .github/workflows/release.yml on tag v*.*.*)
+git push --follow-tags
+# CI also runs: .github/workflows/ci.yml on every push
+```
+
+Or publish via GitHub Actions: push a tag `v0.1.1` — `release.yml` runs `npm publish --provenance`.
+
+Prerequisites: `npm login` or `NPM_TOKEN` secret, repo visibility public for npm (the GitHub repo can stay private, but the npm package is public).
 
 ## Architecture (short)
 

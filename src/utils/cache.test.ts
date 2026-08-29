@@ -9,18 +9,24 @@ import {
   vi,
 } from "vitest";
 import { existsSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import Database from "better-sqlite3";
 
 import { Cache, PAGE_TTL_MS, SEARCH_TTL_MS } from "./cache.js";
 
-const DB_PATH = "data/cache.db";
+const DB_PATH = join(tmpdir(), `better-web-search-test-${process.pid}-${Date.now()}.db`);
 
 /** Remove the DB file (and WAL sidecars) so tests start from a clean slate. */
 function removeDbFile(): void {
   for (const suffix of ["", "-wal", "-shm"]) {
     const path = DB_PATH + suffix;
     if (existsSync(path)) {
-      rmSync(path);
+      try {
+        rmSync(path);
+      } catch {
+        // ignore lock race on Windows
+      }
     }
   }
 }
@@ -30,11 +36,12 @@ describe("Cache (SQLite backend)", () => {
 
   beforeAll(() => {
     removeDbFile();
-    cache = new Cache();
+    cache = new Cache({ dbPath: DB_PATH });
   });
 
   afterAll(() => {
     cache.close();
+    removeDbFile();
   });
 
   afterEach(() => {

@@ -1,30 +1,66 @@
 {
   "name": "better-web-search-mcp",
   "version": "0.1.0",
-  "description": "MCP server for genuinely better web research: multi-provider search, 3-tier extraction, and deep research orchestration.",
+  "description": "MCP server for genuinely better web research — keyless-first (DuckDuckGo), 3-tier extraction, deep research. Brave/Tavily optional.",
   "type": "module",
   "bin": {
     "better-web-search-mcp": "dist/index.js"
   },
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE",
+    "mcp.json",
+    "smithery.yaml",
+    ".vscode/mcp.json"
   ],
   "engines": {
     "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PhantomPixelDev/BetterWebSearch-MCP.git"
+  },
+  "homepage": "https://github.com/PhantomPixelDev/BetterWebSearch-MCP#readme",
+  "bugs": {
+    "url": "https://github.com/PhantomPixelDev/BetterWebSearch-MCP/issues"
+  },
+  "author": "PhantomPixelDev <ledbussiness1420@gmail.com>",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "build": "tsc",
     "dev": "tsx watch src/index.ts",
     "test": "vitest run",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run lint && npm test",
+    "prepack": "npm run build",
+    "postpack": "npm run build",
+    "version:patch": "npm version patch -m \"chore(release): %s\"",
+    "version:minor": "npm version minor -m \"chore(release): %s\"",
+    "version:major": "npm version major -m \"chore(release): %s\"",
+    "release:patch": "npm run version:patch && npm publish && git push --follow-tags",
+    "release:minor": "npm run version:minor && npm publish && git push --follow-tags",
+    "release:major": "npm run version:major && npm publish && git push --follow-tags",
+    "check:publish": "npm pack --dry-run"
   },
   "keywords": [
     "mcp",
     "model-context-protocol",
     "web-search",
     "web-extraction",
-    "ai"
+    "ai",
+    "search",
+    "playwright",
+    "readability",
+    "claude",
+    "opencode",
+    "cursor"
   ],
   "license": "MIT",
   "dependencies": {
