@@ -112,6 +112,12 @@ export class Cache {
     db.pragma("busy_timeout = 5000");
     db.exec(SCHEMA);
     this.db = db;
+    // Best-effort startup prune; empty catch is intentional — never block boot.
+    try {
+      this.pruneExpired();
+    } catch {
+      // ignore — stale rows are harmless until the next prune
+    }
   }
 
   /** Whether this instance is running on the in-memory Map backend. */

@@ -1,3 +1,4 @@
+import { withRetry } from "../utils/retry.js";
 import type { SearchOptions, SearchProvider, SearchResult } from "./types.js";
 
 const BRAVE_ENDPOINT = "https://api.search.brave.com/res/v1/web/search";
@@ -95,15 +96,19 @@ export class BraveProvider implements SearchProvider {
     const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
     try {
-      const response = await fetch(`${BRAVE_ENDPOINT}?${params.toString()}`, {
-        headers: {
-          "X-Subscription-Token": apiKey,
-          Accept: "application/json",
-        },
-        signal: controller.signal,
-      });
+      const response = await withRetry(
+        () =>
+          fetch(`${BRAVE_ENDPOINT}?${params.toString()}`, {
+            headers: {
+              "X-Subscription-Token": apiKey,
+              Accept: "application/json",
+            },
+            signal: controller.signal,
+          }),
+        { retryOn: [429, 503] },
+      );
 
-      if (response.status === 401 || response.status === 429) {
+      if (response.status === 401) {
         console.warn(
           `[brave] API returned ${response.status}; returning no results.`,
         );

@@ -135,6 +135,41 @@ describe("BraveProvider", () => {
     expect(warn).toHaveBeenCalled();
   });
 
+  it("retries on 429 then succeeds", async () => {
+    vi.useFakeTimers();
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: false, status: 429 })
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          web: {
+            results: [
+              {
+                title: "Example",
+                url: "https://example.com",
+                description: "A description",
+              },
+            ],
+          },
+        }),
+      });
+    vi.stubGlobal("fetch", fetchMock);
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const provider = new BraveProvider();
+
+    const promise = provider.search("hello", {});
+    await vi.advanceTimersByTimeAsync(10_000);
+    const results = await promise;
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(results).toHaveLength(1);
+    expect(results[0]?.title).toBe("Example");
+    expect(warn).toHaveBeenCalled();
+    vi.useRealTimers();
+  });
+
   it("returns [] when fetch rejects (timeout/network) without throwing", async () => {
     vi.stubGlobal(
       "fetch",

@@ -1,5 +1,6 @@
 import * as cheerio from "cheerio";
 
+import { withRetry } from "../utils/retry.js";
 import type { SearchOptions, SearchProvider, SearchResult } from "./types.js";
 
 const DDG_ENDPOINT = "https://html.duckduckgo.com/html/";
@@ -26,14 +27,18 @@ export class DuckDuckGoProvider implements SearchProvider {
     const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
     try {
-      const response = await fetch(`${DDG_ENDPOINT}?${params.toString()}`, {
-        headers: {
-          "User-Agent":
-            "Mozilla/5.0 (compatible; BetterWebSearch-MCP/1.0; +https://github.com)",
-          Accept: "text/html",
-        },
-        signal: controller.signal,
-      });
+      const response = await withRetry(
+        () =>
+          fetch(`${DDG_ENDPOINT}?${params.toString()}`, {
+            headers: {
+              "User-Agent":
+                "Mozilla/5.0 (compatible; BetterWebSearch-MCP/1.0; +https://github.com)",
+              Accept: "text/html",
+            },
+            signal: controller.signal,
+          }),
+        { retryOn: [429, 503], retryNetworkErrors: true },
+      );
 
       if (!response.ok) {
         console.warn(

@@ -1,3 +1,4 @@
+import { withRetry } from "../utils/retry.js";
 import type { SearchOptions, SearchProvider, SearchResult } from "./types.js";
 
 const TAVILY_ENDPOINT = "https://api.tavily.com/search";
@@ -37,22 +38,26 @@ export class TavilyProvider implements SearchProvider {
     const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
     try {
-      const response = await fetch(TAVILY_ENDPOINT, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query,
-          max_results: opts.count ?? 10,
-          search_depth: "advanced",
-          ...(opts.recency_days
-            ? { time_range: `${opts.recency_days}d` }
-            : {}),
-        }),
-        signal: controller.signal,
-      });
+      const response = await withRetry(
+        () =>
+          fetch(TAVILY_ENDPOINT, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${apiKey}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              query,
+              max_results: opts.count ?? 10,
+              search_depth: "advanced",
+              ...(opts.recency_days
+                ? { time_range: `${opts.recency_days}d` }
+                : {}),
+            }),
+            signal: controller.signal,
+          }),
+        { retryOn: [429, 503] },
+      );
 
       if (!response.ok) {
         console.warn(

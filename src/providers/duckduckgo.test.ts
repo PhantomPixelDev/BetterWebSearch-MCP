@@ -88,6 +88,31 @@ describe("DuckDuckGoProvider", () => {
     expect(warn).toHaveBeenCalled();
   });
 
+  it("retries on 429 then succeeds", async () => {
+    vi.useFakeTimers();
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: false, status: 429 })
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        text: async () => SAMPLE_HTML,
+      });
+    vi.stubGlobal("fetch", fetchMock);
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const provider = new DuckDuckGoProvider();
+
+    const promise = provider.search("hello", { count: 10 });
+    await vi.advanceTimersByTimeAsync(10_000);
+    const results = await promise;
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(results).toHaveLength(2);
+    expect(results[0]?.source).toBe("duckduckgo");
+    expect(warn).toHaveBeenCalled();
+    vi.useRealTimers();
+  });
+
   it("returns [] when fetch rejects (timeout) without throwing", async () => {
     vi.stubGlobal(
       "fetch",

@@ -71,6 +71,8 @@ npx tsc --noEmit    # lint
 
 Requirements: Node 20+ and npm.
 
+> **Native binding note:** `better-sqlite3` needs a compiled native addon. If it fails to load (older Node, missing build tools, CI sandbox), the cache automatically falls back to an in-memory Map — no action needed. To restore the SQLite cache, run `npm rebuild better-sqlite3` (Node 20+ recommended).
+
 ## Configuration — all env vars optional
 
 Create `.env` only if you want more than DuckDuckGo:
@@ -100,6 +102,8 @@ Providers (keyless-first):
 Cache: data/cache.db
 Browser: enabled (playwright, pool=3)
 ```
+
+Expired cache rows (15 min search, 1 h page) are pruned automatically on startup.
 
 ## MCP client configs (copy-paste)
 
