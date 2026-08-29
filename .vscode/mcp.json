@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "better-web-search-mcp": {
+      "command": "npx",
+      "args": ["-y", "better-web-search-mcp"],
+      "env": {}
+    }
+  }
+}

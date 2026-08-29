@@ -1,0 +1,12 @@
+{
+  "name": "better-web-search-mcp",
+  "version": "0.1.0",
+  "description": "BetterWebSearch MCP — keyless-first web research (DuckDuckGo) with optional Brave/Tavily and 3-tier extraction",
+  "mcpServers": {
+    "better-web-search-mcp": {
+      "command": "npx",
+      "args": ["-y", "better-web-search-mcp"],
+      "env": {}
+    }
+  }
+}

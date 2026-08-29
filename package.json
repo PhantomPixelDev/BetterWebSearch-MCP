@@ -1,0 +1,50 @@
+{
+  "name": "better-web-search-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for genuinely better web research: multi-provider search, 3-tier extraction, and deep research orchestration.",
+  "type": "module",
+  "bin": {
+    "better-web-search-mcp": "dist/index.js"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest run",
+    "lint": "tsc --noEmit"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "web-search",
+    "web-extraction",
+    "ai"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "zod": "^3.24.0",
+    "@mozilla/readability": "^0.5.0",
+    "better-sqlite3": "^11.0.0",
+    "cheerio": "^1.0.0",
+    "duck-duck-scrape": "^2.2.0",
+    "jsdom": "^25.0.0",
+    "playwright": "^1.48.0",
+    "turndown": "^7.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/better-sqlite3": "^7.6.0",
+    "@types/jsdom": "^21.0.0",
+    "@types/turndown": "^5.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  }
+}

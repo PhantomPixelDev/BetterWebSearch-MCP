@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+
+# Cache database
+data/
+
+# Evidence (internal traceability, not shipped)
+.omo/evidence/
+.omo/run-continuation/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db

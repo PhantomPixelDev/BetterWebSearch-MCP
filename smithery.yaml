@@ -1,0 +1,38 @@
+name: better-web-search-mcp
+displayName: BetterWebSearch MCP
+description: Keyless-first web research MCP — DuckDuckGo by default, Brave/Tavily optional, 3-tier extraction (HTTP → hydration → Playwright)
+runtime: typescript
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      braveApiKey:
+        type: string
+        description: Brave Search API key (optional — enhances ranking & recency). Get one at https://brave.com/search/api/
+      tavilyApiKey:
+        type: string
+        description: Tavily API key (optional). https://tavily.com/
+      disableCache:
+        type: boolean
+        default: false
+        description: Disable SQLite cache
+      disableBrowser:
+        type: boolean
+        default: false
+        description: Disable Playwright browser fallback
+    required: []
+  exampleConfig:
+    braveApiKey: ""
+    tavilyApiKey: ""
+  commandFunction: |
+    (config) => ({
+      command: "node",
+      args: ["dist/index.js"],
+      env: {
+        ...(config.braveApiKey ? { BRAVE_API_KEY: config.braveApiKey } : {}),
+        ...(config.tavilyApiKey ? { TAVILY_API_KEY: config.tavilyApiKey } : {}),
+        ...(config.disableCache ? { BETTER_WEB_SEARCH_DISABLE_CACHE: "true" } : {}),
+        ...(config.disableBrowser ? { BETTER_WEB_SEARCH_DISABLE_BROWSER: "true" } : {})
+      }
+    })
