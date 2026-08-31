@@ -25,9 +25,10 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run build
+      # Trusted Publishing (OIDC): no long-lived npm token needed. npmjs.org
+      # verifies the OIDC id-token from this workflow. NOTE: npm provenance
+      # requires the GitHub repository to be PUBLIC so the attestation verifies.
       - run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true

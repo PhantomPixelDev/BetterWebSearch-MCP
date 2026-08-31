@@ -225,7 +225,7 @@ npm run version:patch   # or version:minor / version:major
 # Manually add entry to CHANGELOG.md, then:
 git add CHANGELOG.md && git commit --amend --no-edit
 
-# 3. Publish (requires NPM_TOKEN env or `npm login`)
+# 3. Publish (requires `npm login`)
 npm publish --access public
 # or: npm run release:patch   # does version:patch + publish + git push --follow-tags
 
@@ -234,9 +234,21 @@ git push --follow-tags
 # CI also runs: .github/workflows/ci.yml on every push
 ```
 
-Or publish via GitHub Actions: push a tag `v0.1.1` — `release.yml` runs `npm publish --provenance`.
+### Publish via GitHub Actions (Trusted Publishing, recommended)
 
-Prerequisites: `npm login` or `NPM_TOKEN` secret, repo visibility public for npm (the GitHub repo can stay private, but the npm package is public).
+Push a tag `v0.1.1` — `release.yml` runs `npm publish --provenance --access public` using **OIDC Trusted Publishing** (no long-lived npm token stored as a secret).
+
+One-time setup on npmjs.org:
+
+1. Open **npmjs.com → your account → Access Tokens → Trusted Publishers**.
+2. **Add new publisher** with:
+   - Provider: **GitHub**
+   - Repository: `PhantomPixelDev/BetterWebSearch-MCP`
+   - Workflow: `release.yml`
+   - Environment: *(leave blank)*
+3. Save. No `NPM_TOKEN` secret is needed in GitHub.
+
+> **Note:** npm **provenance** requires the GitHub repository to be **public** so the OIDC attestation can be verified. The npm package itself is always public.
 
 ## Architecture (short)
 
