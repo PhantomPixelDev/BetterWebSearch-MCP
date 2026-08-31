@@ -10,6 +10,17 @@ canonifyURLs = true
   colorScheme = "blowfish"
   defaultAppearance = "dark"
   enableSearch = true
+  disableTextInHeader = false
+
+[params.header]
+  layout = "floating"
+
+[params.list]
+  showBreadcrumbs = false
+
+[params.footer]
+  showAppearanceSwitcher = true
+  showScrollToTop = true
 
 [markup.goldmark.renderer]
   unsafe = true

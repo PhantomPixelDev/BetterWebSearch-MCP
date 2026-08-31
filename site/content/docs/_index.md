@@ -4,8 +4,6 @@ description: "Learn how to install, configure, and use BetterWebSearch MCP — t
 weight: 1
 ---
 
-# BetterWebSearch MCP Documentation
-
 > **Keyless-first.** Works out of the box with **DuckDuckGo** — no API keys. Add `BRAVE_API_KEY` later for richer ranking & recency.
 
 A local [Model Context Protocol](https://modelcontextprotocol.io) server that gives AI agents genuinely better web research: multi-provider search, three-tier page extraction, and deep research — without locking you into a single search API.
