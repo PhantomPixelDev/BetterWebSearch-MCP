@@ -19,6 +19,11 @@ data/
 *.log
 npm-debug.log*
 
+# Hugo build output
+site/public/
+site/resources/
+.hugo_build.lock
+
 # OS / editor
 .DS_Store
 Thumbs.db
