@@ -4,8 +4,6 @@ description: "Release history for BetterWebSearch MCP following Keep a Changelog
 weight: 90
 ---
 
-# Changelog
-
 All notable changes to **better-web-search-mcp** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).

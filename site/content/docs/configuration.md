@@ -4,8 +4,6 @@ description: "All environment variables are optional. DuckDuckGo works without a
 weight: 25
 ---
 
-# Configuration
-
 **All environment variables are optional.** The server starts and works via DuckDuckGo when no keys are set. Create a `.env` only if you want additional providers.
 
 ```bash

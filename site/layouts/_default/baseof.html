@@ -8,7 +8,7 @@
   {{- partial "head.html" . -}}
   {{- partialCached "init.html" . -}}
 
-  {{ $bodyLayout := "flex flex-col h-screen m-auto leading-7 max-w-7xl px-6 sm:px-14 md:px-24 lg:px-32" }}
+  {{ $bodyLayout := "flex flex-col h-screen m-auto leading-7 px-6 sm:px-10 md:px-16 lg:px-20" }}
   {{ $bodyColor := "text-lg bg-neutral text-neutral-900 dark:bg-neutral-800 dark:text-neutral" }}
   <body class="{{ $bodyLayout }} {{ $bodyColor }} {{ if site.Params.enableStyledScrollbar | default true }}bf-scrollbar{{ end }}">
     <div id="the-top" class="absolute flex self-center">
@@ -28,18 +28,13 @@
       {{ end }}
     </header>
     <div class="relative flex flex-col grow">
-      {{ $isDocs := eq .Section "docs" }}
       <main id="main-content" class="grow">
-        {{ if $isDocs }}
-          <div class="flex gap-8 mt-4">
-            {{ partial "docs-sidebar.html" . }}
-            <div class="min-w-0 flex-1">
-              {{ block "main" . }}{{ end }}
-            </div>
+        <div class="flex gap-8 mt-4">
+          {{ partial "docs-sidebar.html" . }}
+          <div class="min-w-0 flex-1">
+            {{ block "main" . }}{{ end }}
           </div>
-        {{ else }}
-          {{ block "main" . }}{{ end }}
-        {{ end }}
+        </div>
         {{ if and (site.Params.footer.showScrollToTop | default true) }}
           {{- partial "scroll-to-top.html" . -}}
         {{ end }}

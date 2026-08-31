@@ -4,8 +4,6 @@ description: "How search providers work — DuckDuckGo keyless fallback, Brave, 
 weight: 30
 ---
 
-# Providers
-
 BetterWebSearch MCP uses a provider abstraction layer. Each provider implements the same `SearchProvider` interface, so the aggregation layer treats them uniformly. Providers are enabled or disabled based on environment keys.
 
 ## Provider overview

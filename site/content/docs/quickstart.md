@@ -4,8 +4,6 @@ description: "Get BetterWebSearch MCP running in 30 seconds — zero config, no 
 weight: 10
 ---
 
-# Quickstart
-
 BetterWebSearch works out of the box with **DuckDuckGo** — no API keys, no `.env`, no configuration.
 
 ## Option 1: npx (recommended)

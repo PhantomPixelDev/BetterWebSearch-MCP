@@ -10,7 +10,6 @@ draft: false
 
 [better-web-search-mcp](../index.html) / tools/extract
 
-# tools/extract
 
 ## Interfaces
 

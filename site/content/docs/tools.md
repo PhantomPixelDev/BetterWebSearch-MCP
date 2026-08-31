@@ -4,8 +4,6 @@ description: "Complete reference for all 6 MCP tools: web_search, web_research, 
 weight: 20
 ---
 
-# Tools Reference
-
 BetterWebSearch MCP exposes **6 tools** (5 unique + 1 alias). All are keyless-first — DuckDuckGo provides search without any API keys.
 
 ## Overview

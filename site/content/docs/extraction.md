@@ -4,8 +4,6 @@ description: "The 3-tier page extraction pipeline: HTTP fetch, structured hydrat
 weight: 35
 ---
 
-# Extraction Pipeline
-
 BetterWebSearch MCP extracts page content through a **three-tier escalation pipeline** managed by the `AccessRouter`. Each tier is progressively more powerful (and slower); the router only escalates when the current tier doesn't produce enough content.
 
 ## Overview

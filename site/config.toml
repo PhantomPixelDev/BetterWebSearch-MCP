@@ -27,7 +27,7 @@ canonifyURLs = true
   showHero = false
 
 [params.footer]
-  showMenu = true
+  showMenu = false
   showAppearanceSwitcher = true
   showScrollToTop = true
 
@@ -40,52 +40,7 @@ canonifyURLs = true
 [outputs]
   home = ["HTML", "RSS", "JSON"]
 
-# -- Main Menu (top bar + mobile hamburger) --
-[[menus.main]]
-  name = "Docs"
-  pageRef = "docs"
-  weight = 10
-
-[[menus.main]]
-  name = "Quickstart"
-  pageRef = "docs/quickstart"
-  weight = 15
-
-[[menus.main]]
-  name = "Installation"
-  pageRef = "docs/installation"
-  weight = 20
-
-[[menus.main]]
-  name = "Tools"
-  pageRef = "docs/tools"
-  weight = 25
-
-[[menus.main]]
-  name = "Configuration"
-  pageRef = "docs/configuration"
-  weight = 30
-
-[[menus.main]]
-  name = "Providers"
-  pageRef = "docs/providers"
-  weight = 35
-
-[[menus.main]]
-  name = "Extraction"
-  pageRef = "docs/extraction"
-  weight = 40
-
-[[menus.main]]
-  name = "API"
-  pageRef = "docs/api"
-  weight = 80
-
-[[menus.main]]
-  name = "Changelog"
-  pageRef = "docs/changelog"
-  weight = 90
-
+# -- Main Menu (header bar — GitHub icon only) --
 [[menus.main]]
   identifier = "github"
   name = "GitHub"
@@ -93,21 +48,53 @@ canonifyURLs = true
   url = "https://github.com/PhantomPixelDev/BetterWebSearch-MCP"
   weight = 200
 
-# -- Footer Menu --
-[[menus.footer]]
-  name = "GitHub"
-  url = "https://github.com/PhantomPixelDev/BetterWebSearch-MCP"
-  pre = "github"
+# -- Sidebar Menu (left docs navigation) --
+[[menus.sidebar]]
+  name = "Documentation"
+  pageRef = "docs"
   weight = 10
 
-[[menus.footer]]
-  name = "npm"
-  url = "https://www.npmjs.com/package/better-web-search-mcp"
-  pre = "globe"
+[[menus.sidebar]]
+  name = "Quickstart"
+  pageRef = "docs/quickstart"
   weight = 20
 
-[[menus.footer]]
-  name = "Docs"
-  url = "https://phantompixeldev.github.io/BetterWebSearch-MCP/"
-  pre = "file-lines"
+[[menus.sidebar]]
+  name = "Installation"
+  pageRef = "docs/installation"
   weight = 30
+
+[[menus.sidebar]]
+  name = "Tools"
+  pageRef = "docs/tools"
+  weight = 40
+
+[[menus.sidebar]]
+  name = "Configuration"
+  pageRef = "docs/configuration"
+  weight = 50
+
+[[menus.sidebar]]
+  name = "Providers"
+  pageRef = "docs/providers"
+  weight = 60
+
+[[menus.sidebar]]
+  name = "Extraction"
+  pageRef = "docs/extraction"
+  weight = 70
+
+[[menus.sidebar]]
+  name = "Architecture"
+  pageRef = "docs/architecture"
+  weight = 80
+
+[[menus.sidebar]]
+  name = "Changelog"
+  pageRef = "docs/changelog"
+  weight = 90
+
+[[menus.sidebar]]
+  name = "Contributing"
+  pageRef = "docs/contributing"
+  weight = 95

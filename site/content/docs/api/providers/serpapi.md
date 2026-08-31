@@ -10,7 +10,6 @@ draft: false
 
 [better-web-search-mcp](../index.html) / providers/serpapi
 
-# providers/serpapi
 
 ## Classes
 

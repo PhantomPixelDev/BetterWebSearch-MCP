@@ -10,7 +10,6 @@ draft: false
 
 [better-web-search-mcp](../index.html) / extraction/evidence
 
-# extraction/evidence
 
 ## Interfaces
 

@@ -4,8 +4,6 @@ description: "How to contribute to BetterWebSearch MCP — setup, development wo
 weight: 95
 ---
 
-# Contributing
-
 Thank you for considering a contribution! Please see the full [Contributing Guide](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/main/CONTRIBUTING.md) on GitHub for detailed instructions.
 
 ## Quick start

@@ -8,8 +8,6 @@ draft: false
 
 ***
 
-# better-web-search-mcp
-
 ## Modules
 
 - [extraction/alternative](extraction/alternative.html)

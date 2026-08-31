@@ -4,8 +4,6 @@ description: "Install BetterWebSearch MCP via npx, npm, or from source. Requirem
 weight: 15
 ---
 
-# Installation
-
 ## Requirements
 
 - **Node.js 20+** and **npm**

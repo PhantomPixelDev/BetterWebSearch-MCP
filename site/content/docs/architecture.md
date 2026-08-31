@@ -4,8 +4,6 @@ description: "System architecture of BetterWebSearch MCP — from query expansio
 weight: 40
 ---
 
-# Architecture
-
 ## System overview
 
 ```mermaid
