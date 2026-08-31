@@ -1,0 +1,39 @@
+baseURL = "https://phantompixeldev.github.io/BetterWebSearch-MCP/"
+locale = "en-us"
+title = "BetterWebSearch MCP"
+theme = "blowfish"
+enableRobotsTXT = true
+canonifyURLs = true
+
+[params]
+  description = "Keyless-first MCP for better web research — DuckDuckGo out of the box, Brave/Tavily optional, 3-tier extraction."
+  colorScheme = "blowfish"
+  defaultAppearance = "dark"
+  enableSearch = true
+
+[markup.goldmark.renderer]
+  unsafe = true
+
+[markup.goldmark.extensions]
+  typographer = false
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+[[menus.footer]]
+  name = "GitHub"
+  url = "https://github.com/PhantomPixelDev/BetterWebSearch-MCP"
+  pre = "github"
+  weight = 10
+
+[[menus.footer]]
+  name = "npm"
+  url = "https://www.npmjs.com/package/better-web-search-mcp"
+  pre = "globe"
+  weight = 20
+
+[[menus.footer]]
+  name = "Docs"
+  url = "https://phantompixeldev.github.io/BetterWebSearch-MCP/"
+  pre = "file-lines"
+  weight = 30

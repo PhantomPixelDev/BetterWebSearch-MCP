@@ -9,6 +9,7 @@ A local [Model Context Protocol](https://modelcontextprotocol.io) server that gi
 [![Node >=20](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
 [![MCP](https://img.shields.io/badge/MCP-stdio-blue)](https://modelcontextprotocol.io)
 [![CI](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/actions/workflows/ci.yml/badge.svg)](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/actions)
+[![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://phantompixeldev.github.io/BetterWebSearch-MCP/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Smithery](https://smithery.ai/badge/@PhantomPixelDev/better-web-search-mcp)](https://smithery.ai/server/@PhantomPixelDev/better-web-search-mcp)
 
@@ -261,6 +262,10 @@ QUERY → Search Planner (expandQueries 4–6) → Providers (Brave/Tavily/DuckD
 ```
 
 See `smithery.yaml`, `mcp.json`, `src/utils/config.ts` (env resolution), and `src/index.ts` (CLI) for the full config story.
+
+## Docs
+
+Full documentation, API reference, and configuration guides: **[phantompixeldev.github.io/BetterWebSearch-MCP](https://phantompixeldev.github.io/BetterWebSearch-MCP/)**
 
 ## License
 
