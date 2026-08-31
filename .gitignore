@@ -1,3 +1,6 @@
+# Internal planning / evidence (not shipped, not tracked)
+.omo/
+
 # Dependencies
 node_modules/
 
@@ -11,10 +14,6 @@ dist/
 
 # Cache database
 data/
-
-# Evidence (internal traceability, not shipped)
-.omo/evidence/
-.omo/run-continuation/
 
 # Logs
 *.log
