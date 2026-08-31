@@ -49,7 +49,10 @@
     "release:patch": "npm run version:patch && npm publish && git push --follow-tags",
     "release:minor": "npm run version:minor && npm publish && git push --follow-tags",
     "release:major": "npm run version:major && npm publish && git push --follow-tags",
-    "check:publish": "npm pack --dry-run"
+    "check:publish": "npm pack --dry-run",
+    "docs:api": "typedoc --options typedoc.json && node scripts/typedoc-postprocess.mjs",
+    "docs:build": "npm run docs:api && hugo --source site --gc --minify",
+    "docs:serve": "hugo server --source site -D"
   },
   "keywords": [
     "mcp",
@@ -67,21 +70,24 @@
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
-    "zod": "^3.24.0",
     "@mozilla/readability": "^0.5.0",
     "better-sqlite3": "^11.0.0",
     "cheerio": "^1.0.0",
     "duck-duck-scrape": "^2.2.0",
     "jsdom": "^25.0.0",
     "playwright": "^1.48.0",
-    "turndown": "^7.2.0"
+    "turndown": "^7.2.0",
+    "zod": "^3.24.0"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
     "@types/better-sqlite3": "^7.6.0",
     "@types/jsdom": "^21.0.0",
+    "@types/node": "^22.0.0",
     "@types/turndown": "^5.0.0",
     "tsx": "^4.19.0",
+    "typedoc": "^0.28.20",
+    "typedoc-plugin-frontmatter": "^1.3.1",
+    "typedoc-plugin-markdown": "^4.13.0",
     "typescript": "^5.6.0",
     "vitest": "^2.1.0"
   }

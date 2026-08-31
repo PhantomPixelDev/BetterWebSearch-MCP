@@ -1,0 +1,26 @@
+{
+  "entryPoints": ["src/**/*.ts"],
+  "tsconfig": "tsconfig.json",
+  "out": "site/content/docs/api",
+  "plugin": [
+    "typedoc-plugin-markdown",
+    "typedoc-plugin-frontmatter",
+    "./scripts/typedoc-frontmatter.mjs"
+  ],
+  "readme": "none",
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "exclude": ["**/*.test.ts", "**/*.spec.ts", "src/**/*.test.ts", "src/**/*.spec.ts", "src/tests/**"],
+  "githubPages": false,
+  "entryFileName": "index",
+  "outputFileStrategy": "modules",
+  "useHTMLEncodedBrackets": false,
+  "expandObjects": true,
+  "parametersFormat": "table",
+  "propertiesFormat": "table",
+  "typeDeclarationFormat": "table",
+  "enumMembersFormat": "table",
+  "frontmatterGlobals": {
+    "draft": false
+  }
+}
