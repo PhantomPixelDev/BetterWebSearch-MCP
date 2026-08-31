@@ -11,14 +11,23 @@ canonifyURLs = true
   defaultAppearance = "dark"
   enableSearch = true
   disableTextInHeader = false
+  highlightCurrentMenuArea = true
 
 [params.header]
   layout = "floating"
+  mobileMenuStyle = "fullscreen"
+
+[params.article]
+  showTableOfContents = false
+  showBreadcrumbs = false
+  showHero = false
 
 [params.list]
   showBreadcrumbs = false
+  showHero = false
 
 [params.footer]
+  showMenu = true
   showAppearanceSwitcher = true
   showScrollToTop = true
 
@@ -31,6 +40,60 @@ canonifyURLs = true
 [outputs]
   home = ["HTML", "RSS", "JSON"]
 
+# -- Main Menu (top bar + mobile hamburger) --
+[[menus.main]]
+  name = "Docs"
+  pageRef = "docs"
+  weight = 10
+
+[[menus.main]]
+  name = "Quickstart"
+  pageRef = "docs/quickstart"
+  weight = 15
+
+[[menus.main]]
+  name = "Installation"
+  pageRef = "docs/installation"
+  weight = 20
+
+[[menus.main]]
+  name = "Tools"
+  pageRef = "docs/tools"
+  weight = 25
+
+[[menus.main]]
+  name = "Configuration"
+  pageRef = "docs/configuration"
+  weight = 30
+
+[[menus.main]]
+  name = "Providers"
+  pageRef = "docs/providers"
+  weight = 35
+
+[[menus.main]]
+  name = "Extraction"
+  pageRef = "docs/extraction"
+  weight = 40
+
+[[menus.main]]
+  name = "API"
+  pageRef = "docs/api"
+  weight = 80
+
+[[menus.main]]
+  name = "Changelog"
+  pageRef = "docs/changelog"
+  weight = 90
+
+[[menus.main]]
+  identifier = "github"
+  name = "GitHub"
+  pre = "github"
+  url = "https://github.com/PhantomPixelDev/BetterWebSearch-MCP"
+  weight = 200
+
+# -- Footer Menu --
 [[menus.footer]]
   name = "GitHub"
   url = "https://github.com/PhantomPixelDev/BetterWebSearch-MCP"
