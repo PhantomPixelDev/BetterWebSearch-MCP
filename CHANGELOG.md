@@ -4,6 +4,63 @@ All notable changes to **better-web-search-mcp** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-09-01
+
+### Fixed
+- **The Level 3 browser tier never ran in production.** No call site passed a
+  `browserPool` to `getPage`, so the escalation guard skipped it entirely and
+  `BrowserPool` was constructed only in tests. The router now creates a shared
+  pool lazily on first escalation, so JS-rendered pages actually get rendered
+- `web_extract`'s flat 8s per-URL budget was shorter than a browser render's
+  23s worst case (15s navigation + 4s intelligent wait + 4s DOM stability), so
+  every Level 3 extraction was killed before it could return. The budget is now
+  sized to the tiers that can run: 8s without the browser, 35s with it
+- `BETTER_WEB_SEARCH_DISABLE_BROWSER` was documented but never read; it now
+  actually disables the browser tier
+- Aborted requests are no longer retried. Providers share one `AbortController`
+  across attempts, so a retry after the timeout fired could only fail again
+  instantly, burning the retry budget
+- Brave and Tavily now set `retryNetworkErrors`, matching DuckDuckGo
+
+### Added
+- Domain-profile shortcut: the per-domain profile written after every
+  extraction is finally read back, so a domain already served without
+  JavaScript skips the render. `mode: "browser"` still overrides it
+- Per-provider 10s timeout inside `aggregateSearch` — one hung provider no
+  longer gates the other providers' results
+- Clean shutdown on `SIGINT`/`SIGTERM` so a lazily launched chromium is not
+  orphaned
+- 16 tests (229 total), including a browser-tier suite covering pool reuse,
+  the disable flag, and the profile shortcut
+
+### Removed
+- The unimplemented SerpApi stub is no longer added to `enabledProviders()`;
+  it was a guaranteed no-op call on every search. The class remains as a
+  placeholder
+
+### Notes
+- `web_extract` on JavaScript-heavy pages is slower than 0.1.2 (up to 35s) but
+  now returns real content instead of a confidence-0 fallback
+
+## [0.1.2] - 2026-08-31
+
+### Added
+- Project banner in the README and on the site homepage
+- Hugo docs site on the hugo-book theme with native sidebar navigation
+
+### Changed
+- Node baseline bumped to 22 LTS
+- Root directory cleanup and a rewritten end-user README
+
+### Fixed
+- Release workflow npm authentication
+- Sidebar navigation, duplicate H1 headings, and mobile menu on the docs site
+
+## [0.1.1] - 2026-08-29
+
+### Fixed
+- Packaging and release-workflow fixes on top of the initial release
+
 ## [0.1.0] - 2026-08-29
 
 ### Added
@@ -26,4 +83,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 - Add `BRAVE_API_KEY` for richer ranking & recency filtering
 - Publish-ready: `npm pack --dry-run` validated, `prepare`/`prepublishOnly` hooks, `files` whitelist
 
+[0.2.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.2.0
+[0.1.2]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.1.2
+[0.1.1]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.1.1
 [0.1.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.1.0
