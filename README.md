@@ -9,7 +9,7 @@
 [![Smithery](https://smithery.ai/badge/@PhantomPixelDev/better-web-search-mcp)](https://smithery.ai/server/@PhantomPixelDev/better-web-search-mcp)
 
 <p align="center">
-  <img src="./images/banner.png" alt="BetterWebSearch MCP — Smarter Web Search · Better Data Extraction · Flexible & Extensible · Open Source" width="100%">
+  <img src="./images/banner.jpg" alt="BetterWebSearch MCP — Smarter Web Search · Better Data Extraction · Flexible & Extensible · Open Source" width="100%">
 </p>
 
 ## What is this?

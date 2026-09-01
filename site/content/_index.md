@@ -3,7 +3,7 @@ title: "BetterWebSearch MCP"
 description: "Keyless-first web search MCP server for AI agents — no API keys required."
 ---
 
-![BetterWebSearch MCP](/images/banner.png)
+![BetterWebSearch MCP](/images/banner.jpg)
 
 > **Keyless-first.** Works out of the box with **DuckDuckGo** — no API keys. Add `BRAVE_API_KEY` later for richer ranking & recency.
 
