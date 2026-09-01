@@ -29,6 +29,8 @@ import { BrowserPool } from "./browser.js";
 import { Cache } from "../utils/cache.js";
 import { recordApiPatterns, updateDomainProfile } from "./learn.js";
 import type { Evidence } from "./evidence.js";
+import type { DomainProfile } from "../utils/domainProfile.js";
+import { loadConfig } from "../utils/config.js";
 
 /** The extraction method chosen by the router. */
 export type RouterMethod =
@@ -133,6 +135,96 @@ function normalizeOptions(opts: GetPageOptions): Required<GetPageOptions> {
 /** Resolved dependencies: functions defaulted, optional seams kept optional. */
 type ResolvedDeps = Omit<Required<RouterDeps>, "cache" | "browserPool"> &
   Pick<RouterDeps, "cache" | "browserPool">;
+
+/**
+ * The shared browser pool, created on the first Level 3 escalation.
+ *
+ * Callers do not construct a pool, so without this the browser tier could
+ * never run outside tests. Creation is lazy so a server that never escalates
+ * past HTTP never launches chromium.
+ */
+let sharedBrowserPool: BrowserPool | null = null;
+
+/**
+ * Pick the pool for Level 3: an injected pool wins (tests), otherwise the
+ * lazily created shared one — unless the browser tier is disabled via
+ * `BETTER_WEB_SEARCH_DISABLE_BROWSER`.
+ */
+function resolveBrowserPool(
+  injected: BrowserPool | undefined,
+): BrowserPool | undefined {
+  if (injected !== undefined) {
+    return injected;
+  }
+  if (!loadConfig().browserEnabled) {
+    return undefined;
+  }
+  sharedBrowserPool ??= new BrowserPool();
+  return sharedBrowserPool;
+}
+
+/** Close and forget the shared browser pool (server shutdown, tests). */
+export async function closeSharedBrowserPool(): Promise<void> {
+  const pool = sharedBrowserPool;
+  sharedBrowserPool = null;
+  if (pool !== null) {
+    await pool.close();
+  }
+}
+
+/**
+ * Read the cached capability profile for a URL's domain.
+ *
+ * Returns `null` on a cache miss or a payload that does not carry the fields
+ * we branch on — the profile is stored as opaque JSON, so it may predate the
+ * current shape.
+ */
+function cachedDomainProfile(
+  url: string,
+  cache: Cache | undefined,
+): DomainProfile | null {
+  if (cache === undefined) {
+    return null;
+  }
+  let domain: string;
+  try {
+    domain = new URL(url).hostname;
+  } catch {
+    return null;
+  }
+  const raw = cache.getDomain(domain);
+  if (raw === null || typeof raw !== "object") {
+    return null;
+  }
+  const profile = raw as Partial<DomainProfile>;
+  if (
+    typeof profile.requires_js !== "boolean" ||
+    typeof profile.best_method !== "string"
+  ) {
+    return null;
+  }
+  return raw as DomainProfile;
+}
+
+/**
+ * Whether the browser tier can be skipped for this URL.
+ *
+ * A domain we have already served without JavaScript does not need a render
+ * that costs up to 23s; the profile written by `updateDomainProfile` after
+ * every extraction is what tells us so. Explicit `mode: "browser"` always
+ * wins over the profile.
+ */
+function canSkipBrowser(
+  profile: DomainProfile | null,
+  mode: GetPageOptions["mode"],
+): boolean {
+  return (
+    mode !== "browser" &&
+    profile !== null &&
+    !profile.requires_js &&
+    profile.best_method !== "browser_api_intercept"
+  );
+}
 
 function resolveDeps(deps: RouterDeps): ResolvedDeps {
   return {
@@ -344,9 +436,13 @@ export async function getPage(
   }
 
   // Level 3: browser render + API interception.
-  if (options.browser_fallback && d.browserPool !== undefined) {
+  const profile = cachedDomainProfile(url, d.cache);
+  const browserPool = canSkipBrowser(profile, options.mode)
+    ? undefined
+    : resolveBrowserPool(d.browserPool);
+  if (options.browser_fallback && browserPool !== undefined) {
     try {
-      const render = await d.browserPool.renderWithBrowser(url);
+      const render = await browserPool.renderWithBrowser(url);
       const renderedHtml = render.html;
       const captured = render.captured;
       const renderedMetadata = d.extractMetadata(renderedHtml);

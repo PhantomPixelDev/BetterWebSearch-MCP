@@ -3,9 +3,15 @@
  *
  * Extracts content from one or more URLs through the AccessRouter escalation
  * pipeline (HTTP fetch → structured data → browser). URLs are processed with
- * bounded concurrency (3) and an 8s per-URL timeout; a timed-out or failed
- * URL yields a low-confidence fallback extraction rather than aborting the
- * whole request.
+ * bounded concurrency (3) under a per-URL timeout; a timed-out or failed URL
+ * yields a low-confidence fallback extraction rather than aborting the whole
+ * request.
+ *
+ * The timeout is sized to the tiers that can actually run: 8s when the
+ * browser is off, and 35s when it may be used — a browser render alone can
+ * spend 23s (15s navigation + 4s intelligent wait + 4s DOM stability) on top
+ * of the 10s HTTP fetch, so a flat 8s budget killed every Level 3 extraction
+ * before it could return.
  */
 
 import { z } from "zod";
@@ -39,8 +45,20 @@ export interface ExtractResponse {
   metadata: PageMetadata;
 }
 
-/** Per-URL timeout, in milliseconds. */
-const URL_TIMEOUT_MS = 8_000;
+/** Per-URL timeout when the browser tier cannot run, in milliseconds. */
+export const URL_TIMEOUT_MS = 8_000;
+
+/** Per-URL timeout when a browser render may run, in milliseconds. */
+export const BROWSER_URL_TIMEOUT_MS = 35_000;
+
+/** The per-URL budget for a given mode / fallback combination. */
+export function timeoutForMode(
+  mode: "auto" | "fast" | "browser",
+  browserFallback: boolean,
+): number {
+  const browserPossible = mode === "browser" || (mode === "auto" && browserFallback);
+  return browserPossible ? BROWSER_URL_TIMEOUT_MS : URL_TIMEOUT_MS;
+}
 
 /** Concurrency limit for processing URLs. */
 const CONCURRENCY = 3;
@@ -68,7 +86,7 @@ function fallbackExtraction(url: string, reason: string): ExtractResponse {
   };
 }
 
-/** Run a single URL through getPage with an 8s timeout. */
+/** Run a single URL through getPage under the budget for its mode. */
 async function extractOne(
   url: string,
   opts: {
@@ -79,11 +97,12 @@ async function extractOne(
     cache?: Cache;
   },
 ): Promise<ExtractResponse> {
+  const budgetMs = timeoutForMode(opts.mode, opts.browser_fallback);
   let timer: ReturnType<typeof setTimeout> | undefined;
   const timeout = new Promise<never>((_, reject) => {
     timer = setTimeout(
-      () => reject(new Error(`extraction timed out after ${URL_TIMEOUT_MS}ms`)),
-      URL_TIMEOUT_MS,
+      () => reject(new Error(`extraction timed out after ${budgetMs}ms`)),
+      budgetMs,
     );
   });
 

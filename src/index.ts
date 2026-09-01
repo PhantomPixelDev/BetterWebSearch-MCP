@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
+import { closeSharedBrowserPool } from "./extraction/router.js";
 import { registerTools } from "./tools/index.js";
 import { formatBanner, loadConfig } from "./utils/config.js";
 
@@ -69,9 +70,32 @@ const server = new McpServer({
 
 registerTools(server);
 
+/**
+ * Shut down cleanly on a signal.
+ *
+ * The router launches chromium lazily for its Level 3 tier, so an abrupt
+ * exit would orphan that browser process. Guarded so a second signal during
+ * teardown does not re-enter.
+ */
+let shuttingDown = false;
+function installShutdownHandlers(): void {
+  for (const signal of ["SIGINT", "SIGTERM"] as const) {
+    process.on(signal, () => {
+      if (shuttingDown) {
+        return;
+      }
+      shuttingDown = true;
+      void closeSharedBrowserPool()
+        .catch(() => {})
+        .finally(() => process.exit(0));
+    });
+  }
+}
+
 async function main(): Promise<void> {
   const cfg = loadConfig();
   console.error(formatBanner(pkg, cfg));
+  installShutdownHandlers();
   const transport = new StdioServerTransport();
   await server.connect(transport);
 }

@@ -16,7 +16,11 @@ export interface RetryOptions {
   baseMs?: number;
   /** HTTP status codes that trigger a retry (default [429, 503]). */
   retryOn?: number[];
-  /** Also retry thrown errors that carry no HTTP status (network errors). */
+  /**
+   * Also retry thrown errors that carry no HTTP status (network errors).
+   * Abort errors are never retried — the caller's `AbortSignal` is already
+   * spent, so a retry would fail instantly without waiting.
+   */
   retryNetworkErrors?: boolean;
 }
 
@@ -120,6 +124,11 @@ export async function withRetry<T>(
   }
 }
 
+/** Whether a thrown value is an `AbortController` abort. */
+function isAbortError(carrier: StatusCarrier): boolean {
+  return (carrier as { name?: string }).name === "AbortError";
+}
+
 /** Whether a carrier's status is retryable, or it is a network error. */
 function isRetryable(
   carrier: StatusCarrier,
@@ -128,6 +137,11 @@ function isRetryable(
 ): boolean {
   if (carrier.status !== undefined) {
     return retryOn.includes(carrier.status);
+  }
+  // Providers share one AbortController across attempts; once it has fired,
+  // retrying just burns attempts against an already-aborted signal.
+  if (isAbortError(carrier)) {
+    return false;
   }
   return retryNetworkErrors;
 }

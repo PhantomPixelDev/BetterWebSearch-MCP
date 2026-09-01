@@ -4,14 +4,11 @@ import type { SearchResult } from "./types.js";
 
 // Shared mocks so every instance created by enabledProviders() uses the same
 // search function, which the tests configure once.
-const { braveSearch, tavilySearch, ddgSearch, serpapiSearch } = vi.hoisted(
-  () => ({
-    braveSearch: vi.fn(),
-    tavilySearch: vi.fn(),
-    ddgSearch: vi.fn(),
-    serpapiSearch: vi.fn(),
-  }),
-);
+const { braveSearch, tavilySearch, ddgSearch } = vi.hoisted(() => ({
+  braveSearch: vi.fn(),
+  tavilySearch: vi.fn(),
+  ddgSearch: vi.fn(),
+}));
 
 vi.mock("./brave.js", () => ({
   BraveProvider: class {
@@ -31,14 +28,11 @@ vi.mock("./duckduckgo.js", () => ({
     search = ddgSearch;
   },
 }));
-vi.mock("./serpapi.js", () => ({
-  SerpApiProvider: class {
-    readonly name = "serpapi";
-    search = serpapiSearch;
-  },
-}));
-
-import { aggregateSearch, enabledProviders } from "./index.js";
+import {
+  aggregateSearch,
+  enabledProviders,
+  PROVIDER_TIMEOUT_MS,
+} from "./index.js";
 
 const braveResult: SearchResult = {
   title: "Brave hit",
@@ -75,12 +69,15 @@ describe("enabledProviders", () => {
     }
   });
 
-  it("includes keyed providers plus the keyless fallback and stub", () => {
+  it("includes keyed providers plus the keyless fallback", () => {
     const names = enabledProviders().map((p) => p.name);
     expect(names).toContain("brave");
     expect(names).toContain("tavily");
     expect(names).toContain("duckduckgo");
-    expect(names).toContain("serpapi");
+  });
+
+  it("omits the unimplemented SerpApi stub", () => {
+    expect(enabledProviders().map((p) => p.name)).not.toContain("serpapi");
   });
 
   it("excludes keyed providers when their keys are absent", () => {
@@ -107,7 +104,6 @@ describe("aggregateSearch", () => {
     braveSearch.mockResolvedValue([braveResult]);
     ddgSearch.mockResolvedValue([ddgResult]);
     tavilySearch.mockResolvedValue([]);
-    serpapiSearch.mockResolvedValue([]);
 
     const results = await aggregateSearch("hello", { count: 5 });
 
@@ -120,7 +116,6 @@ describe("aggregateSearch", () => {
     braveSearch.mockRejectedValue(new Error("brave exploded"));
     ddgSearch.mockResolvedValue([ddgResult]);
     tavilySearch.mockResolvedValue([]);
-    serpapiSearch.mockResolvedValue([]);
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     const results = await aggregateSearch("hello", {});
@@ -128,5 +123,26 @@ describe("aggregateSearch", () => {
     expect(results).toHaveLength(1);
     expect(results[0]).toEqual(ddgResult);
     expect(warn).toHaveBeenCalled();
+  });
+
+  it("drops a hung provider at the timeout and keeps the others' results", async () => {
+    vi.useFakeTimers();
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      braveSearch.mockImplementation(() => new Promise(() => {}));
+      ddgSearch.mockResolvedValue([ddgResult]);
+      tavilySearch.mockResolvedValue([]);
+
+      const promise = aggregateSearch("hello", {});
+      await vi.advanceTimersByTimeAsync(PROVIDER_TIMEOUT_MS + 1);
+      const results = await promise;
+
+      expect(results).toEqual([ddgResult]);
+      expect(warn).toHaveBeenCalledWith(
+        expect.stringContaining("timed out"),
+      );
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

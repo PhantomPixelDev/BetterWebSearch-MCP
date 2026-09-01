@@ -56,7 +56,7 @@ export class TavilyProvider implements SearchProvider {
             }),
             signal: controller.signal,
           }),
-        { retryOn: [429, 503] },
+        { retryOn: [429, 503], retryNetworkErrors: true },
       );
 
       if (!response.ok) {

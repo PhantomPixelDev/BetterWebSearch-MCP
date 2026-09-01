@@ -10,7 +10,13 @@ vi.mock("../extraction/router.js", () => ({
   getPage: getPageMock,
 }));
 
-import { runExtract, extractInputSchema } from "./extract.js";
+import {
+  runExtract,
+  extractInputSchema,
+  timeoutForMode,
+  URL_TIMEOUT_MS,
+  BROWSER_URL_TIMEOUT_MS,
+} from "./extract.js";
 
 const routedPage: RoutedPage = {
   url: "https://example.com/article",
@@ -115,11 +121,11 @@ describe("runExtract", () => {
   it("does not throw when a URL times out; returns a fallback extraction", async () => {
     vi.useFakeTimers();
     try {
-      // Never resolves — the 8s Promise.race timeout should produce a fallback.
+      // Never resolves — the Promise.race timeout should produce a fallback.
       getPageMock.mockImplementation(() => new Promise(() => {}));
 
       const promise = runExtract({ urls: ["https://example.com/slow"] });
-      await vi.advanceTimersByTimeAsync(8_001);
+      await vi.advanceTimersByTimeAsync(BROWSER_URL_TIMEOUT_MS + 1);
 
       const response = await promise;
       expect(response).toHaveLength(1);
@@ -128,5 +134,40 @@ describe("runExtract", () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  it("uses the short budget when the browser tier cannot run", async () => {
+    vi.useFakeTimers();
+    try {
+      getPageMock.mockImplementation(() => new Promise(() => {}));
+
+      const promise = runExtract({
+        urls: ["https://example.com/slow"],
+        mode: "fast",
+      });
+      await vi.advanceTimersByTimeAsync(URL_TIMEOUT_MS + 1);
+
+      const response = await promise;
+      expect(response[0]?.content).toContain(`${URL_TIMEOUT_MS}ms`);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
+
+describe("timeoutForMode", () => {
+  it("grants the browser budget when a render may run", () => {
+    expect(timeoutForMode("auto", true)).toBe(BROWSER_URL_TIMEOUT_MS);
+    expect(timeoutForMode("browser", false)).toBe(BROWSER_URL_TIMEOUT_MS);
+  });
+
+  it("keeps the short budget when the browser tier is off", () => {
+    expect(timeoutForMode("fast", true)).toBe(URL_TIMEOUT_MS);
+    expect(timeoutForMode("auto", false)).toBe(URL_TIMEOUT_MS);
+  });
+
+  it("leaves room for a full browser render plus the HTTP fetch", () => {
+    // 15s navigation + 4s intelligent wait + 4s DOM stability + 10s fetch.
+    expect(BROWSER_URL_TIMEOUT_MS).toBeGreaterThan(33_000);
   });
 });

@@ -173,4 +173,18 @@ describe("withRetry", () => {
     await expect(withRetry(fn)).rejects.toBe(err);
     expect(fn).toHaveBeenCalledTimes(1);
   });
+
+  it("never retries an abort, even with retryNetworkErrors set", async () => {
+    // Providers share one AbortController across attempts, so once it has
+    // fired a retry can only fail again instantly.
+    const err = Object.assign(new Error("The operation was aborted"), {
+      name: "AbortError",
+    });
+    const fn = vi.fn().mockRejectedValue(err);
+
+    await expect(
+      withRetry(fn, { retryNetworkErrors: true }),
+    ).rejects.toBe(err);
+    expect(fn).toHaveBeenCalledTimes(1);
+  });
 });

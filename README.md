@@ -76,7 +76,7 @@ Only escalates when needed. Results carry confidence scores so you know what you
 
 ```
 src/
-  providers/      Search backends (DuckDuckGo, Brave, Tavily, SERPApi)
+  providers/      Search backends (DuckDuckGo, Brave, Tavily; SerpApi stubbed)
   extraction/     3-tier content pipeline (fetch, structured, browser)
   ranking/        Deduplication, domain scoring, reranking
   tools/          MCP tool definitions (search, research, extract, find, news)
