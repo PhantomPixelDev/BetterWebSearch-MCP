@@ -101,6 +101,7 @@ Full guides, API reference, and architecture details live on the docs site:
 - [Quick Start](https://phantompixeldev.github.io/BetterWebSearch-MCP/docs/quickstart/) - Get running in your first AI client
 - [Configuration](https://phantompixeldev.github.io/BetterWebSearch-MCP/docs/configuration/) - All environment variables and options
 - [Contributing](https://phantompixeldev.github.io/BetterWebSearch-MCP/docs/contributing/) - Development setup and PR process
+- [Changelog](CHANGELOG.md) - Release history and version notes
 
 ## License
 

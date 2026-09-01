@@ -4,7 +4,7 @@ description: "How to contribute to BetterWebSearch MCP — setup, development wo
 weight: 95
 ---
 
-Thank you for considering a contribution! Please see the full [Contributing Guide](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/main/CONTRIBUTING.md) on GitHub for detailed instructions.
+Thank you for considering a contribution! Please see the full [Contributing Guide](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/main/.github/CONTRIBUTING.md) on GitHub for detailed instructions.
 
 ## Quick start
 
@@ -38,11 +38,11 @@ npm run lint      # tsc --noEmit — must be zero errors
 
 ## Security
 
-If you discover a security vulnerability, **do not open a public issue.** Follow the process in [SECURITY.md](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/main/SECURITY.md).
+If you discover a security vulnerability, **do not open a public issue.** Follow the process in [SECURITY.md](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/main/.github/SECURITY.md).
 
 ## Code of conduct
 
-This project follows the [Contributor Covenant v2.1](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/main/CODE_OF_CONDUCT.md). By participating, you agree to uphold its standards.
+This project follows the [Contributor Covenant v2.1](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/main/.github/CODE_OF_CONDUCT.md). By participating, you agree to uphold its standards.
 
 ## License
 
