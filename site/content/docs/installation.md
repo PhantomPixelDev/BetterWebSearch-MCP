@@ -106,3 +106,51 @@ better-web-search-mcp             # start stdio server (banner to stderr)
 ```
 
 `--help` and `--version` exit before connecting, so they never interfere with MCP handshakes.
+
+## Available scripts
+
+| Script | Description |
+|---|---|
+| `npm run build` | Compile TypeScript to `dist/` |
+| `npm run dev` | Watch mode with `tsx` |
+| `npm test` | Run all tests with Vitest |
+| `npm run lint` | Type-check with `tsc --noEmit` |
+| `npm run check:publish` | Dry-run pack to see what ships to npm |
+| `npm run version:patch` | Bump patch version and tag |
+| `npm run release:patch` | Version bump, publish, and push tags |
+
+## Publishing to npm (maintainers)
+
+```bash
+# 1. Stay on main, working tree clean
+npm run lint && npm test && npm run build
+
+# 2. Bump version (updates package.json + CHANGELOG + git tag)
+npm run version:patch   # or version:minor / version:major
+# Manually add entry to CHANGELOG.md, then:
+git add CHANGELOG.md && git commit --amend --no-edit
+
+# 3. Publish (requires `npm login`)
+npm publish --access public
+# or: npm run release:patch   # does version:patch + publish + git push --follow-tags
+
+# 4. Push + create GitHub Release (auto via .github/workflows/release.yml on tag v*.*.*)
+git push --follow-tags
+# CI also runs: .github/workflows/ci.yml on every push
+```
+
+### Publish via GitHub Actions (Trusted Publishing, recommended)
+
+Push a tag `v0.1.1` and `release.yml` runs `npm publish --provenance --access public` using OIDC Trusted Publishing. No long-lived npm token stored as a secret.
+
+One-time setup on npmjs.org:
+
+1. Open npmjs.com, go to your account, Access Tokens, Trusted Publishers.
+2. Add new publisher with:
+   - Provider: GitHub
+   - Repository: `PhantomPixelDev/BetterWebSearch-MCP`
+   - Workflow: `release.yml`
+   - Environment: (leave blank)
+3. Save. No `NPM_TOKEN` secret is needed in GitHub.
+
+npm provenance requires the GitHub repository to be public so the OIDC attestation can be verified.
