@@ -3,6 +3,8 @@ title: "BetterWebSearch MCP"
 description: "Keyless-first web search MCP server for AI agents — no API keys required."
 ---
 
+![BetterWebSearch MCP](/images/banner.png)
+
 > **Keyless-first.** Works out of the box with **DuckDuckGo** — no API keys. Add `BRAVE_API_KEY` later for richer ranking & recency.
 
 A local [Model Context Protocol](https://modelcontextprotocol.io) server that gives AI agents genuinely better web research: multi-provider search, three-tier page extraction, and deep research — without locking you into a single search API.

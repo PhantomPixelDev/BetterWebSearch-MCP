@@ -8,6 +8,10 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Smithery](https://smithery.ai/badge/@PhantomPixelDev/better-web-search-mcp)](https://smithery.ai/server/@PhantomPixelDev/better-web-search-mcp)
 
+<p align="center">
+  <img src="./images/banner.png" alt="BetterWebSearch MCP — Smarter Web Search · Better Data Extraction · Flexible & Extensible · Open Source" width="100%">
+</p>
+
 ## What is this?
 
 BetterWebSearch MCP is a [Model Context Protocol](https://modelcontextprotocol.io) server that gives AI assistants genuinely better web research. It works without API keys by default (DuckDuckGo), and optionally adds Brave or Tavily for richer ranking and recency.
