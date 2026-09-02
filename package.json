@@ -36,7 +36,9 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "dev": "tsx watch src/index.ts",
-    "test": "vitest run",
+    "test": "npm run test:unit && npm run test:sqlite",
+    "test:unit": "vitest run --exclude src/utils/cache.test.ts",
+    "test:sqlite": "vitest run src/utils/cache.test.ts",
     "lint": "tsc --noEmit",
     "prepare": "npm run build",
     "version": "node scripts/sync-mcp-version.mjs && git add mcp.json",

@@ -4,6 +4,19 @@ All notable changes to **better-web-search-mcp** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.3] - 2026-09-02
+
+### Fixed
+- **The intermittent CI abort is finally addressed at the right layer.**
+  Earlier attempts blamed the wrong thing: switching to forked processes, then
+  serializing them, then closing handles at process exit each lowered the rate
+  without removing it. The mechanism is that vitest tears down the
+  better-sqlite3 addon's N-API environment between test *files*, so every file
+  boundary after the addon has loaded is a chance to hit
+  `Assertion failed: (env) != nullptr`. `npm test` now runs the one suite that
+  opens a real database in its own vitest invocation, where that environment
+  is destroyed at process exit instead of at a file boundary
+
 ## [0.4.2] - 2026-09-02
 
 ### Fixed
@@ -223,6 +236,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 - Add `BRAVE_API_KEY` for richer ranking & recency filtering
 - Publish-ready: `npm pack --dry-run` validated, `prepare`/`prepublishOnly` hooks, `files` whitelist
 
+[0.4.3]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.4.3
 [0.4.2]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.4.2
 [0.4.1]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.4.1
 [0.4.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.4.0
