@@ -56,5 +56,9 @@ DuckDuckGo rate-limits scrapers. Failures are reported per question rather than
 aborting the run. Set `BRAVE_API_KEY` or `TAVILY_API_KEY` for steadier results.
 
 `BETTER_WEB_SEARCH_DISABLE_BROWSER=true` keeps a run to the HTTP and structured
-tiers, which is much faster; the browser tier can spend up to 35s on a single
-page. Published numbers state which mode was used.
+tiers, which is faster; the browser tier can spend up to 35s on a single page.
+Published numbers state which mode was used.
+
+`results/latest.json` is the HTTP + structured run; `results/browser.json` is
+the same questions with the browser tier enabled. The two agree within
+run-to-run noise, so the browser tier is not what produces the compression.

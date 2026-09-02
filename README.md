@@ -95,6 +95,11 @@ disabled:
 
 **86.5% less text overall, 83.8% median**, per-question range 56.8% to 93.4%.
 
+Re-running with the browser tier enabled gives 86.2% overall and 83.9% median —
+the same within run-to-run noise — while taking 24% longer (61.3s vs 49.6s).
+Tier 3 earns its place on JavaScript-rendered pages that would otherwise
+extract nothing, not as a way to return less text.
+
 Reproduce it yourself:
 
 ```bash

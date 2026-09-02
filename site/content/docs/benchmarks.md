@@ -39,6 +39,28 @@ research categories. Run 2026-09-02 against the live web with
 
 **86.5% less text overall, 83.8% median.**
 
+### Does the browser tier change this?
+
+The run above keeps to the HTTP and structured tiers. Repeating it with the
+browser tier enabled answers whether Tier 3 pages — the heaviest ones — shift
+the result:
+
+| | HTTP + structured | Browser enabled |
+|---|---|---|
+| Reduction (overall) | 86.5% | 86.2% |
+| Reduction (median) | 83.8% | 83.9% |
+| `web_research` wall clock | 49.6s | 61.3s |
+| Baseline payload | 820,229 chars | 788,743 chars |
+
+**It does not.** The compression is the same within run-to-run noise — the two
+baselines differ by 3.8% on their own, since live pages change between runs —
+while research spends 24% longer. Tier 3 simply does not fire often for these
+questions: most pages carry enough content over plain HTTP.
+
+That is a useful negative result. The browser tier earns its place on
+JavaScript-rendered pages that would otherwise extract nothing, not as a way to
+return less text.
+
 Per question:
 
 | Question | Baseline | Research | Reduction | Independent sources |

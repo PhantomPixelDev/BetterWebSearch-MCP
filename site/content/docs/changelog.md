@@ -8,6 +8,16 @@ All notable changes to **better-web-search-mcp** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.4] - 2026-09-02
+
+### Added
+- Second benchmark run with the browser tier enabled, recorded in
+  `benchmarks/results/browser.json`. It is a negative result and is published
+  as one: enabling Tier 3 leaves the compression unchanged within run-to-run
+  noise (86.2% versus 86.5% overall, 83.9% versus 83.8% median) while research
+  spends 24% longer. Tier 3 earns its place on JavaScript-rendered pages that
+  would otherwise extract nothing, not as a way to return less text
+
 ## [0.4.3] - 2026-09-02
 
 ### Fixed
@@ -240,6 +250,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 - Add `BRAVE_API_KEY` for richer ranking & recency filtering
 - Publish-ready: `npm pack --dry-run` validated, `prepare`/`prepublishOnly` hooks, `files` whitelist
 
+[0.4.4]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.4.4
 [0.4.3]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.4.3
 [0.4.2]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.4.2
 [0.4.1]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.4.1
