@@ -4,6 +4,20 @@ All notable changes to **better-web-search-mcp** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.3] - 2026-09-02
+
+### Fixed
+- `BETTER_WEB_SEARCH_DISABLE_CACHE` and `BETTER_WEB_SEARCH_CACHE_PATH` are
+  finally honored. Both were parsed by the config loader, printed in the
+  startup banner, and documented in `--help`, but nothing passed them to the
+  cache — the server opened `data/cache.db` regardless of what either said
+
+### Changed
+- Security policy now tracks the 0.2.x line and describes the cache
+  mitigations accurately
+- The v0.1.0 launch checklist is marked historical rather than reading as a
+  current process
+
 ## [0.2.2] - 2026-09-02
 
 ### Fixed
@@ -114,6 +128,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 - Add `BRAVE_API_KEY` for richer ranking & recency filtering
 - Publish-ready: `npm pack --dry-run` validated, `prepare`/`prepublishOnly` hooks, `files` whitelist
 
+[0.2.3]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.2.3
 [0.2.2]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.2.2
 [0.2.1]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.2.1
 [0.2.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.2.0

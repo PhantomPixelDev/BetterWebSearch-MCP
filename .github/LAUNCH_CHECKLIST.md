@@ -1,4 +1,10 @@
-# Launch Checklist — better-web-search-mcp v0.1.0
+# Launch Checklist — better-web-search-mcp v0.1.0 (historical)
+
+> **Completed.** This recorded the one-time pre-flight before the repository
+> went public and `v0.1.0` shipped to npm. It is kept as a record of that
+> launch and is not a checklist for current releases — see `CHANGELOG.md` for
+> the release history and `package.json` `release:*` scripts for the current
+> process.
 
 Pre-flight validation before making the repository public and publishing to npm.
 

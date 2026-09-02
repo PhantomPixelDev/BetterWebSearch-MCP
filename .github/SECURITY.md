@@ -4,10 +4,10 @@
 
 | Version | Supported |
 |---|---|
-| 0.1.x | Yes |
-| < 0.1.0 | No |
+| 0.2.x | Yes |
+| < 0.2.0 | No |
 
-Only the latest release in the `0.1.x` line receives security patches. Once a new minor or major version ships, previous lines are no longer maintained.
+Only the latest release in the `0.2.x` line receives security patches. Once a new minor or major version ships, previous lines are no longer maintained.
 
 ## Reporting a vulnerability
 
@@ -65,7 +65,11 @@ The SQLite cache (`data/cache.db`) stores domain profiles and API patterns. A co
 - HTTP responses have size limits and timeouts.
 - Cache rows expire automatically (15 min search, 1 hour page).
 - `BETTER_WEB_SEARCH_DISABLE_BROWSER=true` disables the browser tier entirely.
-- `BETTER_WEB_SEARCH_DISABLE_CACHE=true` falls back to in-memory storage.
+- `BETTER_WEB_SEARCH_DISABLE_CACHE=true` falls back to in-memory storage, and
+  `BETTER_WEB_SEARCH_CACHE_PATH` relocates the database (both honored as of 0.2.3;
+  earlier versions parsed them but always opened `data/cache.db`).
+- A cache database that cannot be opened — locked, corrupt, or unwritable —
+  degrades to in-memory rather than aborting startup (0.2.2).
 
 ### Out of scope
 
