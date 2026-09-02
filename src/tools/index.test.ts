@@ -1,30 +1,20 @@
-import { existsSync, rmSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-
 import { afterEach, describe, expect, it } from "vitest";
 
 import { cacheFromConfig } from "./index.js";
 import { loadConfig } from "../utils/config.js";
 
+/**
+ * These cover only the in-memory paths on purpose.
+ *
+ * better-sqlite3 is a native addon, and vitest tears down the addon's N-API
+ * environment between test *files*. A database still open when that happens
+ * aborts the runner with `Assertion failed: (env) != nullptr`, which showed up
+ * as intermittent "Worker exited unexpectedly" CI failures. Real databases are
+ * therefore opened from exactly one file, `utils/cache.test.ts`, which owns
+ * the teardown — including the tests that a configured cache path is honored.
+ */
+
 const ORIGINAL = { ...process.env };
-
-/** A unique cache path per assertion, cleaned up with its WAL sidecars. */
-function tempDbPath(label: string): string {
-  return join(tmpdir(), `bws-${label}-${process.pid}-${Date.now()}.db`);
-}
-
-function removeDb(path: string): void {
-  for (const suffix of ["", "-wal", "-shm"]) {
-    if (existsSync(path + suffix)) {
-      try {
-        rmSync(path + suffix);
-      } catch {
-        // ignore lock race on Windows
-      }
-    }
-  }
-}
 
 afterEach(() => {
   delete process.env.BETTER_WEB_SEARCH_DISABLE_CACHE;
@@ -55,38 +45,23 @@ describe("cacheFromConfig", () => {
     cache.close();
   });
 
-  it("opens the database at the configured cache path", () => {
-    const dbPath = tempDbPath("configured");
-    removeDb(dbPath);
-    process.env.BETTER_WEB_SEARCH_CACHE_PATH = dbPath;
+  it("still serves reads and writes while the cache is disabled", () => {
+    process.env.BETTER_WEB_SEARCH_DISABLE_CACHE = "true";
 
     const cache = cacheFromConfig(loadConfig());
-
     try {
-      expect(cache.isMemory).toBe(false);
       cache.setSearch("k", "query", { hit: true });
-      expect(existsSync(dbPath)).toBe(true);
+      expect(cache.getSearch("k")).toEqual({ hit: true });
     } finally {
       cache.close();
-      removeDb(dbPath);
     }
   });
 
-  it("round-trips through the configured database, not the default path", () => {
-    const dbPath = tempDbPath("roundtrip");
-    removeDb(dbPath);
-    process.env.BETTER_WEB_SEARCH_CACHE_PATH = dbPath;
+  it("reads the cache path from configuration", () => {
+    process.env.BETTER_WEB_SEARCH_CACHE_PATH = "custom/path/cache.db";
 
-    const writer = cacheFromConfig(loadConfig());
-    writer.setSearch("shared", "query", { value: 42 });
-    writer.close();
-
-    const reader = cacheFromConfig(loadConfig());
-    try {
-      expect(reader.getSearch("shared")).toEqual({ value: 42 });
-    } finally {
-      reader.close();
-      removeDb(dbPath);
-    }
+    // Asserted without opening the database; utils/cache.test.ts covers the
+    // round trip through a real file.
+    expect(loadConfig().cachePath).toBe("custom/path/cache.db");
   });
 });

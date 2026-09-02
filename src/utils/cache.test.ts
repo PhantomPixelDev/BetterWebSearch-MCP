@@ -329,3 +329,70 @@ describe("Cache handle lifecycle", () => {
     }
   });
 });
+
+
+describe("cacheFromConfig against a real database", () => {
+  // Lives here rather than in tools/index.test.ts so that exactly one test
+  // file opens real SQLite: vitest tears the native addon's environment down
+  // between files, and a database still open at that point aborts the runner.
+  const paths: string[] = [];
+
+  function tempPath(label: string): string {
+    const path = join(tmpdir(), `bws-${label}-${process.pid}-${Date.now()}.db`);
+    paths.push(path);
+    return path;
+  }
+
+  afterAll(() => {
+    for (const path of paths) {
+      for (const suffix of ["", "-wal", "-shm"]) {
+        if (existsSync(path + suffix)) {
+          try {
+            rmSync(path + suffix);
+          } catch {
+            // ignore lock race on Windows
+          }
+        }
+      }
+    }
+  });
+
+  it("opens the database at the configured cache path", async () => {
+    const { cacheFromConfig } = await import("../tools/index.js");
+    const { loadConfig } = await import("./config.js");
+    const dbPath = tempPath("configured");
+    process.env.BETTER_WEB_SEARCH_CACHE_PATH = dbPath;
+
+    const cache = cacheFromConfig(loadConfig());
+    try {
+      expect(cache.isMemory).toBe(false);
+      cache.setSearch("k", "query", { hit: true });
+      expect(existsSync(dbPath)).toBe(true);
+    } finally {
+      cache.close();
+      delete process.env.BETTER_WEB_SEARCH_CACHE_PATH;
+    }
+  });
+
+  it("round-trips through the configured database, not the default path", async () => {
+    const { cacheFromConfig } = await import("../tools/index.js");
+    const { loadConfig } = await import("./config.js");
+    const dbPath = tempPath("roundtrip");
+    process.env.BETTER_WEB_SEARCH_CACHE_PATH = dbPath;
+
+    try {
+      const writer = cacheFromConfig(loadConfig());
+      writer.setSearch("shared", "query", { value: 42 });
+      writer.close();
+
+      const reader = cacheFromConfig(loadConfig());
+      try {
+        expect(reader.getSearch("shared")).toEqual({ value: 42 });
+      } finally {
+        reader.close();
+      }
+    } finally {
+      delete process.env.BETTER_WEB_SEARCH_CACHE_PATH;
+    }
+  });
+});
