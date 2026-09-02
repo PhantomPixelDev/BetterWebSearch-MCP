@@ -93,12 +93,6 @@ export function providerStatuses(cfg: AppConfig): ProviderStatus[] {
       keyless: false,
       hint: cfg.tavilyApiKey ? "enabled" : "optional — set TAVILY_API_KEY",
     },
-    {
-      name: "serpapi",
-      enabled: false,
-      keyless: false,
-      hint: "stub — not yet implemented",
-    },
   ];
 }
 

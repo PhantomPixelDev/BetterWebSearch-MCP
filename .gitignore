@@ -17,6 +17,7 @@ data/
 
 # Logs
 *.log
+stderr_*.txt
 npm-debug.log*
 
 # Hugo build output

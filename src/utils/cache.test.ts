@@ -8,7 +8,7 @@ import {
   it,
   vi,
 } from "vitest";
-import { existsSync, rmSync } from "node:fs";
+import { existsSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import Database from "better-sqlite3";
@@ -244,5 +244,34 @@ describe("Cache (memory fallback)", () => {
     cache.pruneExpired();
 
     expect(cache.getSearch("mem-prune")).toBeNull();
+  });
+});
+
+describe("Cache (SQLite init failure)", () => {
+  it("falls back to the in-memory backend instead of throwing at boot", () => {
+    // Point the cache at a path whose parent is a regular file. Creating the
+    // directory fails, which is what a read-only or permission-denied cache
+    // location looks like in production; before the fallback this threw
+    // straight out of the constructor and killed the server on startup.
+    const blocker = join(tmpdir(), `bws-blocker-${process.pid}-${Date.now()}`);
+    writeFileSync(blocker, "not a directory");
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    try {
+      const cache = new Cache({ dbPath: join(blocker, "cache.db") });
+
+      expect(cache.isMemory).toBe(true);
+      expect(error).toHaveBeenCalledWith(
+        expect.stringContaining("SQLite init failed"),
+      );
+
+      // The fallback must be a working cache, not just a non-throwing one.
+      cache.setSearch("k", "query", { hit: true });
+      expect(cache.getSearch("k")).toEqual({ hit: true });
+      cache.close();
+    } finally {
+      error.mockRestore();
+      rmSync(blocker, { force: true });
+    }
   });
 });

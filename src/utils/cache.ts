@@ -82,12 +82,45 @@ function loadDatabase(): DatabaseModule | null {
 }
 
 /**
+ * Open and initialize the SQLite database for a cache instance.
+ *
+ * Returns `null` whenever the caller should use the in-memory backend
+ * instead: `memory: true` was requested, better-sqlite3 could not be loaded,
+ * or opening the file failed. That last case matters in production — a
+ * locked, corrupt, or unwritable `data/cache.db` used to throw straight out
+ * of the constructor and take the whole MCP server down at boot. Directory
+ * creation sits inside the guard too, since a read-only or permission-denied
+ * path fails there rather than in the driver.
+ */
+function openDatabase(opts: CacheOptions): SqliteDatabase | null {
+  const Database = loadDatabase();
+  if (opts.memory === true || Database === null) {
+    return null;
+  }
+  const dbPath = opts.dbPath ?? "data/cache.db";
+  try {
+    mkdirSync(dirname(dbPath), { recursive: true });
+    const db = new Database(dbPath);
+    db.pragma("journal_mode = WAL");
+    db.pragma("busy_timeout = 5000");
+    db.exec(SCHEMA);
+    return db;
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+    console.error(
+      `[cache] SQLite init failed (${reason}); falling back to the in-memory cache`,
+    );
+    return null;
+  }
+}
+
+/**
  * A cache for search results, pages, API patterns, and domain profiles.
  *
  * Prefers a SQLite database at `data/cache.db` (WAL mode, auto-created
- * directory). When better-sqlite3 cannot be loaded, or when `memory: true`
- * is passed, every method transparently operates on an in-memory Map with
- * the same TTL semantics.
+ * directory). When better-sqlite3 cannot be loaded, when opening the
+ * database fails, or when `memory: true` is passed, every method
+ * transparently operates on an in-memory Map with the same TTL semantics.
  */
 export class Cache {
   private readonly db: SqliteDatabase | null;
@@ -95,8 +128,8 @@ export class Cache {
   private readonly memoryMode: boolean;
 
   constructor(opts: CacheOptions = {}) {
-    const Database = loadDatabase();
-    if (opts.memory === true || Database === null) {
+    const db = openDatabase(opts);
+    if (db === null) {
       this.memoryMode = true;
       this.db = null;
       this.memory = new MemoryCache();
@@ -105,12 +138,6 @@ export class Cache {
 
     this.memoryMode = false;
     this.memory = null;
-    const dbPath = opts.dbPath ?? "data/cache.db";
-    mkdirSync(dirname(dbPath), { recursive: true });
-    const db = new Database(dbPath);
-    db.pragma("journal_mode = WAL");
-    db.pragma("busy_timeout = 5000");
-    db.exec(SCHEMA);
     this.db = db;
     // Best-effort startup prune; empty catch is intentional — never block boot.
     try {

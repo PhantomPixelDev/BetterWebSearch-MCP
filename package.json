@@ -39,6 +39,7 @@
     "test": "vitest run",
     "lint": "tsc --noEmit",
     "prepare": "npm run build",
+    "version": "node scripts/sync-mcp-version.mjs && git add mcp.json",
     "postinstall": "node scripts/check-native.mjs || true",
     "prepublishOnly": "npm run lint && npm test",
     "prepack": "npm run build",

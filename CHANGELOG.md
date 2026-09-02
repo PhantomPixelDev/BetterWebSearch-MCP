@@ -4,6 +4,30 @@ All notable changes to **better-web-search-mcp** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.2] - 2026-09-02
+
+### Fixed
+- A locked, corrupt, or unwritable `data/cache.db` no longer takes the server
+  down at boot. Opening SQLite is guarded and falls back to the in-memory
+  cache with a warning on stderr; directory creation is inside the guard too,
+  so a read-only or permission-denied cache path degrades instead of throwing
+- The startup banner no longer advertises SerpApi, which has not been part of
+  the provider set since 0.2.0
+
+### Added
+- `mcp.json` now tracks the package version automatically via the `version`
+  lifecycle hook, with a test asserting the two stay in step — the manifest
+  had silently read 0.1.0 while npm was publishing 0.2.1
+
+## [0.2.1] - 2026-09-02
+
+### Changed
+- Test runner uses forked processes, fixing intermittent
+  `Worker exited unexpectedly` CI failures caused by loading the
+  better-sqlite3 native addon inside a worker thread
+- Compiled tests are excluded from the published package: 252 files down to
+  148, 126.4 kB down to 85.1 kB
+
 ## [0.2.0] - 2026-09-01
 
 ### Fixed
@@ -83,6 +107,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 - Add `BRAVE_API_KEY` for richer ranking & recency filtering
 - Publish-ready: `npm pack --dry-run` validated, `prepare`/`prepublishOnly` hooks, `files` whitelist
 
+[0.2.2]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.2.2
+[0.2.1]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.2.1
 [0.2.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.2.0
 [0.1.2]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.1.2
 [0.1.1]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.1.1
