@@ -25,6 +25,7 @@ import {
   countIndependent,
   type IndependenceResult,
 } from "../ranking/independence.js";
+import { informationDensity } from "../ranking/density.js";
 import type { SearchSource } from "./search.js";
 
 /** Input schema for `web_research`. */
@@ -100,6 +101,13 @@ export interface ResearchResponse {
     query_term_coverage: number;
     /** Number of cited spans in `citations`. */
     cited_spans: number;
+    /**
+     * Opened pages whose information density fell below
+     * {@link LOW_DENSITY_THRESHOLD} — listicles, link farms, and templated
+     * filler. Their passages are down-weighted rather than dropped, since a
+     * thin page can still hold the one sentence that answers the question.
+     */
+    low_density_sources: number;
   };
   extraction_stats: {
     method_counts: Record<string, number>;
@@ -121,6 +129,20 @@ const MAX_PAGES = 10;
 
 /** Passages considered from each page before the cross-page ranking. */
 const PASSAGES_PER_PAGE = 2;
+
+/** Information density below which a page counts as thin. */
+export const LOW_DENSITY_THRESHOLD = 0.5;
+
+/**
+ * Weight a passage score by its page's information density.
+ *
+ * Kept as a multiplier in [0.5, 1] rather than a filter: a listicle can still
+ * carry the one sentence that answers the question, so a thin page is made to
+ * compete at a disadvantage instead of being discarded.
+ */
+export function densityWeight(density: number): number {
+  return 0.5 + 0.5 * Math.min(1, Math.max(0, density));
+}
 
 /** Maximum number of excerpts joined into the answer. */
 const MAX_EXCERPTS = 5;
@@ -220,6 +242,7 @@ export function collectCitations(
   question: string,
   limit = MAX_EXCERPTS,
   independence: readonly IndependenceResult[] = [],
+  densities: readonly number[] = [],
 ): Citation[] {
   const candidates: Array<Citation & { score: number }> = [];
 
@@ -235,7 +258,9 @@ export function collectCitations(
       return;
     }
     const source = sources[index];
+    const weight = densityWeight(densities[index] ?? 1);
     for (const passage of selectPassages(content, question, PASSAGES_PER_PAGE)) {
+      const weighted = passage.score * weight;
       candidates.push({
         citation: index + 1,
         url: source?.url ?? page.url,
@@ -243,8 +268,8 @@ export function collectCitations(
         quote: passage.text,
         start: passage.start,
         end: passage.end,
-        relevance: Number(passage.score.toFixed(4)),
-        score: passage.score,
+        relevance: Number(weighted.toFixed(4)),
+        score: weighted,
       });
     }
   });
@@ -417,13 +442,18 @@ export async function runResearch(args: {
     })),
   );
 
-  // 6) Select the spans that address the question, and cite them.
+  // 6) Score how much substance each page carries, so listicles and link
+  // farms compete at a disadvantage for citation slots.
+  const densities = pages.map((page) => informationDensity(page.content).score);
+
+  // 7) Select the spans that address the question, and cite them.
   const citations = collectCitations(
     pages,
     sources,
     question,
     MAX_EXCERPTS,
     independence,
+    densities,
   );
 
   const independentSources = countIndependent(independence);
@@ -438,6 +468,8 @@ export async function runResearch(args: {
       derivative_sources: Math.max(0, pages.length - independentSources),
       query_term_coverage: queryTermCoverage(question, citations),
       cited_spans: citations.length,
+      low_density_sources: densities.filter((d) => d < LOW_DENSITY_THRESHOLD)
+        .length,
     },
     extraction_stats: extractionStats(pages),
   };

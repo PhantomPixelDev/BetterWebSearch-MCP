@@ -1,0 +1,181 @@
+{
+  "generated": "2026-09-02T17:10:41.654Z",
+  "summary": {
+    "questions_attempted": 12,
+    "questions_measured": 12,
+    "answer_found_in_baseline": 12,
+    "answer_retained": 11,
+    "retention": 0.9166666666666666,
+    "baseline_chars": 784218,
+    "retained_chars": 59198,
+    "reduction": 0.9245133368527629
+  },
+  "rows": [
+    {
+      "id": "postgres-port",
+      "question": "What port does PostgreSQL listen on by default?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "5432"
+      ],
+      "baseline_chars": 81240,
+      "retained_chars": 5899,
+      "cited_spans": 5,
+      "independent_sources": 4,
+      "sources_opened": 4
+    },
+    {
+      "id": "redis-port",
+      "question": "What is the default port for Redis?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "6379"
+      ],
+      "baseline_chars": 156294,
+      "retained_chars": 3887,
+      "cited_spans": 5,
+      "independent_sources": 5,
+      "sources_opened": 5
+    },
+    {
+      "id": "http-429",
+      "question": "Which HTTP status code means Too Many Requests?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "429"
+      ],
+      "baseline_chars": 32779,
+      "retained_chars": 7219,
+      "cited_spans": 5,
+      "independent_sources": 4,
+      "sources_opened": 5
+    },
+    {
+      "id": "http-418",
+      "question": "What does HTTP status code 418 mean?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "teapot"
+      ],
+      "baseline_chars": 38220,
+      "retained_chars": 4715,
+      "cited_spans": 5,
+      "independent_sources": 5,
+      "sources_opened": 5
+    },
+    {
+      "id": "sqlite-wal",
+      "question": "What does WAL stand for in SQLite journal_mode?",
+      "answer_in_baseline": true,
+      "answer_in_retained": false,
+      "matched_markers": [],
+      "baseline_chars": 61749,
+      "retained_chars": 3535,
+      "cited_spans": 5,
+      "independent_sources": 5,
+      "sources_opened": 5
+    },
+    {
+      "id": "dns-label",
+      "question": "What is the maximum length of a single DNS label in octets?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "63"
+      ],
+      "baseline_chars": 13572,
+      "retained_chars": 2831,
+      "cited_spans": 4,
+      "independent_sources": 4,
+      "sources_opened": 5
+    },
+    {
+      "id": "rust-origin",
+      "question": "Which organization originally sponsored the Rust programming language?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "mozilla"
+      ],
+      "baseline_chars": 35554,
+      "retained_chars": 4025,
+      "cited_spans": 5,
+      "independent_sources": 4,
+      "sources_opened": 5
+    },
+    {
+      "id": "playwright-license",
+      "question": "What software license is Playwright released under?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "apache"
+      ],
+      "baseline_chars": 48687,
+      "retained_chars": 5517,
+      "cited_spans": 5,
+      "independent_sources": 4,
+      "sources_opened": 4
+    },
+    {
+      "id": "git-default-branch",
+      "question": "What is the default branch name for new repositories on GitHub?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "\\bmain\\b"
+      ],
+      "baseline_chars": 69510,
+      "retained_chars": 6427,
+      "cited_spans": 5,
+      "independent_sources": 3,
+      "sources_opened": 4
+    },
+    {
+      "id": "semver-parts",
+      "question": "What are the three parts of a semantic version number?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "major[^a-z]{0,4}minor[^a-z]{0,4}patch"
+      ],
+      "baseline_chars": 92917,
+      "retained_chars": 4547,
+      "cited_spans": 5,
+      "independent_sources": 5,
+      "sources_opened": 5
+    },
+    {
+      "id": "json-content-type",
+      "question": "What is the standard Content-Type header value for JSON?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "application/json"
+      ],
+      "baseline_chars": 92975,
+      "retained_chars": 6335,
+      "cited_spans": 5,
+      "independent_sources": 4,
+      "sources_opened": 4
+    },
+    {
+      "id": "ssl-port",
+      "question": "What is the default port for HTTPS?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "443"
+      ],
+      "baseline_chars": 60721,
+      "retained_chars": 4261,
+      "cited_spans": 5,
+      "independent_sources": 3,
+      "sources_opened": 3
+    }
+  ]
+}

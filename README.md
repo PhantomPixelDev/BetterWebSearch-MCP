@@ -124,6 +124,24 @@ Honest caveats, because these are the ones that matter:
 - No comparison against Exa, Tavily's answer endpoint, or hosted web search —
   they cannot be run under identical conditions on the same pages.
 
+### Does compression keep the answer?
+
+Reduction only counts if the answer survives it. `npm run bench:quality` checks
+that on 12 questions with an unambiguous marker (a port number, a status code, a
+license name), conditioned on the baseline so retrieval misses are not counted
+as compression losses:
+
+| | |
+|---|---|
+| Answer present in baseline | 12 / 12 |
+| Answer retained after compression | **11 / 12** |
+| **Retention** | **91.7%** |
+
+The single loss is *"What does WAL stand for in SQLite journal_mode?"* — the
+sentence spelling out "write-ahead logging" often does not repeat the query
+terms, so BM25 ranks other passages above it. Acronym-expansion questions are a
+known weak spot of lexical selection.
+
 Method and raw per-question results: [`benchmarks/`](benchmarks/).
 
 ## Security

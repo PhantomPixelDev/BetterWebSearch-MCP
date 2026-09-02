@@ -16,7 +16,7 @@ vi.mock("../extraction/router.js", () => ({
   getPage: getPageMock,
 }));
 
-import { runResearch, researchInputSchema } from "./research.js";
+import { runResearch, researchInputSchema, densityWeight } from "./research.js";
 import { Cache } from "../utils/cache.js";
 
 const results: SearchResult[] = [
@@ -288,5 +288,75 @@ describe("runResearch evidence accounting", () => {
       expect(citation.quote.length).toBeGreaterThan(0);
       expect(citation.url).toMatch(/^https:/);
     }
+  });
+});
+
+
+describe("density weighting", () => {
+  const SUBSTANCE =
+    "Write-ahead logging changes how the database commits a transaction. " +
+    "Instead of writing original content into a rollback journal, new content " +
+    "is appended to a separate log file and the database is left untouched " +
+    "until a checkpoint runs. Readers no longer block writers as a result.";
+  const FILLER = [
+    "[Home](/) [Menu](/m) [Search](/s) [Subscribe](/x) [Login](/l) [Deals](/d)",
+    "",
+    "Top 17 Best Databases in 2026",
+    "",
+    "Databases matter for business.",
+    "",
+    "Databases matter for business.",
+    "",
+    "Advertisement",
+    "Sponsored",
+    "Follow us",
+    "Privacy Policy",
+  ].join("\n");
+
+  beforeEach(() => {
+    aggregateSearchMock.mockResolvedValue([
+      { title: "Farm", url: "https://farm.example/list", snippet: "databases", source: "duckduckgo" },
+      { title: "Docs", url: "https://docs.example/wal", snippet: "write ahead logging", source: "duckduckgo" },
+    ]);
+    getPageMock.mockImplementation(async (url: string) =>
+      url.includes("farm")
+        ? routedPage(url, "Farm", `${FILLER}\n\nWrite-ahead logging is a database technique.`)
+        : routedPage(url, "Docs", SUBSTANCE),
+    );
+  });
+
+  it("counts thin pages in the evidence block", async () => {
+    const res = await runResearch({ question: "What is write-ahead logging?" });
+
+    expect(res.evidence.low_density_sources).toBeGreaterThanOrEqual(1);
+    expect(res.evidence.low_density_sources).toBeLessThan(res.evidence.sources_opened);
+  });
+
+  it("ranks the substantial page's passage above the listicle's", async () => {
+    const res = await runResearch({ question: "What is write-ahead logging?" });
+
+    const top = [...res.citations].sort((a, b) => b.relevance - a.relevance)[0];
+    expect(top?.url).toContain("docs.example");
+  });
+
+  it("still cites a thin page rather than discarding it", async () => {
+    // A listicle can hold the one useful sentence, so weighting must not act
+    // as a filter.
+    const res = await runResearch({ question: "What is write-ahead logging?" });
+
+    expect(res.citations.some((c) => c.url.includes("farm.example"))).toBe(true);
+  });
+});
+
+describe("densityWeight", () => {
+  it("never drops a page below half weight", () => {
+    expect(densityWeight(0)).toBe(0.5);
+    expect(densityWeight(1)).toBe(1);
+    expect(densityWeight(0.5)).toBe(0.75);
+  });
+
+  it("clamps out-of-range input", () => {
+    expect(densityWeight(-5)).toBe(0.5);
+    expect(densityWeight(99)).toBe(1);
   });
 });

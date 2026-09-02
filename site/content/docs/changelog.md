@@ -8,6 +8,31 @@ All notable changes to **better-web-search-mcp** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-09-02
+
+### Added
+- **Evidence-retention benchmark** (`npm run bench:quality`). Payload reduction
+  only counts if the answer survives it, and measuring that normally needs a
+  judge model. This one avoids a judge by using questions with an unambiguous
+  marker and conditioning on the baseline, so a retrieval miss is never counted
+  as a compression loss. Measured retention is **11 of 12, 91.7%**, at 92.5%
+  payload reduction on that set. The single loss is published rather than
+  hidden: "What does WAL stand for in SQLite journal_mode?" keeps the query
+  terms while the sentence spelling out "write-ahead logging" often does not,
+  so BM25 ranks other passages above it. Acronym-expansion questions are a
+  known weak spot of lexical passage selection
+- **Information density scoring** (`src/ranking/density.ts`). Listicles and
+  link farms are scored down using structural signals only — link-to-text
+  ratio, repeated paragraphs, boilerplate line share, sentence length — so the
+  measure stays deterministic. Citation candidates are weighted by their page's
+  density, and `evidence.low_density_sources` reports how many thin pages were
+  opened
+
+### Changed
+- Density weighting is a multiplier in [0.5, 1] rather than a filter. A
+  listicle can still carry the one sentence that answers a question, so a thin
+  page competes at a disadvantage instead of being discarded
+
 ## [0.4.4] - 2026-09-02
 
 ### Added
@@ -250,6 +275,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 - Add `BRAVE_API_KEY` for richer ranking & recency filtering
 - Publish-ready: `npm pack --dry-run` validated, `prepare`/`prepublishOnly` hooks, `files` whitelist
 
+[0.5.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.5.0
 [0.4.4]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.4.4
 [0.4.3]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.4.3
 [0.4.2]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.4.2

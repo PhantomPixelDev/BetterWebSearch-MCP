@@ -81,6 +81,38 @@ Per question:
 The `4/5` and `7/10` columns are the syndication check working on live pages:
 those runs opened five or ten URLs but found fewer genuinely separate accounts.
 
+## Does compression keep the answer?
+
+Payload reduction is only a win if the retained text still contains the answer.
+Measuring that usually needs a judge model. `npm run bench:quality` avoids one
+by restricting itself to questions with an unambiguous marker — a port number,
+a status code, a license name — and asking a narrower question a regex can
+settle: **given the answer was in the raw pages, did compression keep it?**
+
+Retention is conditioned on the baseline on purpose. A question whose marker
+never appeared in the fetched pages is a retrieval miss, not a compression
+loss, and would otherwise blame the passage selector for weak search results.
+
+12 questions, run 2026-09-02:
+
+| | |
+|---|---|
+| Answer present in baseline | 12 / 12 |
+| Answer retained after compression | **11 / 12** |
+| **Retention** | **91.7%** |
+| Payload reduction on this set | 92.5% |
+
+The one loss is instructive rather than mysterious. *"What does WAL stand for
+in SQLite journal_mode?"* keeps the query terms — WAL, SQLite, journal_mode —
+but the sentence that actually spells out "write-ahead logging" often contains
+none of them densely, so BM25 ranks other passages above it. **Acronym-expansion
+questions are a known weak spot of lexical passage selection**, and the honest
+reading is that roughly one question in twelve on this set loses its answer to
+compression.
+
+This still does not measure whether the sources are *correct*, only whether the
+answer survived the pipeline.
+
 ## What this does not measure
 
 - **Answer quality.** Judging whether the retained passages still support a

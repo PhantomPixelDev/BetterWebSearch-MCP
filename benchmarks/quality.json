@@ -1,0 +1,65 @@
+{
+  "note": "Questions with a checkable answer marker. Each `must_contain` entry is a case-insensitive regex; a match means the answer is present in the text being examined. Questions are deliberately narrow and factual so the marker is unambiguous — this set measures whether compression discards the answer, not whether the web is correct.",
+  "questions": [
+    {
+      "id": "postgres-port",
+      "text": "What port does PostgreSQL listen on by default?",
+      "must_contain": ["5432"]
+    },
+    {
+      "id": "redis-port",
+      "text": "What is the default port for Redis?",
+      "must_contain": ["6379"]
+    },
+    {
+      "id": "http-429",
+      "text": "Which HTTP status code means Too Many Requests?",
+      "must_contain": ["429"]
+    },
+    {
+      "id": "http-418",
+      "text": "What does HTTP status code 418 mean?",
+      "must_contain": ["teapot"]
+    },
+    {
+      "id": "sqlite-wal",
+      "text": "What does WAL stand for in SQLite journal_mode?",
+      "must_contain": ["write[- ]ahead log"]
+    },
+    {
+      "id": "dns-label",
+      "text": "What is the maximum length of a single DNS label in octets?",
+      "must_contain": ["63"]
+    },
+    {
+      "id": "rust-origin",
+      "text": "Which organization originally sponsored the Rust programming language?",
+      "must_contain": ["mozilla"]
+    },
+    {
+      "id": "playwright-license",
+      "text": "What software license is Playwright released under?",
+      "must_contain": ["apache"]
+    },
+    {
+      "id": "git-default-branch",
+      "text": "What is the default branch name for new repositories on GitHub?",
+      "must_contain": ["\\bmain\\b"]
+    },
+    {
+      "id": "semver-parts",
+      "text": "What are the three parts of a semantic version number?",
+      "must_contain": ["major[^a-z]{0,4}minor[^a-z]{0,4}patch", "major, minor,? and patch"]
+    },
+    {
+      "id": "json-content-type",
+      "text": "What is the standard Content-Type header value for JSON?",
+      "must_contain": ["application/json"]
+    },
+    {
+      "id": "ssl-port",
+      "text": "What is the default port for HTTPS?",
+      "must_contain": ["443"]
+    }
+  ]
+}
