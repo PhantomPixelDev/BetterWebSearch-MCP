@@ -275,3 +275,57 @@ describe("Cache (SQLite init failure)", () => {
     }
   });
 });
+
+
+describe("Cache handle lifecycle", () => {
+  it("closes cleanly and reports memory mode correctly", () => {
+    const path = join(tmpdir(), `bws-lifecycle-${process.pid}-${Date.now()}.db`);
+    const cache = new Cache({ dbPath: path });
+
+    expect(cache.isMemory).toBe(false);
+    cache.close();
+    // Closing twice must not throw: the process-exit hook may also run.
+    expect(() => cache.close()).not.toThrow();
+
+    for (const suffix of ["", "-wal", "-shm"]) {
+      if (existsSync(path + suffix)) {
+        try {
+          rmSync(path + suffix);
+        } catch {
+          // ignore lock race on Windows
+        }
+      }
+    }
+  });
+
+  it("registers only one process exit listener across many caches", () => {
+    const before = process.listenerCount("exit");
+    const paths: string[] = [];
+    const caches: Cache[] = [];
+
+    for (let i = 0; i < 3; i += 1) {
+      const path = join(tmpdir(), `bws-hooks-${process.pid}-${Date.now()}-${i}.db`);
+      paths.push(path);
+      caches.push(new Cache({ dbPath: path }));
+    }
+
+    // The hook is installed once, not once per database, so opening caches in
+    // a long-lived server cannot leak listeners.
+    expect(process.listenerCount("exit")).toBeLessThanOrEqual(before + 1);
+
+    for (const cache of caches) {
+      cache.close();
+    }
+    for (const path of paths) {
+      for (const suffix of ["", "-wal", "-shm"]) {
+        if (existsSync(path + suffix)) {
+          try {
+            rmSync(path + suffix);
+          } catch {
+            // ignore lock race on Windows
+          }
+        }
+      }
+    }
+  });
+});

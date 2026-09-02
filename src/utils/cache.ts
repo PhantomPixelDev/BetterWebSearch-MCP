@@ -82,6 +82,44 @@ function loadDatabase(): DatabaseModule | null {
 }
 
 /**
+ * Databases opened by this process that have not been closed yet.
+ *
+ * better-sqlite3 is a native addon. A Database left open at exit is finalized
+ * during teardown, and if that happens after the N-API environment is gone the
+ * addon aborts the process with `Assertion failed: (env) != nullptr`. It
+ * surfaced as intermittent CI failures, but the same race can strand a WAL
+ * file in production. Closing every handle on the way out avoids both.
+ */
+const openDatabases = new Set<SqliteDatabase>();
+
+/** Whether the process-exit hook has been installed. */
+let exitHookInstalled = false;
+
+function trackDatabase(db: SqliteDatabase): void {
+  openDatabases.add(db);
+  if (!exitHookInstalled) {
+    exitHookInstalled = true;
+    // Must stay synchronous: exit handlers cannot await, and close() is sync.
+    process.on("exit", () => {
+      for (const open of openDatabases) {
+        try {
+          if (open.open) {
+            open.close();
+          }
+        } catch {
+          // Nothing useful to do while the process is already leaving.
+        }
+      }
+      openDatabases.clear();
+    });
+  }
+}
+
+function untrackDatabase(db: SqliteDatabase): void {
+  openDatabases.delete(db);
+}
+
+/**
  * Open and initialize the SQLite database for a cache instance.
  *
  * Returns `null` whenever the caller should use the in-memory backend
@@ -104,6 +142,7 @@ function openDatabase(opts: CacheOptions): SqliteDatabase | null {
     db.pragma("journal_mode = WAL");
     db.pragma("busy_timeout = 5000");
     db.exec(SCHEMA);
+    trackDatabase(db);
     return db;
   } catch (error) {
     const reason = error instanceof Error ? error.message : String(error);
@@ -154,8 +193,11 @@ export class Cache {
 
   /** Close the underlying database (no-op in memory mode). */
   close(): void {
-    if (this.db !== null && this.db.open) {
-      this.db.close();
+    if (this.db !== null) {
+      untrackDatabase(this.db);
+      if (this.db.open) {
+        this.db.close();
+      }
     }
     this.memory?.clear();
   }

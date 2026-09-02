@@ -8,6 +8,18 @@ All notable changes to **better-web-search-mcp** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.2] - 2026-09-02
+
+### Fixed
+- **SQLite handles are closed on process exit.** A `Database` left open at exit
+  is finalized during teardown, and when that happened after the N-API
+  environment was gone the addon aborted the process with
+  `Assertion failed: (env) != nullptr`. It showed up as intermittent CI
+  failures that neither forked nor serialized test runs fully removed, but the
+  same race can strand a WAL file in a real deployment. Open databases are now
+  tracked and closed synchronously on exit, with the hook installed once rather
+  than per database
+
 ## [0.4.1] - 2026-09-02
 
 ### Fixed
@@ -215,6 +227,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 - Add `BRAVE_API_KEY` for richer ranking & recency filtering
 - Publish-ready: `npm pack --dry-run` validated, `prepare`/`prepublishOnly` hooks, `files` whitelist
 
+[0.4.2]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.4.2
 [0.4.1]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.4.1
 [0.4.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.4.0
 [0.3.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.3.0
