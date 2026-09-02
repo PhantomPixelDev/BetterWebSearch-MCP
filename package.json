@@ -52,7 +52,8 @@
     "release:major": "npm run version:major && git push --follow-tags",
     "check:publish": "npm pack --dry-run",
     "docs:api": "typedoc --options typedoc.json && node scripts/typedoc-postprocess.mjs",
-    "docs:build": "npm run docs:api && hugo --source site --gc --minify",
+    "docs:changelog": "node scripts/sync-docs-changelog.mjs",
+    "docs:build": "npm run docs:api && npm run docs:changelog && hugo --source site --gc --minify",
     "docs:serve": "hugo server --source site -D"
   },
   "keywords": [

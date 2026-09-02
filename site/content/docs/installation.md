@@ -141,7 +141,7 @@ git push --follow-tags
 
 ### Publish via GitHub Actions (Trusted Publishing, recommended)
 
-Push a tag `v0.1.1` and `release.yml` runs `npm publish --provenance --access public` using OIDC Trusted Publishing. No long-lived npm token stored as a secret.
+Push a tag such as `v0.2.3` and `release.yml` runs `npm publish --provenance --access public` using OIDC Trusted Publishing. No long-lived npm token stored as a secret.
 
 One-time setup on npmjs.org:
 

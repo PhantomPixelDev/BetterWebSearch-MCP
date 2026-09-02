@@ -39,12 +39,11 @@ No `.env` required for the first test. The server boots, prints a provider banne
 When the server starts, it prints a banner to stderr:
 
 ```
-better-web-search-mcp v0.1.0
+better-web-search-mcp v0.2.3
 Providers (keyless-first):
   ✓ duckduckgo (keyless) — always on
   ✗ brave (api-key) — set BRAVE_API_KEY for better results
   ✗ tavily (api-key) — optional — set TAVILY_API_KEY
-  ✗ serpapi (api-key) — stub — not yet implemented
 Cache: data/cache.db
 Browser: enabled (playwright, pool=3)
 ```

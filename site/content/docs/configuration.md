@@ -16,7 +16,6 @@ cp .env.example .env  # then edit
 |---|---|---|
 | `BRAVE_API_KEY` or `BETTER_WEB_SEARCH_BRAVE_API_KEY` | no | Brave Search API key (primary). [Get one](https://brave.com/search/api/) |
 | `TAVILY_API_KEY` or `BETTER_WEB_SEARCH_TAVILY_API_KEY` | no | Tavily key. [tavily.com](https://tavily.com/) |
-| `SERPAPI_KEY` / `SERP_API_KEY` | no | Stub for future SERPApi provider |
 | `BETTER_WEB_SEARCH_DISABLE_CACHE` | no | `true` → in-memory fallback (no SQLite) |
 | `BETTER_WEB_SEARCH_CACHE_PATH` | no | Custom SQLite path (default `data/cache.db`) |
 | `BETTER_WEB_SEARCH_DISABLE_BROWSER` | no | `true` → skip Playwright fallback |
@@ -29,7 +28,6 @@ The config loader supports both the bare name and the `BETTER_WEB_SEARCH_*` pref
 |---|---|
 | `BRAVE_API_KEY` | `BETTER_WEB_SEARCH_BRAVE_API_KEY`, `BRAVE_SEARCH_API_KEY` |
 | `TAVILY_API_KEY` | `BETTER_WEB_SEARCH_TAVILY_API_KEY` |
-| `SERPAPI_KEY` | `BETTER_WEB_SEARCH_SERPAPI_KEY`, `SERP_API_KEY` |
 
 The first non-empty value found wins (checked in the order listed above).
 
@@ -63,12 +61,11 @@ The Playwright browser pool uses up to 3 concurrent instances, blocks images/fon
 When the server starts, it prints a provider status banner to stderr:
 
 ```
-better-web-search-mcp v0.1.0
+better-web-search-mcp v0.2.3
 Providers (keyless-first):
   ✓ duckduckgo (keyless) — always on
   ✗ brave (api-key) — set BRAVE_API_KEY for better results
   ✗ tavily (api-key) — optional — set TAVILY_API_KEY
-  ✗ serpapi (api-key) — stub — not yet implemented
 Cache: data/cache.db
 Browser: enabled (playwright, pool=3)
 ```
