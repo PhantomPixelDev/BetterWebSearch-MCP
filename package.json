@@ -1,6 +1,6 @@
 {
   "name": "better-web-search-mcp",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "MCP server for genuinely better web research — keyless-first (DuckDuckGo), 3-tier extraction, deep research. Brave/Tavily optional.",
   "type": "module",
   "bin": {
