@@ -19,6 +19,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
   lifecycle hook, with a test asserting the two stay in step — the manifest
   had silently read 0.1.0 while npm was publishing 0.2.1
 
+### Changed
+- `release:*` scripts no longer run `npm publish` locally. Publishing is the
+  tag-triggered workflow's job; doing both meant the local publish won and CI
+  then failed with `E403 cannot publish over the previously published
+  versions`, which is how 0.2.1 shipped without provenance and without a
+  GitHub release
+
 ## [0.2.1] - 2026-09-02
 
 ### Changed
