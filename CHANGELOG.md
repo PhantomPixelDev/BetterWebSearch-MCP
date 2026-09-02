@@ -4,6 +4,42 @@ All notable changes to **better-web-search-mcp** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-09-02
+
+### Security
+- **SSRF protection.** `web_extract` took URLs straight from the calling agent
+  and `fetchPage` followed them with no validation, so `http://localhost:8080/`,
+  `http://192.168.1.1/`, and the cloud metadata endpoint at
+  `http://169.254.169.254/` were all fetchable and came back as ordinary page
+  content. Every URL is now checked before the request: non-HTTP schemes are
+  refused, hostnames are resolved, and any private, loopback, link-local,
+  carrier-grade-NAT, multicast or reserved address is rejected. IPv4-mapped
+  IPv6 forms such as `::ffff:127.0.0.1` are judged by their IPv4 rules
+- **Redirects are validated per hop.** Fetching now uses manual redirects and
+  re-runs the guard on each `Location`, so a public host cannot bounce the
+  fetcher onto a private one. Chains are capped at 5 hops
+- **Prompt-injection screening.** Page text is attacker-controlled, so every
+  `web_extract` result now carries a `security` block marking content untrusted
+  and reporting text that tries to address an agent, with the matched pattern
+  and its offset. Suspicious content gets a warning banner; the page text
+  itself is never rewritten, so extraction stays faithful to the source
+
+### Changed
+- **`web_research` selects passages that answer the question.** It previously
+  took the first 400 characters of each of the top 5 pages and never looked at
+  the question, so answers were largely cookie notices and page intros.
+  Passages are now scored against the question with BM25, and the best ones
+  are returned best-first across distinct sources. This also cuts tokens,
+  since only matching paragraphs are included
+
+### Added
+- `web_research` responses include `citations`: each cited span carries its
+  source, the verbatim quote, character offsets into that page's extracted
+  content, and a relevance score, so a claim can be attributed to a span
+  rather than to a whole page
+- `fetchPage` accepts `allowPrivateHosts` for local fixture servers and `ssrf`
+  for injecting DNS resolution in tests
+
 ## [0.2.3] - 2026-09-02
 
 ### Fixed
@@ -132,6 +168,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 - Add `BRAVE_API_KEY` for richer ranking & recency filtering
 - Publish-ready: `npm pack --dry-run` validated, `prepare`/`prepublishOnly` hooks, `files` whitelist
 
+[0.3.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.3.0
 [0.2.3]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.2.3
 [0.2.2]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.2.2
 [0.2.1]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.2.1

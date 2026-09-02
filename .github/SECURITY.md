@@ -4,10 +4,10 @@
 
 | Version | Supported |
 |---|---|
-| 0.2.x | Yes |
-| < 0.2.0 | No |
+| 0.3.x | Yes |
+| < 0.3.0 | No |
 
-Only the latest release in the `0.2.x` line receives security patches. Once a new minor or major version ships, previous lines are no longer maintained.
+Only the latest release in the `0.3.x` line receives security patches. Once a new minor or major version ships, previous lines are no longer maintained.
 
 ## Reporting a vulnerability
 
@@ -37,11 +37,18 @@ This policy covers the `better-web-search-mcp` npm package and this GitHub repos
 
 ### HTTP fetching (`src/extraction/fetch.ts`)
 
-The server fetches arbitrary user-supplied URLs via Node's built-in `fetch`. A malicious URL could:
+The server fetches user-supplied URLs via Node's built-in `fetch`. As of 0.3.0
+every URL passes an SSRF guard before the request: non-HTTP schemes are refused,
+hostnames are resolved, and private, loopback, link-local, CGNAT, multicast and
+reserved addresses are rejected, including IPv4-mapped IPv6 forms. Redirects are
+followed manually so each hop is re-checked, capped at 5 hops. Residual risks:
 
-- Return oversized or malformed responses that consume memory.
-- Return HTML designed to exploit downstream parsers (Cheerio, JSDOM, Readability).
-- Trigger SSRF if the server is deployed on an internal network.
+- Oversized or malformed responses that consume memory (mitigated by the 2MB
+  body cap and the request timeout).
+- HTML designed to exploit downstream parsers (Cheerio, JSDOM, Readability).
+- A DNS record that changes between the guard's lookup and the socket connect
+  (classic rebinding). The guard rejects names resolving to any non-public
+  address, which closes the common cases but not a perfectly timed flip.
 
 ### Playwright browser (`src/extraction/browser.ts`)
 
@@ -58,6 +65,14 @@ The browser extraction tier launches a headless Chromium instance via Playwright
 ### Cache poisoning (`src/utils/cache.ts`)
 
 The SQLite cache (`data/cache.db`) stores domain profiles and API patterns. A compromised cache file could influence future extraction behavior.
+
+### Prompt injection (`src/extraction/untrusted.ts`)
+
+Retrieved page content is attacker-controlled and is returned to an LLM agent. A
+page can contain text addressed to the agent rather than the reader. Extraction
+results carry a `security` block marking content untrusted and flagging matched
+injection patterns with offsets. This is a signal for the calling agent, not a
+filter: content is never rewritten, and detection is heuristic.
 
 ### Mitigations already in place
 

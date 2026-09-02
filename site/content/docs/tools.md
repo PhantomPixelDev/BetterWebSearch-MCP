@@ -52,7 +52,7 @@ Fast multi-provider search. Aggregates results from all enabled providers, dedup
 
 ## `web_research` (alias: `deep_search`)
 
-Deep research orchestrator. Rewrites a question into multiple search variants, runs them in parallel across providers, merges/deduplicates/ranks, opens the top pages through the extraction pipeline (bounded concurrency 3, 8s per page timeout), and synthesizes an extractive answer with source citations. No LLM is involved — the answer is a deterministic join of the top excerpts.
+Deep research orchestrator. Rewrites a question into multiple search variants, runs them in parallel across providers, merges/deduplicates/ranks, opens the top pages through the extraction pipeline (bounded concurrency 3, 8s per page timeout), and returns the passages that actually address the question, each with a citation anchor. No LLM is involved — passages are selected with BM25 against the question, so the calling agent receives evidence rather than page intros.
 
 **Input parameters:**
 
@@ -82,7 +82,7 @@ Deep research orchestrator. Rewrites a question into multiple search variants, r
 - Bounded concurrency: 3 pages opened simultaneously
 - Per-page timeout: 8 seconds
 - Max pages extracted: 10
-- Max excerpts in answer: 5
+- Max cited passages in answer: 5 (at most 2 considered per page, best-first across distinct sources)
 
 ---
 

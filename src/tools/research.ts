@@ -19,6 +19,7 @@ import { expandQueries } from "../utils/queries.js";
 import { freshnessFromRecencyDays } from "../providers/brave.js";
 import { getPage, type RoutedPage } from "../extraction/router.js";
 import { Cache } from "../utils/cache.js";
+import { selectPassages } from "../ranking/passages.js";
 import type { SearchSource } from "./search.js";
 
 /** Input schema for `web_research`. */
@@ -30,10 +31,33 @@ export const researchInputSchema = {
 };
 
 /** The spec-shaped `web_research` response. */
+/** A span of a source page that supports the answer. */
+export interface Citation {
+  /** 1-based index into `sources`. */
+  citation: number;
+  /** The source URL the span was taken from. */
+  url: string;
+  /** The source title. */
+  title: string;
+  /** The supporting text, verbatim from the extracted content. */
+  quote: string;
+  /** Character offset of the quote within that page's extracted content. */
+  start: number;
+  /** Character offset of the quote end. */
+  end: number;
+  /** Relevance of the span to the question. Higher is stronger. */
+  relevance: number;
+}
+
 export interface ResearchResponse {
   answer: string;
   sources: SearchSource[];
   queries_used: string[];
+  /**
+   * The exact spans the answer was assembled from, so an agent can attribute a
+   * statement to a span rather than to a whole page.
+   */
+  citations: Citation[];
   extraction_stats: {
     method_counts: Record<string, number>;
     avgConfidence: number;
@@ -51,6 +75,9 @@ const CONCURRENCY = 3;
 
 /** Maximum number of pages to open for extraction. */
 const MAX_PAGES = 10;
+
+/** Passages considered from each page before the cross-page ranking. */
+const PASSAGES_PER_PAGE = 2;
 
 /** Maximum number of excerpts joined into the answer. */
 const MAX_EXCERPTS = 5;
@@ -135,30 +162,87 @@ async function openPages(
 }
 
 /** Build the extractive answer from the top page excerpts with citations. */
-function buildAnswer(pages: readonly RoutedPage[]): string {
-  if (pages.length === 0) {
-    return "No results found";
-  }
+/**
+ * Pick the spans of the opened pages that actually address the question.
+ *
+ * The previous implementation took the first 400 characters of each page and
+ * never looked at the question, so the "answer" was usually page intros and
+ * boilerplate. Passages are now scored against the question with BM25 and the
+ * best ones returned with their offsets, which raises the signal and cuts the
+ * token count, since only matching paragraphs are included.
+ */
+export function collectCitations(
+  pages: readonly RoutedPage[],
+  sources: readonly SearchSource[],
+  question: string,
+  limit = MAX_EXCERPTS,
+): Citation[] {
+  const candidates: Array<Citation & { score: number }> = [];
 
-  const excerpts: string[] = [];
-  for (let i = 0; i < pages.length && excerpts.length < MAX_EXCERPTS; i += 1) {
-    const page = pages[i];
-    if (page === undefined) {
-      continue;
-    }
+  pages.forEach((page, index) => {
     const content = page.content.trim();
     if (content === "") {
-      continue;
+      return;
     }
-    const excerpt = content.length > 400 ? `${content.slice(0, 400)}…` : content;
-    excerpts.push(`[${i + 1}] ${excerpt}`);
+    const source = sources[index];
+    for (const passage of selectPassages(content, question, PASSAGES_PER_PAGE)) {
+      candidates.push({
+        citation: index + 1,
+        url: source?.url ?? page.url,
+        title: source?.title ?? page.title,
+        quote: passage.text,
+        start: passage.start,
+        end: passage.end,
+        relevance: Number(passage.score.toFixed(4)),
+        score: passage.score,
+      });
+    }
+  });
+
+  candidates.sort((a, b) => b.score - a.score);
+
+  // Prefer breadth: take the best passage from each distinct source before a
+  // second from any one of them, so the answer is not a single page's view.
+  const chosen: Array<Citation & { score: number }> = [];
+  const used = new Set<number>();
+  for (const candidate of candidates) {
+    if (chosen.length >= limit) {
+      break;
+    }
+    if (!used.has(candidate.citation)) {
+      used.add(candidate.citation);
+      chosen.push(candidate);
+    }
+  }
+  for (const candidate of candidates) {
+    if (chosen.length >= limit) {
+      break;
+    }
+    if (!chosen.includes(candidate)) {
+      chosen.push(candidate);
+    }
   }
 
-  if (excerpts.length === 0) {
+  return chosen
+    .sort((a, b) => a.citation - b.citation || b.score - a.score)
+    .map(({ score, ...citation }) => {
+      void score;
+      return citation;
+    });
+}
+
+/** Assemble the answer text from the selected citation spans. */
+function buildAnswer(
+  pages: readonly RoutedPage[],
+  citations: readonly Citation[],
+): string {
+  if (pages.length === 0 || citations.length === 0) {
     return "No results found";
   }
-
-  return `Based on ${pages.length} sources:\n\n${excerpts.join("\n\n")}`;
+  const body = citations
+    .map((citation) => `[${citation.citation}] ${citation.quote}`)
+    .join("\n\n");
+  return `Based on ${pages.length} sources:\n\n${body}`;
 }
 
 /** Aggregate extraction stats across the opened pages. */
@@ -242,10 +326,14 @@ export async function runResearch(args: {
     cache,
   );
 
+  // 5) Select the spans that address the question, and cite them.
+  const citations = collectCitations(pages, sources, question);
+
   const response: ResearchResponse = {
-    answer: buildAnswer(pages),
+    answer: buildAnswer(pages, citations),
     sources,
     queries_used: queries,
+    citations,
     extraction_stats: extractionStats(pages),
   };
 
