@@ -19,7 +19,12 @@ import { expandQueries } from "../utils/queries.js";
 import { freshnessFromRecencyDays } from "../providers/brave.js";
 import { getPage, type RoutedPage } from "../extraction/router.js";
 import { Cache } from "../utils/cache.js";
-import { selectPassages } from "../ranking/passages.js";
+import { selectPassages, tokenize } from "../ranking/passages.js";
+import {
+  analyzeIndependence,
+  countIndependent,
+  type IndependenceResult,
+} from "../ranking/independence.js";
 import type { SearchSource } from "./search.js";
 
 /** Input schema for `web_research`. */
@@ -31,6 +36,16 @@ export const researchInputSchema = {
 };
 
 /** The spec-shaped `web_research` response. */
+/** Whether a source is an independent account or a copy of another. */
+export interface SourceIndependence {
+  /** Index of the content cluster this source belongs to. */
+  cluster: number;
+  /** Whether this source is the representative of its cluster. */
+  primary: boolean;
+  /** How many other opened sources share this cluster. */
+  duplicates: number;
+}
+
 /** A span of a source page that supports the answer. */
 export interface Citation {
   /** 1-based index into `sources`. */
@@ -58,6 +73,34 @@ export interface ResearchResponse {
    * statement to a span rather than to a whole page.
    */
   citations: Citation[];
+  /**
+   * Countable facts about the evidence behind the answer.
+   *
+   * Every field is something the server measured, not a judgement: there is no
+   * language model here to score truth or agreement, and an invented
+   * confidence number would be worse than none. An agent can use these to
+   * decide whether to research further.
+   */
+  evidence: {
+    /** Pages actually opened and extracted. */
+    sources_opened: number;
+    /**
+     * Distinct content clusters among those pages. Syndicated reprints and
+     * multiple pages from one host collapse into a single cluster, so this is
+     * the number of genuinely separate accounts.
+     */
+    independent_sources: number;
+    /** Pages that duplicate another page's content or host. */
+    derivative_sources: number;
+    /**
+     * Fraction of the question's content words that appear in the cited
+     * passages, 0..1. Low values mean the citations may not address the
+     * question, not that the answer is wrong.
+     */
+    query_term_coverage: number;
+    /** Number of cited spans in `citations`. */
+    cited_spans: number;
+  };
   extraction_stats: {
     method_counts: Record<string, number>;
     avgConfidence: number;
@@ -176,12 +219,19 @@ export function collectCitations(
   sources: readonly SearchSource[],
   question: string,
   limit = MAX_EXCERPTS,
+  independence: readonly IndependenceResult[] = [],
 ): Citation[] {
   const candidates: Array<Citation & { score: number }> = [];
 
   pages.forEach((page, index) => {
     const content = page.content.trim();
     if (content === "") {
+      return;
+    }
+    // A derivative source republishes another source's text. Quoting it adds
+    // no evidence and, once the breadth pass has run, the remaining slots
+    // would otherwise be filled with the same story under a second byline.
+    if (independence[index]?.primary === false) {
       return;
     }
     const source = sources[index];
@@ -201,19 +251,26 @@ export function collectCitations(
 
   candidates.sort((a, b) => b.score - a.score);
 
-  // Prefer breadth: take the best passage from each distinct source before a
-  // second from any one of them, so the answer is not a single page's view.
+  // Prefer breadth across independent accounts. Spreading over distinct URLs
+  // is not enough: five outlets running one wire story would fill every slot
+  // with the same text and present it as five corroborating sources.
+  const groupOf = (citation: number): number =>
+    independence[citation - 1]?.cluster ?? citation;
+
   const chosen: Array<Citation & { score: number }> = [];
-  const used = new Set<number>();
+  const usedGroups = new Set<number>();
   for (const candidate of candidates) {
     if (chosen.length >= limit) {
       break;
     }
-    if (!used.has(candidate.citation)) {
-      used.add(candidate.citation);
+    const group = groupOf(candidate.citation);
+    if (!usedGroups.has(group)) {
+      usedGroups.add(group);
       chosen.push(candidate);
     }
   }
+  // Remaining slots go to further passages from those same independent
+  // accounts, which adds depth without re-reporting one story twice.
   for (const candidate of candidates) {
     if (chosen.length >= limit) {
       break;
@@ -243,6 +300,31 @@ function buildAnswer(
     .map((citation) => `[${citation.citation}] ${citation.quote}`)
     .join("\n\n");
   return `Based on ${pages.length} sources:\n\n${body}`;
+}
+
+/**
+ * Fraction of the question's content words that appear in the cited passages.
+ *
+ * A blunt but honest measure of whether the citations engage with the question
+ * at all. It says nothing about correctness, which is not something this
+ * server can determine.
+ */
+export function queryTermCoverage(
+  question: string,
+  citations: readonly Citation[],
+): number {
+  const terms = new Set(tokenize(question));
+  if (terms.size === 0) {
+    return 0;
+  }
+  const cited = new Set(tokenize(citations.map((c) => c.quote).join(" ")));
+  let hits = 0;
+  for (const term of terms) {
+    if (cited.has(term)) {
+      hits += 1;
+    }
+  }
+  return Number((hits / terms.size).toFixed(4));
 }
 
 /** Aggregate extraction stats across the opened pages. */
@@ -326,14 +408,37 @@ export async function runResearch(args: {
     cache,
   );
 
-  // 5) Select the spans that address the question, and cite them.
-  const citations = collectCitations(pages, sources, question);
+  // 5) Work out which pages are genuinely separate accounts before citing, so
+  // syndicated copies do not masquerade as corroboration.
+  const independence = analyzeIndependence(
+    pages.map((page, index) => ({
+      url: sources[index]?.url ?? page.url,
+      content: page.content,
+    })),
+  );
 
+  // 6) Select the spans that address the question, and cite them.
+  const citations = collectCitations(
+    pages,
+    sources,
+    question,
+    MAX_EXCERPTS,
+    independence,
+  );
+
+  const independentSources = countIndependent(independence);
   const response: ResearchResponse = {
     answer: buildAnswer(pages, citations),
     sources,
     queries_used: queries,
     citations,
+    evidence: {
+      sources_opened: pages.length,
+      independent_sources: independentSources,
+      derivative_sources: Math.max(0, pages.length - independentSources),
+      query_term_coverage: queryTermCoverage(question, citations),
+      cited_spans: citations.length,
+    },
     extraction_stats: extractionStats(pages),
   };
 

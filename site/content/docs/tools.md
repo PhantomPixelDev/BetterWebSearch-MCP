@@ -82,7 +82,9 @@ Deep research orchestrator. Rewrites a question into multiple search variants, r
 - Bounded concurrency: 3 pages opened simultaneously
 - Per-page timeout: 8 seconds
 - Max pages extracted: 10
-- Max cited passages in answer: 5 (at most 2 considered per page, best-first across distinct sources)
+- Max cited passages in answer: 5 (at most 2 considered per page, best-first across independent sources)
+- Sources are clustered by content before citing: syndicated reprints and multiple pages from one host count as one account, and derivative copies are not quoted
+- The `evidence` block reports measured counts only (`sources_opened`, `independent_sources`, `derivative_sources`, `query_term_coverage`, `cited_spans`). No confidence score is returned, because nothing in this server can compute one
 
 ---
 

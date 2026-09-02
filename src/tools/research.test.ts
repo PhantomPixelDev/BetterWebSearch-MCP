@@ -221,3 +221,72 @@ describe("runResearch", () => {
     expect(second).toEqual(first);
   });
 });
+
+
+describe("runResearch evidence accounting", () => {
+  const WIRE =
+    "The regulator approved the merger on Tuesday after a review lasting " +
+    "eleven months, concluding that the combined operator would still face " +
+    "meaningful competition in every regional market it serves nationwide.";
+  const REPRINT =
+    "EXCLUSIVE: The regulator approved the merger on Tuesday after a review " +
+    "lasting eleven months, concluding that the combined operator would " +
+    "still face meaningful competition in every regional market.";
+  const SEPARATE =
+    "Consumer groups criticised the decision, arguing that pricing data " +
+    "submitted during the review understated the effect on rural customers " +
+    "who rely on a single provider for fixed line broadband access today.";
+
+  beforeEach(() => {
+    aggregateSearchMock.mockResolvedValue([
+      { title: "Wire", url: "https://wire.example/merger", snippet: "merger approved", source: "duckduckgo" },
+      { title: "Outlet", url: "https://outlet.example/merger", snippet: "merger approved", source: "duckduckgo" },
+      { title: "Analysis", url: "https://analysis.example/merger", snippet: "merger criticised", source: "duckduckgo" },
+    ]);
+    getPageMock.mockImplementation(async (url: string) => {
+      if (url.includes("wire")) return routedPage(url, "Wire", WIRE);
+      if (url.includes("outlet")) return routedPage(url, "Outlet", REPRINT);
+      return routedPage(url, "Analysis", SEPARATE);
+    });
+  });
+
+  it("counts syndicated reprints as one independent source", async () => {
+    const res = await runResearch({ question: "Was the merger approved by the regulator?" });
+
+    expect(res.evidence.sources_opened).toBe(3);
+    // The wire story and its reprint are one account, not two.
+    expect(res.evidence.independent_sources).toBe(2);
+    expect(res.evidence.derivative_sources).toBe(1);
+  });
+
+  it("does not cite the same story twice through different outlets", async () => {
+    const res = await runResearch({ question: "Was the merger approved by the regulator?" });
+
+    const quotes = res.citations.map((c) => c.quote);
+    const fromWire = quotes.filter((q) => q.includes("approved the merger")).length;
+    expect(fromWire).toBeLessThanOrEqual(1);
+  });
+
+  it("reports query term coverage as a 0..1 fraction", async () => {
+    const res = await runResearch({ question: "Was the merger approved by the regulator?" });
+
+    expect(res.evidence.query_term_coverage).toBeGreaterThan(0);
+    expect(res.evidence.query_term_coverage).toBeLessThanOrEqual(1);
+  });
+
+  it("reports cited_spans matching the citations array", async () => {
+    const res = await runResearch({ question: "Was the merger approved by the regulator?" });
+
+    expect(res.evidence.cited_spans).toBe(res.citations.length);
+  });
+
+  it("gives every citation an offset addressing its source content", async () => {
+    const res = await runResearch({ question: "Was the merger approved by the regulator?" });
+
+    for (const citation of res.citations) {
+      expect(citation.end).toBeGreaterThan(citation.start);
+      expect(citation.quote.length).toBeGreaterThan(0);
+      expect(citation.url).toMatch(/^https:/);
+    }
+  });
+});

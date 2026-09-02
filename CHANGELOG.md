@@ -4,6 +4,28 @@ All notable changes to **better-web-search-mcp** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-09-02
+
+### Added
+- **Source independence detection.** URL deduplication only ever caught the
+  same page twice; syndication went straight through. Five outlets running one
+  wire story, a vendor press release quoted verbatim, or an article and its own
+  AMP variant all arrived as distinct URLs and were reported as five sources.
+  Pages are now clustered by content shingles (Jaccard over 5-word shingles,
+  union-find so clustering is transitive), and two pages from the same host are
+  treated as one account
+- **`evidence` block on `web_research` responses**, reporting only things the
+  server actually measured: `sources_opened`, `independent_sources`,
+  `derivative_sources`, `query_term_coverage`, and `cited_spans`. There is no
+  language model in this server, so there is no confidence score — an invented
+  one would be worse than none
+
+### Changed
+- Citations spread across independent accounts rather than distinct URLs, and
+  derivative sources no longer contribute quotes at all. Previously the pass
+  that topped up remaining citation slots could refill them with the same story
+  under a second byline, presenting one claim as corroborated
+
 ## [0.3.0] - 2026-09-02
 
 ### Security
@@ -168,6 +190,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 - Add `BRAVE_API_KEY` for richer ranking & recency filtering
 - Publish-ready: `npm pack --dry-run` validated, `prepare`/`prepublishOnly` hooks, `files` whitelist
 
+[0.4.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.4.0
 [0.3.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.3.0
 [0.2.3]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.2.3
 [0.2.2]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.2.2
