@@ -39,7 +39,7 @@
   "offers" (dict "@type" "Offer" "price" "0" "priceCurrency" "USD")
 }}
 {{- with $image }}{{ $ld = merge $ld (dict "image" .) }}{{ end }}
-<script type="application/ld+json">{{ $ld | jsonify }}</script>
+<script type="application/ld+json">{{ $ld | jsonify | safeJS }}</script>
 {{- end }}
 
 {{- if and .IsPage (not .IsHome) }}
@@ -50,5 +50,5 @@
   {{- $pos = add $pos 1 -}}
 {{- end -}}
 {{- $crumbs = $crumbs | append (dict "@type" "ListItem" "position" $pos "name" (partial "docs/title" .) "item" .Permalink) -}}
-<script type="application/ld+json">{{ dict "@context" "https://schema.org" "@type" "BreadcrumbList" "itemListElement" $crumbs | jsonify }}</script>
+<script type="application/ld+json">{{ dict "@context" "https://schema.org" "@type" "BreadcrumbList" "itemListElement" $crumbs | jsonify | safeJS }}</script>
 {{- end }}
