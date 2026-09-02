@@ -3,13 +3,20 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     setupFiles: ["./vitest.setup.ts"],
-    // `cache.test.ts` opens a real better-sqlite3 database, and better-sqlite3
-    // is a native N-API addon. Native addons loaded inside worker threads can
-    // abort the thread outright instead of throwing, which surfaced in CI as an
-    // intermittent "Error: Worker exited unexpectedly" from tinypool — roughly
-    // one run in four, on commits that touched nothing but documentation.
-    // Forks run each test file in a child process, where a native crash is
-    // contained and reported normally.
+    // Several suites open a real better-sqlite3 database, and better-sqlite3 is
+    // a native N-API addon. Tearing one down while other files are still
+    // initializing it trips an assertion inside the addon itself —
+    // "Assertion failed: (env) != nullptr" — which kills the runner process and
+    // surfaces as "Error: Worker exited unexpectedly" from tinypool. It hit
+    // roughly one CI run in four, including commits that touched only docs.
+    //
+    // Threads made it worst, since a native abort takes the whole thread down.
+    // Forks contain the crash, but files still run in parallel processes and
+    // the addon still races its own teardown, so singleFork serializes them
+    // into one child. Costs a little wall time; removes the crash window.
     pool: "forks",
+    poolOptions: {
+      forks: { singleFork: true },
+    },
   },
 });

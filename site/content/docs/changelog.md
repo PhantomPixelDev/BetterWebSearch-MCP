@@ -17,6 +17,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
   cache — the server opened `data/cache.db` regardless of what either said
 
 ### Changed
+- Test files now run serially in a single forked process. Forks alone were not
+  enough: parallel files still raced the better-sqlite3 addon's own teardown,
+  tripping `Assertion failed: (env) != nullptr` inside the native module
 - Security policy now tracks the 0.2.x line and describes the cache
   mitigations accurately
 - The v0.1.0 launch checklist is marked historical rather than reading as a
@@ -47,9 +50,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 ## [0.2.1] - 2026-09-02
 
 ### Changed
-- Test runner uses forked processes, fixing intermittent
+- Test runner uses forked processes, reducing intermittent
   `Worker exited unexpectedly` CI failures caused by loading the
-  better-sqlite3 native addon inside a worker thread
+  better-sqlite3 native addon inside a worker thread (see 0.2.3 for the
+  follow-up that closed the remaining window)
 - Compiled tests are excluded from the published package: 252 files down to
   148, 126.4 kB down to 85.1 kB
 
