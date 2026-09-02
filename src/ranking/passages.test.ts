@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  MAX_PASSAGE_CHARS,
   TARGET_PASSAGE_CHARS,
   rankPassages,
   selectPassages,
@@ -65,12 +66,36 @@ describe("splitPassages", () => {
     expect(splitPassages(content)).toHaveLength(1);
   });
 
-  it("keeps an over-long paragraph whole instead of cutting mid-sentence", () => {
-    const long = "word ".repeat(400).trim();
+  it("windows an over-long block instead of emitting the whole page", () => {
+    // A page with no blank lines used to become a single passage containing
+    // the entire document, so a cited "passage" was the whole page.
+    const long = "word ".repeat(2000).trim();
     const passages = splitPassages(long);
 
-    expect(passages).toHaveLength(1);
-    expect(passages[0]?.text.length).toBeGreaterThan(TARGET_PASSAGE_CHARS);
+    expect(passages.length).toBeGreaterThan(1);
+    for (const passage of passages) {
+      expect(passage.text.length).toBeLessThanOrEqual(MAX_PASSAGE_CHARS);
+    }
+  });
+
+  it("never cuts a word in half when windowing", () => {
+    const long = `${"alpha beta gamma delta ".repeat(200)}`.trim();
+
+    // Every token must still be a whole word from the source vocabulary; a
+    // mid-word cut would produce fragments like "gam" or "elta".
+    for (const passage of splitPassages(long)) {
+      for (const word of passage.text.split(/\s+/)) {
+        expect(["alpha", "beta", "gamma", "delta"]).toContain(word);
+      }
+    }
+  });
+
+  it("keeps windowed offsets addressing the source", () => {
+    const long = `${"Sentence number one here. ".repeat(150)}`.trim();
+
+    for (const passage of splitPassages(long)) {
+      expect(long.slice(passage.start, passage.end).trim()).toBe(passage.text);
+    }
   });
 
   it("returns nothing for empty or whitespace-only content", () => {

@@ -4,6 +4,27 @@ All notable changes to **better-web-search-mcp** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.1] - 2026-09-02
+
+### Fixed
+- **A cited passage could be an entire page.** `splitPassages` emitted an
+  over-long block whole, and plenty of extracted pages contain no blank lines
+  at all, so the whole document became a single passage. `web_research` then
+  returned *more* text than reading the pages directly would have — the first
+  benchmark run measured a 267% increase against the baseline it was supposed
+  to beat. Blocks longer than 1,200 characters are now windowed on sentence
+  boundaries, without cutting words and with offsets still addressing the
+  source
+
+### Added
+- **Token-efficiency benchmark** under `benchmarks/`, run with `npm run bench`.
+  It compares an agent driving the tools itself against a single
+  `web_research` call over the same pages, and is what caught the bug above.
+  Measured over 12 questions: 820,229 characters down to 110,973, an 86.5%
+  reduction overall and 83.8% median. Payload is counted in characters, which
+  is exact and tokenizer-independent; the harness makes no claim about answer
+  quality, which would need a judge model
+
 ## [0.4.0] - 2026-09-02
 
 ### Added
@@ -190,6 +211,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 - Add `BRAVE_API_KEY` for richer ranking & recency filtering
 - Publish-ready: `npm pack --dry-run` validated, `prepare`/`prepublishOnly` hooks, `files` whitelist
 
+[0.4.1]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.4.1
 [0.4.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.4.0
 [0.3.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.3.0
 [0.2.3]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.2.3

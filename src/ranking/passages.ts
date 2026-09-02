@@ -35,6 +35,17 @@ const B = 0.75;
 /** Target passage size in characters; paragraphs are packed up to this. */
 export const TARGET_PASSAGE_CHARS = 500;
 
+/**
+ * Hard ceiling on a single passage, in characters.
+ *
+ * Paragraph splitting alone is not enough: plenty of extracted pages contain
+ * no blank lines at all, which made the whole page one passage. A cited
+ * "passage" was then the entire document, and `web_research` returned more
+ * text than reading the pages directly would have. Anything longer than this
+ * is windowed on sentence boundaries.
+ */
+export const MAX_PASSAGE_CHARS = 1_200;
+
 /** Words carrying no retrieval signal, skipped when scoring. */
 const STOP_WORDS = new Set([
   "a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "from",
@@ -65,11 +76,45 @@ export function splitPassages(content: string): Passage[] {
   let bufferEnd = -1;
   let buffer = "";
 
-  const flush = (): void => {
-    const text = buffer.trim();
-    if (text !== "") {
-      passages.push({ text, start: bufferStart, end: bufferEnd, score: 0 });
+  const emit = (text: string, start: number, end: number): void => {
+    if (text.trim() === "") {
+      return;
     }
+    if (text.length <= MAX_PASSAGE_CHARS) {
+      passages.push({ text: text.trim(), start, end, score: 0 });
+      return;
+    }
+    // Window an over-long block on sentence boundaries, keeping offsets
+    // accurate by tracking position in the original string.
+    let windowStart = 0;
+    while (windowStart < text.length) {
+      let windowEnd = Math.min(windowStart + MAX_PASSAGE_CHARS, text.length);
+      if (windowEnd < text.length) {
+        // Prefer the last sentence end inside the window; fall back to a
+        // space so words are never cut in half.
+        const slice = text.slice(windowStart, windowEnd);
+        const sentence = slice.lastIndexOf(". ");
+        const space = slice.lastIndexOf(" ");
+        const cut = sentence > MAX_PASSAGE_CHARS / 2 ? sentence + 1 : space;
+        if (cut > 0) {
+          windowEnd = windowStart + cut;
+        }
+      }
+      const chunk = text.slice(windowStart, windowEnd);
+      if (chunk.trim() !== "") {
+        passages.push({
+          text: chunk.trim(),
+          start: start + windowStart,
+          end: start + windowEnd,
+          score: 0,
+        });
+      }
+      windowStart = windowEnd;
+    }
+  };
+
+  const flush = (): void => {
+    emit(buffer, bufferStart, bufferEnd);
     buffer = "";
     bufferStart = -1;
     bufferEnd = -1;

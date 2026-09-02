@@ -1,0 +1,17 @@
+{
+  "note": "Questions used by the token-efficiency benchmark. Chosen to span the query shapes web_research is meant to handle, and deliberately not tuned to make the pipeline look good.",
+  "questions": [
+    { "id": "def-mcp", "category": "definition", "text": "What is the Model Context Protocol?" },
+    { "id": "def-readability", "category": "definition", "text": "What does Mozilla Readability do?" },
+    { "id": "tech-playwright", "category": "technical", "text": "How does Playwright wait for network idle?" },
+    { "id": "tech-sqlite-wal", "category": "technical", "text": "What are the tradeoffs of SQLite WAL mode?" },
+    { "id": "tech-bm25", "category": "technical", "text": "How does BM25 term frequency saturation work?" },
+    { "id": "cmp-postgres-mysql", "category": "comparison", "text": "PostgreSQL vs MySQL for JSON document storage" },
+    { "id": "cmp-vitest-jest", "category": "comparison", "text": "Vitest compared to Jest for TypeScript projects" },
+    { "id": "how-ssrf", "category": "troubleshooting", "text": "How do you prevent SSRF when fetching user supplied URLs?" },
+    { "id": "how-npm-provenance", "category": "troubleshooting", "text": "How do you publish an npm package with provenance from GitHub Actions?" },
+    { "id": "res-prompt-injection", "category": "research", "text": "What defenses exist against prompt injection in AI agents that browse the web?" },
+    { "id": "res-rag-chunking", "category": "research", "text": "What chunking strategies work best for retrieval augmented generation?" },
+    { "id": "res-hugo-seo", "category": "research", "text": "What are the most important technical SEO factors for a static documentation site?" }
+  ]
+}

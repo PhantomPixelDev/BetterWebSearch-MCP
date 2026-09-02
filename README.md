@@ -72,15 +72,85 @@ Only escalates when needed. Results carry confidence scores so you know what you
 
 **Self-learning cache.** The first visit to a domain takes the full path. The second visit skips straight to what worked. Domain profiles and API patterns are remembered.
 
+## Token efficiency
+
+Doing the web work inside the server, rather than handing pages to the model,
+is the point. The repository ships the benchmark that checks it.
+
+Same questions, same pages, two workflows:
+
+- **baseline** — the agent drives the tools: one `web_search`, then
+  `web_extract` on each of the top 5 results. Every page lands in its context.
+- **research** — one `web_research` call, returning cited passages.
+
+12 questions across definition, technical, comparison, troubleshooting and
+research categories, run 2026-09-02 against the live web with the browser tier
+disabled:
+
+| | Baseline | `web_research` |
+|---|---|---|
+| Payload | 820,229 chars | **110,973 chars** |
+| Tokens (est. at 4 chars) | ~205,000 | **~28,000** |
+| Wall clock | 137.3s | **49.6s** |
+
+**86.5% less text overall, 83.8% median**, per-question range 56.8% to 93.4%.
+
+Reproduce it yourself:
+
+```bash
+npm run build && npm run bench
+```
+
+Honest caveats, because these are the ones that matter:
+
+- Payload is counted in **characters** — exact and tokenizer-independent. The
+  token column is an estimate at 4 chars/token for orientation; the *ratio* is
+  the real result and barely moves between tokenizers.
+- **This measures payload, not answer quality.** Deciding whether the retained
+  passages still support a correct answer needs a judge model, which this
+  harness does not have. A smaller payload is only a win if the right text
+  survived; `query_term_coverage` is reported per question as a weak proxy and
+  is deliberately not folded into the headline number.
+- Reduction tracks how much page text there was. The 56.8% case had a small
+  baseline (~20k chars), where the fixed cost of the response's source list
+  dominates.
+- Live-web runs are not bit-reproducible: pages change and DuckDuckGo
+  rate-limits scrapers.
+- No comparison against Exa, Tavily's answer endpoint, or hosted web search —
+  they cannot be run under identical conditions on the same pages.
+
+Method and raw per-question results: [`benchmarks/`](benchmarks/).
+
+## Security
+
+Page content is attacker-controlled and URLs arrive from the calling agent, so
+both are treated as untrusted.
+
+- **SSRF guard.** Non-HTTP schemes are refused; hostnames are resolved and
+  private, loopback, link-local, CGNAT, multicast and reserved addresses
+  rejected — including IPv4-mapped IPv6 forms like `::ffff:127.0.0.1`.
+  Redirects are followed manually so *every hop* is re-checked, capped at 5.
+- **Prompt-injection screening.** Every `web_extract` result carries a
+  `security` block marking content untrusted and flagging text that tries to
+  issue instructions to an agent, with the matched pattern and its offset.
+  Content is never rewritten, so extraction stays faithful to the source.
+- **Source independence.** Pages are clustered by content before citing, so a
+  wire story republished by five outlets counts as one account rather than five
+  corroborating sources.
+
+See [SECURITY.md](.github/SECURITY.md) for the full threat model.
+
 ## Project structure
 
 ```
 src/
   providers/      Search backends (DuckDuckGo, Brave, Tavily; SerpApi stubbed)
   extraction/     3-tier content pipeline (fetch, structured, browser)
-  ranking/        Deduplication, domain scoring, reranking
+  ranking/        Deduplication, domain scoring, reranking, passage selection,
+                  source-independence clustering
   tools/          MCP tool definitions (search, research, extract, find, news)
-  utils/          Config, caching, retry, query rewriting
+  utils/          Config, caching, retry, query rewriting, SSRF guard
+benchmarks/       Token-efficiency harness and results
 ```
 
 ## Configuration
