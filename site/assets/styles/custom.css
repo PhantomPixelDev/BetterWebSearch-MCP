@@ -1,0 +1,8 @@
+/* The mobile header title is a <span> rather than an <h3> so that it stays out
+   of the document outline (see layouts/_partials/docs/header.html). Restore the
+   heading's visual weight. */
+.book-header .book-header-title {
+  font-size: 1.17em;
+  font-weight: bold;
+  margin: 0 auto;
+}

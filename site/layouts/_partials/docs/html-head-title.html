@@ -1,0 +1,11 @@
+{{- /*
+  The theme prints "<page title> • <site title>" unconditionally, which on the
+  home page rendered "BetterWebSearch MCP • BetterWebSearch MCP". Collapse the
+  duplicate and let the home page carry a descriptive tagline instead.
+*/ -}}
+{{- $title := partial "docs/title" . -}}
+{{- if or (not $title) (eq $title .Site.Title) -}}
+  {{- with .Site.Params.HomeTitle }}{{ . }}{{ else }}{{ $.Site.Title }}{{ end -}}
+{{- else -}}
+  {{ $title }} • {{ .Site.Title }}
+{{- end -}}

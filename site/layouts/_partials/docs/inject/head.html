@@ -1,0 +1,54 @@
+{{- /*
+  SEO additions the theme does not emit.
+
+  hugo-book calls Hugo's internal opengraph and schema partials. Those give
+  og:title/description/url and microdata itemprops, but no Twitter Card tags
+  and no JSON-LD. Both are added here so shared links render a card and search
+  engines get an explicit software entity to reason about.
+*/ -}}
+
+{{- $image := "" -}}
+{{- with .Params.images -}}
+  {{- $image = index . 0 | absURL -}}
+{{- else -}}
+  {{- with $.Site.Params.images -}}{{- $image = index . 0 | absURL -}}{{- end -}}
+{{- end }}
+
+<meta name="twitter:card" content="{{ if $image }}summary_large_image{{ else }}summary{{ end }}">
+<meta name="twitter:title" content="{{ partial "docs/title" . | default .Site.Title }}">
+<meta name="twitter:description" content="{{ or .Description .Site.Params.description | plainify | htmlUnescape }}">
+{{- with $image }}
+<meta name="twitter:image" content="{{ . }}">
+<meta name="twitter:image:alt" content="{{ $.Site.Title }}">
+{{- end }}
+
+{{- if .IsHome }}
+{{- $ld := dict
+  "@context" "https://schema.org"
+  "@type" "SoftwareApplication"
+  "name" "BetterWebSearch MCP"
+  "alternateName" "better-web-search-mcp"
+  "applicationCategory" "DeveloperApplication"
+  "operatingSystem" "Windows, macOS, Linux"
+  "description" (.Site.Params.description | plainify)
+  "url" .Site.BaseURL
+  "downloadUrl" "https://www.npmjs.com/package/better-web-search-mcp"
+  "codeRepository" .Site.Params.BookRepo
+  "license" "https://opensource.org/licenses/MIT"
+  "programmingLanguage" "TypeScript"
+  "offers" (dict "@type" "Offer" "price" "0" "priceCurrency" "USD")
+}}
+{{- with $image }}{{ $ld = merge $ld (dict "image" .) }}{{ end }}
+<script type="application/ld+json">{{ $ld | jsonify }}</script>
+{{- end }}
+
+{{- if and .IsPage (not .IsHome) }}
+{{- $crumbs := slice -}}
+{{- $pos := 1 -}}
+{{- range .Ancestors.Reverse -}}
+  {{- $crumbs = $crumbs | append (dict "@type" "ListItem" "position" $pos "name" (partial "docs/title" . | default $.Site.Title) "item" .Permalink) -}}
+  {{- $pos = add $pos 1 -}}
+{{- end -}}
+{{- $crumbs = $crumbs | append (dict "@type" "ListItem" "position" $pos "name" (partial "docs/title" .) "item" .Permalink) -}}
+<script type="application/ld+json">{{ dict "@context" "https://schema.org" "@type" "BreadcrumbList" "itemListElement" $crumbs | jsonify }}</script>
+{{- end }}

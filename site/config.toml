@@ -3,8 +3,21 @@ title = "BetterWebSearch MCP"
 theme = "hugo-book"
 enableRobotsTXT = true
 
+# Git commit times become <lastmod> in sitemap.xml. The Pages workflow checks
+# out with fetch-depth 0, so the full history is available to read them from.
+enableGitInfo = true
+
+# The site has no taxonomy content, but Hugo still generated /categories/ and
+# /tags/ and listed both empty pages in the sitemap.
+[taxonomies]
+
 [params]
   description = "Keyless-first MCP for better web research — DuckDuckGo out of the box, Brave/Tavily optional, 3-tier extraction."
+  # Consumed by Hugo's internal opengraph partial for og:image, and by the
+  # Twitter Card tags in layouts/_partials/docs/inject/head.html.
+  images = ["images/banner.png"]
+  # Used instead of "BetterWebSearch MCP • BetterWebSearch MCP" on the home page.
+  HomeTitle = "BetterWebSearch MCP — keyless web search & extraction for AI agents"
   # Hugo Book theme configuration
   BookTheme = "auto"          # light | dark | auto
   BookToC = true              # right-side table of contents

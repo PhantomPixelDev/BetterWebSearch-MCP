@@ -1,0 +1,19 @@
+{{- /*
+  The mobile header repeats the page title. As an <h3> it duplicated the
+  content's <h1> and appeared before it in DOM order, so the outline opened at
+  level 3. A styled <span> keeps the visual header without entering the
+  document outline.
+*/ -}}
+<div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="{{ partial "docs/icon" "menu" }}" class="book-icon" alt="{{ partial "docs/text/i18n" "Menu" }}" />
+  </label>
+
+  <span class="book-header-title">{{ partial "docs/title" . }}</span>
+
+  <label for="toc-control">
+    {{ if partial "docs/toc-show" . }}
+    <img src="{{ partial "docs/icon" "toc" }}" class="book-icon" alt="{{ partial "docs/text/i18n" "Table of Contents" }}" />
+    {{ end }}
+  </label>
+</div>

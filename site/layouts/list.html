@@ -1,0 +1,7 @@
+{{/* Section and home pages need the same single <h1> as regular pages. */}}
+{{ define "main" }}
+  <article class="markdown book-article">
+    <h1>{{ partial "docs/title" . }}</h1>
+    {{- .Content -}}
+  </article>
+{{ end }}

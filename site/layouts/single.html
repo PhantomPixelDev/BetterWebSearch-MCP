@@ -1,0 +1,12 @@
+{{/*
+  Overrides the theme's default `main` block to give every page exactly one
+  <h1>. The theme renders the page title only inside the mobile-only header
+  (as an <h3>), so pages shipped with no <h1> at all and an inverted heading
+  order: the sidebar brand <h2> outranked the page title.
+*/}}
+{{ define "main" }}
+  <article class="markdown book-article">
+    <h1>{{ partial "docs/title" . }}</h1>
+    {{- .Content -}}
+  </article>
+{{ end }}
