@@ -77,6 +77,23 @@ const ACRONYM_EXPANSION_WEIGHT = 1.5;
 const CONNECTORS = "(?:of|and|the|for|in|to|a)";
 
 /**
+ * Phrasing that marks a question as asking what an acronym means, rather than
+ * merely mentioning one.
+ */
+const DEFINITION_QUERY =
+  /\b(?:stands?\s+for|short\s+for|abbreviation|acronym)\b/i;
+
+/**
+ * Whether the query asks for an acronym's expansion.
+ *
+ * "What does DNS stand for?" does; "How does DNS caching work?" does not, and
+ * promoting a definition passage there would bury the answer actually wanted.
+ */
+export function isDefinitionQuery(query: string): boolean {
+  return DEFINITION_QUERY.test(query);
+}
+
+/**
  * Uppercase acronyms appearing in a query, e.g. "TLS" from "What does TLS
  * stand for?".
  */
@@ -106,17 +123,21 @@ export function expandsAcronym(text: string, acronym: string): boolean {
   if (letters.length < MIN_ACRONYM_LENGTH) {
     return false;
   }
-  // Between initials: run out the current word, then optionally a separator
-  // and a connector. Letting the separator be optional is what allows a
-  // compound word to supply two initials, as "HyperText" does for HTML.
-  const gap = `[a-z]*(?:[\\s,;:/()-]+(?:${CONNECTORS}[\\s,;:/()-]+)?)?`;
-  const pattern = letters.join(gap) + "[a-z]*";
+  // Each initial must be followed by at least one lowercase letter, so that it
+  // begins a real word. Without that the `i` flag lets `[a-z]*` consume
+  // uppercase and the acronym's own letters satisfy the pattern: "DNS" matched
+  // D-N-S, and so did a heading like "DNS definition: What does DNS stand for
+  // in networking". Every passage on an acronym page then looked like an
+  // expansion, so promoting expansions reordered nothing.
+  //
+  // The separator between initials stays optional, which is what lets a single
+  // compound word supply two of them, as "HyperText" does for HTML.
+  const gap = `(?:[\\s,;:/()-]+(?:${CONNECTORS}[\\s,;:/()-]+)?)?`;
+  const pattern = letters.map((letter) => `${letter}[a-z]+`).join(gap);
   const regex = new RegExp(`\\b${pattern}\\b`, "gi");
 
-  // Every gap may be empty, so the pattern also matches the bare acronym —
-  // "TLS" itself satisfies T[a-z]*L[a-z]*S[a-z]*. Without this length floor
-  // any passage merely mentioning the acronym would count as expanding it,
-  // and the bonus would apply everywhere and rank nothing.
+  // Belt and braces against a degenerate match no longer than the acronym it
+  // claims to expand.
   const minLength = acronym.length * 2;
   for (const match of text.matchAll(regex)) {
     const found = match[0];
@@ -275,6 +296,17 @@ export function rankPassages(
     return Math.log(1 + (docs.length - n + 0.5) / (n + 0.5));
   };
   const uniqueTerms = [...new Set(queryTerms)];
+
+  // An acronym counts as "in play" when it appears anywhere on this page, not
+  // necessarily in the passage holding the expansion. Requiring both in one
+  // passage looked safe but was wrong: the sentence defining DNS or CSS
+  // routinely writes "Domain Name System" without repeating the letters, so
+  // the guard blocked the bonus exactly where it was needed. Page scope still
+  // rejects unrelated prose that merely fits the initials, because such a page
+  // never names the acronym at all.
+  const acronymsInPlay = acronyms.filter((acronym) =>
+    docs.some((doc) => doc.includes(acronym.toLowerCase())),
+  );
   const meanIdf =
     uniqueTerms.length === 0
       ? 1
@@ -316,11 +348,7 @@ export function rankPassages(
     // passage removes those without weakening the real case, since the answer
     // sentence almost always names the acronym it is defining.
     if (
-      acronyms.some(
-        (acronym) =>
-          counts.has(acronym.toLowerCase()) &&
-          expandsAcronym(passage.text, acronym),
-      )
+      acronymsInPlay.some((acronym) => expandsAcronym(passage.text, acronym))
     ) {
       score += expansionBonus;
     }
@@ -330,7 +358,26 @@ export function rankPassages(
     }
   });
 
-  return scored.sort((a, b) => b.score - a.score);
+  scored.sort((a, b) => b.score - a.score);
+
+  // When the question explicitly asks what an acronym stands for, the passage
+  // stating the expansion is the answer, and a score bonus is not enough to
+  // surface it. Pages about an acronym are full of headings and nav entries
+  // repeating every query term - "What does DNS stand for in networking"
+  // outscores the sentence that answers it - and callers keep only the top
+  // couple of passages per page, so the answer never became a candidate.
+  // Ordering it first is a rule about this question shape, not a constant
+  // tuned until one corpus passed.
+  if (acronymsInPlay.length > 0 && isDefinitionQuery(query)) {
+    const expands = (passage: Passage): boolean =>
+      acronymsInPlay.some((acronym) => expandsAcronym(passage.text, acronym));
+    return [
+      ...scored.filter((passage) => expands(passage)),
+      ...scored.filter((passage) => !expands(passage)),
+    ];
+  }
+
+  return scored;
 }
 
 /**

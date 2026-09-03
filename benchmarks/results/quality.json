@@ -1,11 +1,11 @@
 {
-  "generated": "2026-09-03T19:12:13.377Z",
+  "generated": "2026-09-03T22:20:12.639Z",
   "summary": {
-    "questions_attempted": 34,
-    "questions_measured": 34,
-    "answer_found_in_baseline": 34,
-    "answer_retained": 28,
-    "retention": 0.8235294117647058,
+    "questions_attempted": 32,
+    "questions_measured": 32,
+    "answer_found_in_baseline": 32,
+    "answer_retained": 32,
+    "retention": 1,
     "by_category": {
       "number": {
         "found": 8,
@@ -19,18 +19,18 @@
       },
       "acronym": {
         "found": 12,
-        "kept": 7,
-        "retention": 0.5833333333333334
+        "kept": 12,
+        "retention": 1
       },
       "fact": {
-        "found": 8,
-        "kept": 7,
-        "retention": 0.875
+        "found": 6,
+        "kept": 6,
+        "retention": 1
       }
     },
-    "baseline_chars": 2470659,
-    "retained_chars": 188570,
-    "reduction": 0.9236762337497809
+    "baseline_chars": 2304993,
+    "retained_chars": 181828,
+    "reduction": 0.9211155955788152
   },
   "rows": [
     {
@@ -42,11 +42,11 @@
       "matched_markers": [
         "5432"
       ],
-      "baseline_chars": 70085,
-      "retained_chars": 4373,
+      "baseline_chars": 81263,
+      "retained_chars": 6207,
       "cited_spans": 5,
-      "independent_sources": 3,
-      "sources_opened": 4
+      "independent_sources": 4,
+      "sources_opened": 5
     },
     {
       "id": "redis-port",
@@ -57,11 +57,11 @@
       "matched_markers": [
         "6379"
       ],
-      "baseline_chars": 156082,
-      "retained_chars": 5459,
+      "baseline_chars": 156146,
+      "retained_chars": 3887,
       "cited_spans": 5,
-      "independent_sources": 4,
-      "sources_opened": 4
+      "independent_sources": 5,
+      "sources_opened": 5
     },
     {
       "id": "mysql-port",
@@ -72,11 +72,11 @@
       "matched_markers": [
         "3306"
       ],
-      "baseline_chars": 24571,
-      "retained_chars": 5587,
+      "baseline_chars": 27583,
+      "retained_chars": 5201,
       "cited_spans": 5,
-      "independent_sources": 4,
-      "sources_opened": 4
+      "independent_sources": 5,
+      "sources_opened": 5
     },
     {
       "id": "ssh-port",
@@ -87,8 +87,8 @@
       "matched_markers": [
         "\\b22\\b"
       ],
-      "baseline_chars": 36776,
-      "retained_chars": 5225,
+      "baseline_chars": 55449,
+      "retained_chars": 5681,
       "cited_spans": 5,
       "independent_sources": 5,
       "sources_opened": 5
@@ -102,11 +102,11 @@
       "matched_markers": [
         "443"
       ],
-      "baseline_chars": 48467,
-      "retained_chars": 4481,
+      "baseline_chars": 60127,
+      "retained_chars": 4789,
       "cited_spans": 5,
-      "independent_sources": 4,
-      "sources_opened": 4
+      "independent_sources": 5,
+      "sources_opened": 5
     },
     {
       "id": "mongodb-port",
@@ -117,11 +117,11 @@
       "matched_markers": [
         "27017"
       ],
-      "baseline_chars": 142434,
-      "retained_chars": 8341,
+      "baseline_chars": 151689,
+      "retained_chars": 6059,
       "cited_spans": 5,
-      "independent_sources": 3,
-      "sources_opened": 3
+      "independent_sources": 5,
+      "sources_opened": 5
     },
     {
       "id": "smtp-port",
@@ -132,11 +132,11 @@
       "matched_markers": [
         "\\b25\\b"
       ],
-      "baseline_chars": 52290,
+      "baseline_chars": 52545,
       "retained_chars": 4893,
       "cited_spans": 5,
-      "independent_sources": 4,
-      "sources_opened": 4
+      "independent_sources": 5,
+      "sources_opened": 5
     },
     {
       "id": "dns-label",
@@ -147,11 +147,11 @@
       "matched_markers": [
         "63"
       ],
-      "baseline_chars": 13971,
-      "retained_chars": 1679,
-      "cited_spans": 2,
-      "independent_sources": 1,
-      "sources_opened": 2
+      "baseline_chars": 13683,
+      "retained_chars": 2973,
+      "cited_spans": 4,
+      "independent_sources": 4,
+      "sources_opened": 5
     },
     {
       "id": "http-429",
@@ -162,10 +162,10 @@
       "matched_markers": [
         "429"
       ],
-      "baseline_chars": 32664,
-      "retained_chars": 7231,
+      "baseline_chars": 100045,
+      "retained_chars": 5797,
       "cited_spans": 5,
-      "independent_sources": 4,
+      "independent_sources": 5,
       "sources_opened": 5
     },
     {
@@ -177,11 +177,11 @@
       "matched_markers": [
         "teapot"
       ],
-      "baseline_chars": 24364,
-      "retained_chars": 4355,
+      "baseline_chars": 31772,
+      "retained_chars": 4105,
       "cited_spans": 5,
-      "independent_sources": 4,
-      "sources_opened": 4
+      "independent_sources": 5,
+      "sources_opened": 5
     },
     {
       "id": "http-404",
@@ -192,8 +192,8 @@
       "matched_markers": [
         "not found"
       ],
-      "baseline_chars": 41542,
-      "retained_chars": 6093,
+      "baseline_chars": 29559,
+      "retained_chars": 5937,
       "cited_spans": 5,
       "independent_sources": 4,
       "sources_opened": 4
@@ -207,11 +207,11 @@
       "matched_markers": [
         "moved permanently"
       ],
-      "baseline_chars": 33247,
-      "retained_chars": 5145,
+      "baseline_chars": 37379,
+      "retained_chars": 5383,
       "cited_spans": 5,
-      "independent_sources": 4,
-      "sources_opened": 4
+      "independent_sources": 5,
+      "sources_opened": 5
     },
     {
       "id": "http-503",
@@ -222,11 +222,11 @@
       "matched_markers": [
         "service unavailable"
       ],
-      "baseline_chars": 36722,
+      "baseline_chars": 36670,
       "retained_chars": 5411,
       "cited_spans": 5,
-      "independent_sources": 3,
-      "sources_opened": 3
+      "independent_sources": 4,
+      "sources_opened": 4
     },
     {
       "id": "http-451",
@@ -237,8 +237,8 @@
       "matched_markers": [
         "unavailable for legal reasons"
       ],
-      "baseline_chars": 78623,
-      "retained_chars": 5493,
+      "baseline_chars": 69660,
+      "retained_chars": 5649,
       "cited_spans": 5,
       "independent_sources": 5,
       "sources_opened": 5
@@ -248,10 +248,12 @@
       "category": "acronym",
       "question": "What does WAL stand for in SQLite journal_mode?",
       "answer_in_baseline": true,
-      "answer_in_retained": false,
-      "matched_markers": [],
-      "baseline_chars": 21391,
-      "retained_chars": 3677,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "write[- ]ahead log"
+      ],
+      "baseline_chars": 33334,
+      "retained_chars": 5673,
       "cited_spans": 5,
       "independent_sources": 5,
       "sources_opened": 5
@@ -265,8 +267,8 @@
       "matched_markers": [
         "cross[- ]origin resource sharing"
       ],
-      "baseline_chars": 53437,
-      "retained_chars": 4869,
+      "baseline_chars": 68781,
+      "retained_chars": 4091,
       "cited_spans": 5,
       "independent_sources": 5,
       "sources_opened": 5
@@ -280,8 +282,8 @@
       "matched_markers": [
         "json web token"
       ],
-      "baseline_chars": 37028,
-      "retained_chars": 4625,
+      "baseline_chars": 26607,
+      "retained_chars": 5813,
       "cited_spans": 5,
       "independent_sources": 5,
       "sources_opened": 5
@@ -295,8 +297,8 @@
       "matched_markers": [
         "server[- ]side request forgery"
       ],
-      "baseline_chars": 45480,
-      "retained_chars": 5327,
+      "baseline_chars": 31224,
+      "retained_chars": 5191,
       "cited_spans": 5,
       "independent_sources": 5,
       "sources_opened": 5
@@ -310,8 +312,8 @@
       "matched_markers": [
         "representational state transfer"
       ],
-      "baseline_chars": 156844,
-      "retained_chars": 7563,
+      "baseline_chars": 151401,
+      "retained_chars": 6595,
       "cited_spans": 5,
       "independent_sources": 5,
       "sources_opened": 5
@@ -321,10 +323,12 @@
       "category": "acronym",
       "question": "What does ACID stand for in database transactions?",
       "answer_in_baseline": true,
-      "answer_in_retained": false,
-      "matched_markers": [],
-      "baseline_chars": 49029,
-      "retained_chars": 5151,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "atomicity[\\s\\S]{0,60}consistency[\\s\\S]{0,60}isolation[\\s\\S]{0,60}durability"
+      ],
+      "baseline_chars": 48829,
+      "retained_chars": 6241,
       "cited_spans": 5,
       "independent_sources": 5,
       "sources_opened": 5
@@ -338,8 +342,8 @@
       "matched_markers": [
         "domain name system"
       ],
-      "baseline_chars": 57799,
-      "retained_chars": 7927,
+      "baseline_chars": 70206,
+      "retained_chars": 8549,
       "cited_spans": 5,
       "independent_sources": 4,
       "sources_opened": 4
@@ -349,13 +353,15 @@
       "category": "acronym",
       "question": "What does TLS stand for?",
       "answer_in_baseline": true,
-      "answer_in_retained": false,
-      "matched_markers": [],
-      "baseline_chars": 19678,
-      "retained_chars": 7435,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "transport layer security"
+      ],
+      "baseline_chars": 19649,
+      "retained_chars": 6933,
       "cited_spans": 5,
-      "independent_sources": 4,
-      "sources_opened": 4
+      "independent_sources": 3,
+      "sources_opened": 3
     },
     {
       "id": "acr-sql",
@@ -366,24 +372,26 @@
       "matched_markers": [
         "structured query language"
       ],
-      "baseline_chars": 45785,
-      "retained_chars": 5309,
+      "baseline_chars": 43262,
+      "retained_chars": 5969,
       "cited_spans": 5,
-      "independent_sources": 3,
-      "sources_opened": 4
+      "independent_sources": 4,
+      "sources_opened": 5
     },
     {
       "id": "acr-html",
       "category": "acronym",
       "question": "What does HTML stand for?",
       "answer_in_baseline": true,
-      "answer_in_retained": false,
-      "matched_markers": [],
-      "baseline_chars": 167209,
-      "retained_chars": 4423,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "hypertext markup language"
+      ],
+      "baseline_chars": 51049,
+      "retained_chars": 5367,
       "cited_spans": 5,
-      "independent_sources": 3,
-      "sources_opened": 4
+      "independent_sources": 5,
+      "sources_opened": 5
     },
     {
       "id": "acr-css",
@@ -394,21 +402,23 @@
       "matched_markers": [
         "cascading style sheets"
       ],
-      "baseline_chars": 39533,
-      "retained_chars": 6825,
+      "baseline_chars": 144359,
+      "retained_chars": 7975,
       "cited_spans": 5,
-      "independent_sources": 3,
-      "sources_opened": 3
+      "independent_sources": 4,
+      "sources_opened": 4
     },
     {
       "id": "acr-crud",
       "category": "acronym",
       "question": "What does CRUD stand for?",
       "answer_in_baseline": true,
-      "answer_in_retained": false,
-      "matched_markers": [],
-      "baseline_chars": 39471,
-      "retained_chars": 5839,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "create[\\s\\S]{0,40}read[\\s\\S]{0,40}update[\\s\\S]{0,40}delete"
+      ],
+      "baseline_chars": 32425,
+      "retained_chars": 6193,
       "cited_spans": 5,
       "independent_sources": 5,
       "sources_opened": 5
@@ -422,11 +432,11 @@
       "matched_markers": [
         "apache"
       ],
-      "baseline_chars": 48991,
-      "retained_chars": 7675,
+      "baseline_chars": 72372,
+      "retained_chars": 6459,
       "cited_spans": 5,
-      "independent_sources": 3,
-      "sources_opened": 4
+      "independent_sources": 4,
+      "sources_opened": 5
     },
     {
       "id": "lic-node",
@@ -437,11 +447,11 @@
       "matched_markers": [
         "\\bMIT\\b"
       ],
-      "baseline_chars": 160613,
-      "retained_chars": 7679,
+      "baseline_chars": 157497,
+      "retained_chars": 7377,
       "cited_spans": 5,
       "independent_sources": 3,
-      "sources_opened": 5
+      "sources_opened": 4
     },
     {
       "id": "lic-linux",
@@ -452,11 +462,11 @@
       "matched_markers": [
         "GPL"
       ],
-      "baseline_chars": 296005,
-      "retained_chars": 3675,
-      "cited_spans": 4,
-      "independent_sources": 2,
-      "sources_opened": 3
+      "baseline_chars": 228579,
+      "retained_chars": 6563,
+      "cited_spans": 5,
+      "independent_sources": 3,
+      "sources_opened": 5
     },
     {
       "id": "rust-origin",
@@ -467,11 +477,11 @@
       "matched_markers": [
         "mozilla"
       ],
-      "baseline_chars": 35660,
-      "retained_chars": 5365,
+      "baseline_chars": 40773,
+      "retained_chars": 4145,
       "cited_spans": 5,
-      "independent_sources": 3,
-      "sources_opened": 4
+      "independent_sources": 4,
+      "sources_opened": 5
     },
     {
       "id": "git-default-branch",
@@ -482,11 +492,11 @@
       "matched_markers": [
         "\\bmain\\b"
       ],
-      "baseline_chars": 62219,
-      "retained_chars": 7341,
+      "baseline_chars": 67577,
+      "retained_chars": 6607,
       "cited_spans": 5,
       "independent_sources": 4,
-      "sources_opened": 4
+      "sources_opened": 5
     },
     {
       "id": "json-content-type",
@@ -497,38 +507,10 @@
       "matched_markers": [
         "application/json"
       ],
-      "baseline_chars": 114117,
-      "retained_chars": 3917,
-      "cited_spans": 4,
-      "independent_sources": 2,
-      "sources_opened": 3
-    },
-    {
-      "id": "semver-parts",
-      "category": "fact",
-      "question": "What are the three parts of a semantic version number?",
-      "answer_in_baseline": true,
-      "answer_in_retained": true,
-      "matched_markers": [
-        "major[^a-z]{0,4}minor[^a-z]{0,4}patch"
-      ],
-      "baseline_chars": 99596,
-      "retained_chars": 4507,
+      "baseline_chars": 113499,
+      "retained_chars": 4115,
       "cited_spans": 5,
-      "independent_sources": 5,
-      "sources_opened": 5
-    },
-    {
-      "id": "etag-header",
-      "category": "fact",
-      "question": "Which HTTP request header is used to make a conditional request with an ETag?",
-      "answer_in_baseline": true,
-      "answer_in_retained": false,
-      "matched_markers": [],
-      "baseline_chars": 128936,
-      "retained_chars": 5675,
-      "cited_spans": 5,
-      "independent_sources": 3,
+      "independent_sources": 4,
       "sources_opened": 5
     }
   ]

@@ -4,6 +4,7 @@ import {
   MAX_PASSAGE_CHARS,
   expandsAcronym,
   findAcronyms,
+  isDefinitionQuery,
   TARGET_PASSAGE_CHARS,
   rankPassages,
   selectPassages,
@@ -239,5 +240,73 @@ describe("acronym expansion ranking", () => {
     const prose = "The lazy squirrel ate a nut. ".repeat(20);
 
     expect(selectPassages(prose, "What does TLS stand for?", 1)).toEqual([]);
+  });
+});
+
+
+describe("isDefinitionQuery", () => {
+  it.each([
+    "What does TLS stand for?",
+    "What do the letters ACID stand for",
+    "CORS is short for what",
+    "What is the DNS abbreviation",
+    "Is REST an acronym",
+  ])("recognises %j", (query) => {
+    expect(isDefinitionQuery(query)).toBe(true);
+  });
+
+  it.each([
+    "How does DNS caching work?",
+    "Configure TLS ciphers on nginx",
+    "Why is CSS specificity confusing",
+  ])("does not fire on %j", (query) => {
+    // Promoting a definition passage here would bury the answer wanted.
+    expect(isDefinitionQuery(query)).toBe(false);
+  });
+});
+
+describe("expandsAcronym strictness", () => {
+  it("does not match a heading that merely repeats the acronym", () => {
+    // Under the i flag [a-z]* also consumes uppercase, so this heading once
+    // satisfied D-N-S. Every passage on an acronym page then looked like an
+    // expansion and promoting expansions reordered nothing.
+    const heading = "## DNS definition: What does DNS stand for in networking";
+
+    expect(expandsAcronym(heading, "DNS")).toBe(false);
+  });
+
+  it("does not match the acronym used in a sentence", () => {
+    expect(expandsAcronym("CSS is a stylesheet language.", "CSS")).toBe(false);
+    expect(expandsAcronym("TLS is enabled on this server.", "TLS")).toBe(false);
+  });
+
+  it("requires each initial to begin a real word", () => {
+    // "DNS" alone has no lowercase continuation after any initial.
+    expect(expandsAcronym("DNS", "DNS")).toBe(false);
+  });
+});
+
+describe("definition-query promotion", () => {
+  const PAGE = [
+    "## DNS definition: What does DNS stand for in networking",
+    "",
+    "The DNS system resolves names. ".repeat(20),
+    "",
+    "DNS stands for Domain Name System, the naming scheme used on the internet.",
+  ].join("\n\n");
+
+  it("puts the defining sentence ahead of higher-scoring headings", () => {
+    // The heading carries every query term and outscores the answer, and
+    // callers keep only the top passages per page, so without promotion the
+    // answer was never a candidate. This was 6/12 acronym retention.
+    const [best] = selectPassages(PAGE, "What does DNS stand for?", 1);
+
+    expect(best?.text).toMatch(/Domain Name System/);
+  });
+
+  it("leaves a non-definition query on the same page ranked by relevance", () => {
+    const [best] = selectPassages(PAGE, "How does the DNS system resolve names?", 1);
+
+    expect(best?.text).not.toMatch(/^DNS stands for/);
   });
 });

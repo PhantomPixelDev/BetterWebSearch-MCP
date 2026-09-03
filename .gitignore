@@ -18,6 +18,11 @@ data/
 # Logs
 *.log
 stderr_*.txt
+
+# Benchmark page corpus: multi-megabyte scraped third-party content, and
+# regenerable with `npm run bench:corpus -- fetch`. Result summaries are
+# committed; the raw pages are not.
+benchmarks/results/corpus.json
 npm-debug.log*
 
 # Hugo build output
