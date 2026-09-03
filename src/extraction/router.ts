@@ -31,6 +31,7 @@ import { recordApiPatterns, updateDomainProfile } from "./learn.js";
 import type { Evidence } from "./evidence.js";
 import type { DomainProfile } from "../utils/domainProfile.js";
 import { loadConfig } from "../utils/config.js";
+import { assertPublicUrl, type SsrfDeps } from "../utils/ssrf.js";
 
 /** The extraction method chosen by the router. */
 export type RouterMethod =
@@ -86,6 +87,8 @@ export interface RouterDeps {
   extractWithReadability?: typeof extractWithReadability;
   extractStructuredData?: typeof extractStructuredData;
   extractMetadata?: typeof extractMetadata;
+  /** Injectable DNS resolution for the SSRF guard, so tests need no network. */
+  ssrf?: SsrfDeps;
 }
 
 /** Minimum visible-text length (after stripping tags) for Level 1 to win. */
@@ -133,8 +136,11 @@ function normalizeOptions(opts: GetPageOptions): Required<GetPageOptions> {
 }
 
 /** Resolved dependencies: functions defaulted, optional seams kept optional. */
-type ResolvedDeps = Omit<Required<RouterDeps>, "cache" | "browserPool"> &
-  Pick<RouterDeps, "cache" | "browserPool">;
+type ResolvedDeps = Omit<
+  Required<RouterDeps>,
+  "cache" | "browserPool" | "ssrf"
+> &
+  Pick<RouterDeps, "cache" | "browserPool" | "ssrf">;
 
 /**
  * The shared browser pool, created on the first Level 3 escalation.
@@ -230,6 +236,7 @@ function resolveDeps(deps: RouterDeps): ResolvedDeps {
   return {
     cache: deps.cache,
     browserPool: deps.browserPool,
+    ssrf: deps.ssrf,
     fetchPage: deps.fetchPage ?? fetchPage,
     extractWithReadability:
       deps.extractWithReadability ?? extractWithReadability,
@@ -442,6 +449,12 @@ export async function getPage(
     : resolveBrowserPool(d.browserPool);
   if (options.browser_fallback && browserPool !== undefined) {
     try {
+      // The SSRF guard lives in fetchPage, and a rejection there is swallowed
+      // above so the pipeline can escalate. Without repeating the check here,
+      // a URL the guard just refused would be loaded by Playwright instead:
+      // fetchPage throws, html is empty, Levels 1 and 2 are skipped, and the
+      // browser fetches the internal address the guard existed to block.
+      await assertPublicUrl(url, d.ssrf ?? {});
       const render = await browserPool.renderWithBrowser(url);
       const renderedHtml = render.html;
       const captured = render.captured;

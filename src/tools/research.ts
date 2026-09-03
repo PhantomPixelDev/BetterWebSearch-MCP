@@ -130,6 +130,14 @@ const MAX_PAGES = 10;
 /** Passages considered from each page before the cross-page ranking. */
 const PASSAGES_PER_PAGE = 2;
 
+/**
+ * Version of the {@link ResearchResponse} shape, embedded in the cache key.
+ *
+ * Bump this whenever a field is added, removed, or given a new meaning, so an
+ * entry written by an older build can never be served as the current type.
+ */
+export const RESPONSE_SCHEMA = 2;
+
 /** Information density below which a page counts as thin. */
 export const LOW_DENSITY_THRESHOLD = 0.5;
 
@@ -389,7 +397,11 @@ export async function runResearch(args: {
   const countPerQuery = args.count_per_query ?? 5;
   const cache = args.cache;
 
-  const cacheKey = `research:${question}:${depth}:${recencyDays ?? "any"}:${countPerQuery}`;
+  // The schema tag is part of the key because data/cache.db survives an
+  // upgrade while search entries live 15 minutes. Without it, a payload
+  // written by a version that had no `citations` or `evidence` would be cast
+  // straight back to the current type and hand callers undefined fields.
+  const cacheKey = `research:v${RESPONSE_SCHEMA}:${question}:${depth}:${recencyDays ?? "any"}:${countPerQuery}`;
   const cached = cache?.getSearch(cacheKey);
   if (cached !== null && cached !== undefined) {
     return cached as ResearchResponse;

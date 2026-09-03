@@ -4,6 +4,40 @@ All notable changes to **better-web-search-mcp** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.1] - 2026-09-03
+
+### Security
+- **The SSRF guard was bypassable through the browser tier.** The check lived
+  only in `fetchPage`, and the router deliberately swallows a fetch failure so
+  the pipeline can escalate. A blocked URL therefore produced empty html,
+  skipped Levels 1 and 2, and was then loaded by Playwright. Confirmed against
+  a local server: the HTTP tier reported `BlockedUrlError` and the browser tier
+  returned the page body, so `web_extract` on `http://127.0.0.1:.../admin`,
+  RFC1918 hosts, or `169.254.169.254` still read them. Level 3 now runs the
+  same guard, `mode: "browser"` is not an escape hatch, and three regression
+  tests cover it. **Anyone on 0.3.0 through 0.5.0 should upgrade.**
+
+### Fixed
+- Injection finding offsets are rebased onto the annotated content. `index`
+  was measured against the raw page while the returned `content` had the
+  warning banner prepended, so every offset pointed into the banner instead of
+  the suspicious span
+- Passage offsets address the source exactly. Packing rebuilt the text with a
+  literal blank line while `start`/`end` kept the original span, so
+  `content.slice(start, end)` differed from `text` whenever the page used
+  `
+
+
+` or `
+ 
+` between paragraphs — which broke the citation-anchor
+  contract. Text is now sliced from the source, and trimming moves the offsets
+  with it
+- The research cache key carries a response-schema version. `data/cache.db`
+  survives an upgrade while entries live 15 minutes, so a payload written
+  before `citations` and `evidence` existed could be cast straight back to the
+  current type and hand callers undefined fields
+
 ## [0.5.0] - 2026-09-02
 
 ### Added
@@ -271,6 +305,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 - Add `BRAVE_API_KEY` for richer ranking & recency filtering
 - Publish-ready: `npm pack --dry-run` validated, `prepare`/`prepublishOnly` hooks, `files` whitelist
 
+[0.5.1]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.5.1
 [0.5.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.5.0
 [0.4.4]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.4.4
 [0.4.3]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.4.3

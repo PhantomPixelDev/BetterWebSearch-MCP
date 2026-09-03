@@ -1,181 +1,343 @@
 {
-  "generated": "2026-09-02T17:10:41.654Z",
+  "generated": "2026-09-03T19:04:49.911Z",
   "summary": {
-    "questions_attempted": 12,
-    "questions_measured": 12,
-    "answer_found_in_baseline": 12,
-    "answer_retained": 11,
-    "retention": 0.9166666666666666,
-    "baseline_chars": 784218,
-    "retained_chars": 59198,
-    "reduction": 0.9245133368527629
+    "questions_attempted": 21,
+    "questions_measured": 21,
+    "answer_found_in_baseline": 21,
+    "answer_retained": 19,
+    "retention": 0.9047619047619048,
+    "by_category": {
+      "number": {
+        "found": 8,
+        "kept": 8,
+        "retention": 1
+      },
+      "status-code": {
+        "found": 6,
+        "kept": 6,
+        "retention": 1
+      },
+      "acronym": {
+        "found": 7,
+        "kept": 5,
+        "retention": 0.7142857142857143
+      }
+    },
+    "baseline_chars": 1212846,
+    "retained_chars": 112905,
+    "reduction": 0.9069090387402853
   },
   "rows": [
     {
       "id": "postgres-port",
+      "category": "number",
       "question": "What port does PostgreSQL listen on by default?",
       "answer_in_baseline": true,
       "answer_in_retained": true,
       "matched_markers": [
         "5432"
       ],
-      "baseline_chars": 81240,
-      "retained_chars": 5899,
+      "baseline_chars": 70085,
+      "retained_chars": 4373,
       "cited_spans": 5,
-      "independent_sources": 4,
+      "independent_sources": 3,
       "sources_opened": 4
     },
     {
       "id": "redis-port",
+      "category": "number",
       "question": "What is the default port for Redis?",
       "answer_in_baseline": true,
       "answer_in_retained": true,
       "matched_markers": [
         "6379"
       ],
-      "baseline_chars": 156294,
-      "retained_chars": 3887,
-      "cited_spans": 5,
-      "independent_sources": 5,
-      "sources_opened": 5
-    },
-    {
-      "id": "http-429",
-      "question": "Which HTTP status code means Too Many Requests?",
-      "answer_in_baseline": true,
-      "answer_in_retained": true,
-      "matched_markers": [
-        "429"
-      ],
-      "baseline_chars": 32779,
-      "retained_chars": 7219,
-      "cited_spans": 5,
-      "independent_sources": 4,
-      "sources_opened": 5
-    },
-    {
-      "id": "http-418",
-      "question": "What does HTTP status code 418 mean?",
-      "answer_in_baseline": true,
-      "answer_in_retained": true,
-      "matched_markers": [
-        "teapot"
-      ],
-      "baseline_chars": 38220,
-      "retained_chars": 4715,
-      "cited_spans": 5,
-      "independent_sources": 5,
-      "sources_opened": 5
-    },
-    {
-      "id": "sqlite-wal",
-      "question": "What does WAL stand for in SQLite journal_mode?",
-      "answer_in_baseline": true,
-      "answer_in_retained": false,
-      "matched_markers": [],
-      "baseline_chars": 61749,
-      "retained_chars": 3535,
-      "cited_spans": 5,
-      "independent_sources": 5,
-      "sources_opened": 5
-    },
-    {
-      "id": "dns-label",
-      "question": "What is the maximum length of a single DNS label in octets?",
-      "answer_in_baseline": true,
-      "answer_in_retained": true,
-      "matched_markers": [
-        "63"
-      ],
-      "baseline_chars": 13572,
-      "retained_chars": 2831,
-      "cited_spans": 4,
-      "independent_sources": 4,
-      "sources_opened": 5
-    },
-    {
-      "id": "rust-origin",
-      "question": "Which organization originally sponsored the Rust programming language?",
-      "answer_in_baseline": true,
-      "answer_in_retained": true,
-      "matched_markers": [
-        "mozilla"
-      ],
-      "baseline_chars": 35554,
-      "retained_chars": 4025,
-      "cited_spans": 5,
-      "independent_sources": 4,
-      "sources_opened": 5
-    },
-    {
-      "id": "playwright-license",
-      "question": "What software license is Playwright released under?",
-      "answer_in_baseline": true,
-      "answer_in_retained": true,
-      "matched_markers": [
-        "apache"
-      ],
-      "baseline_chars": 48687,
-      "retained_chars": 5517,
+      "baseline_chars": 156082,
+      "retained_chars": 5459,
       "cited_spans": 5,
       "independent_sources": 4,
       "sources_opened": 4
     },
     {
-      "id": "git-default-branch",
-      "question": "What is the default branch name for new repositories on GitHub?",
+      "id": "mysql-port",
+      "category": "number",
+      "question": "What is the default port for MySQL?",
       "answer_in_baseline": true,
       "answer_in_retained": true,
       "matched_markers": [
-        "\\bmain\\b"
+        "3306"
       ],
-      "baseline_chars": 69510,
-      "retained_chars": 6427,
-      "cited_spans": 5,
-      "independent_sources": 3,
-      "sources_opened": 4
-    },
-    {
-      "id": "semver-parts",
-      "question": "What are the three parts of a semantic version number?",
-      "answer_in_baseline": true,
-      "answer_in_retained": true,
-      "matched_markers": [
-        "major[^a-z]{0,4}minor[^a-z]{0,4}patch"
-      ],
-      "baseline_chars": 92917,
-      "retained_chars": 4547,
-      "cited_spans": 5,
-      "independent_sources": 5,
-      "sources_opened": 5
-    },
-    {
-      "id": "json-content-type",
-      "question": "What is the standard Content-Type header value for JSON?",
-      "answer_in_baseline": true,
-      "answer_in_retained": true,
-      "matched_markers": [
-        "application/json"
-      ],
-      "baseline_chars": 92975,
-      "retained_chars": 6335,
+      "baseline_chars": 24571,
+      "retained_chars": 5587,
       "cited_spans": 5,
       "independent_sources": 4,
       "sources_opened": 4
     },
     {
-      "id": "ssl-port",
+      "id": "ssh-port",
+      "category": "number",
+      "question": "What is the default port for SSH?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "\\b22\\b"
+      ],
+      "baseline_chars": 36776,
+      "retained_chars": 5225,
+      "cited_spans": 5,
+      "independent_sources": 5,
+      "sources_opened": 5
+    },
+    {
+      "id": "https-port",
+      "category": "number",
       "question": "What is the default port for HTTPS?",
       "answer_in_baseline": true,
       "answer_in_retained": true,
       "matched_markers": [
         "443"
       ],
-      "baseline_chars": 60721,
-      "retained_chars": 4261,
+      "baseline_chars": 48467,
+      "retained_chars": 4481,
+      "cited_spans": 5,
+      "independent_sources": 4,
+      "sources_opened": 4
+    },
+    {
+      "id": "mongodb-port",
+      "category": "number",
+      "question": "What is the default port for MongoDB?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "27017"
+      ],
+      "baseline_chars": 142434,
+      "retained_chars": 8341,
       "cited_spans": 5,
       "independent_sources": 3,
       "sources_opened": 3
+    },
+    {
+      "id": "smtp-port",
+      "category": "number",
+      "question": "What is the default port for SMTP?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "\\b25\\b"
+      ],
+      "baseline_chars": 52290,
+      "retained_chars": 4893,
+      "cited_spans": 5,
+      "independent_sources": 4,
+      "sources_opened": 4
+    },
+    {
+      "id": "dns-label",
+      "category": "number",
+      "question": "What is the maximum length of a single DNS label in octets?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "63"
+      ],
+      "baseline_chars": 13971,
+      "retained_chars": 1679,
+      "cited_spans": 2,
+      "independent_sources": 1,
+      "sources_opened": 2
+    },
+    {
+      "id": "http-429",
+      "category": "status-code",
+      "question": "Which HTTP status code means Too Many Requests?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "429"
+      ],
+      "baseline_chars": 32664,
+      "retained_chars": 7231,
+      "cited_spans": 5,
+      "independent_sources": 4,
+      "sources_opened": 5
+    },
+    {
+      "id": "http-418",
+      "category": "status-code",
+      "question": "What does HTTP status code 418 mean?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "teapot"
+      ],
+      "baseline_chars": 24364,
+      "retained_chars": 4355,
+      "cited_spans": 5,
+      "independent_sources": 4,
+      "sources_opened": 4
+    },
+    {
+      "id": "http-404",
+      "category": "status-code",
+      "question": "What does HTTP status code 404 mean?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "not found"
+      ],
+      "baseline_chars": 41542,
+      "retained_chars": 6093,
+      "cited_spans": 5,
+      "independent_sources": 4,
+      "sources_opened": 4
+    },
+    {
+      "id": "http-301",
+      "category": "status-code",
+      "question": "What does HTTP status code 301 mean?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "moved permanently"
+      ],
+      "baseline_chars": 33247,
+      "retained_chars": 5145,
+      "cited_spans": 5,
+      "independent_sources": 4,
+      "sources_opened": 4
+    },
+    {
+      "id": "http-503",
+      "category": "status-code",
+      "question": "What does HTTP status code 503 mean?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "service unavailable"
+      ],
+      "baseline_chars": 36722,
+      "retained_chars": 5411,
+      "cited_spans": 5,
+      "independent_sources": 3,
+      "sources_opened": 3
+    },
+    {
+      "id": "http-451",
+      "category": "status-code",
+      "question": "What does HTTP status code 451 mean?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "unavailable for legal reasons"
+      ],
+      "baseline_chars": 78623,
+      "retained_chars": 5493,
+      "cited_spans": 5,
+      "independent_sources": 5,
+      "sources_opened": 5
+    },
+    {
+      "id": "acr-sqlite-wal",
+      "category": "acronym",
+      "question": "What does WAL stand for in SQLite journal_mode?",
+      "answer_in_baseline": true,
+      "answer_in_retained": false,
+      "matched_markers": [],
+      "baseline_chars": 21391,
+      "retained_chars": 3677,
+      "cited_spans": 5,
+      "independent_sources": 5,
+      "sources_opened": 5
+    },
+    {
+      "id": "acr-cors",
+      "category": "acronym",
+      "question": "What does CORS stand for?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "cross[- ]origin resource sharing"
+      ],
+      "baseline_chars": 53437,
+      "retained_chars": 4869,
+      "cited_spans": 5,
+      "independent_sources": 5,
+      "sources_opened": 5
+    },
+    {
+      "id": "acr-jwt",
+      "category": "acronym",
+      "question": "What does JWT stand for?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "json web token"
+      ],
+      "baseline_chars": 37028,
+      "retained_chars": 4625,
+      "cited_spans": 5,
+      "independent_sources": 5,
+      "sources_opened": 5
+    },
+    {
+      "id": "acr-ssrf",
+      "category": "acronym",
+      "question": "What does SSRF stand for?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "server[- ]side request forgery"
+      ],
+      "baseline_chars": 45480,
+      "retained_chars": 5327,
+      "cited_spans": 5,
+      "independent_sources": 5,
+      "sources_opened": 5
+    },
+    {
+      "id": "acr-rest",
+      "category": "acronym",
+      "question": "What does REST stand for in web APIs?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "representational state transfer"
+      ],
+      "baseline_chars": 156844,
+      "retained_chars": 7563,
+      "cited_spans": 5,
+      "independent_sources": 5,
+      "sources_opened": 5
+    },
+    {
+      "id": "acr-acid",
+      "category": "acronym",
+      "question": "What does ACID stand for in database transactions?",
+      "answer_in_baseline": true,
+      "answer_in_retained": false,
+      "matched_markers": [],
+      "baseline_chars": 49029,
+      "retained_chars": 5151,
+      "cited_spans": 5,
+      "independent_sources": 5,
+      "sources_opened": 5
+    },
+    {
+      "id": "acr-dns",
+      "category": "acronym",
+      "question": "What does DNS stand for?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "domain name system"
+      ],
+      "baseline_chars": 57799,
+      "retained_chars": 7927,
+      "cited_spans": 5,
+      "independent_sources": 4,
+      "sources_opened": 4
     }
   ]
 }

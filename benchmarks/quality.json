@@ -1,65 +1,42 @@
 {
-  "note": "Questions with a checkable answer marker. Each `must_contain` entry is a case-insensitive regex; a match means the answer is present in the text being examined. Questions are deliberately narrow and factual so the marker is unambiguous — this set measures whether compression discards the answer, not whether the web is correct.",
+  "note": "Questions with a checkable answer marker. Each `must_contain` entry is a case-insensitive regex; a match means the answer is present in the text being examined. Questions are narrow and factual so the marker is unambiguous — this set measures whether compression discards the answer, not whether the web is correct. The `acronym` category deliberately over-samples the failure mode found in the first run, so it can be confirmed or dismissed rather than guessed at.",
   "questions": [
-    {
-      "id": "postgres-port",
-      "text": "What port does PostgreSQL listen on by default?",
-      "must_contain": ["5432"]
-    },
-    {
-      "id": "redis-port",
-      "text": "What is the default port for Redis?",
-      "must_contain": ["6379"]
-    },
-    {
-      "id": "http-429",
-      "text": "Which HTTP status code means Too Many Requests?",
-      "must_contain": ["429"]
-    },
-    {
-      "id": "http-418",
-      "text": "What does HTTP status code 418 mean?",
-      "must_contain": ["teapot"]
-    },
-    {
-      "id": "sqlite-wal",
-      "text": "What does WAL stand for in SQLite journal_mode?",
-      "must_contain": ["write[- ]ahead log"]
-    },
-    {
-      "id": "dns-label",
-      "text": "What is the maximum length of a single DNS label in octets?",
-      "must_contain": ["63"]
-    },
-    {
-      "id": "rust-origin",
-      "text": "Which organization originally sponsored the Rust programming language?",
-      "must_contain": ["mozilla"]
-    },
-    {
-      "id": "playwright-license",
-      "text": "What software license is Playwright released under?",
-      "must_contain": ["apache"]
-    },
-    {
-      "id": "git-default-branch",
-      "text": "What is the default branch name for new repositories on GitHub?",
-      "must_contain": ["\\bmain\\b"]
-    },
-    {
-      "id": "semver-parts",
-      "text": "What are the three parts of a semantic version number?",
-      "must_contain": ["major[^a-z]{0,4}minor[^a-z]{0,4}patch", "major, minor,? and patch"]
-    },
-    {
-      "id": "json-content-type",
-      "text": "What is the standard Content-Type header value for JSON?",
-      "must_contain": ["application/json"]
-    },
-    {
-      "id": "ssl-port",
-      "text": "What is the default port for HTTPS?",
-      "must_contain": ["443"]
-    }
+    { "id": "postgres-port", "category": "number", "text": "What port does PostgreSQL listen on by default?", "must_contain": ["5432"] },
+    { "id": "redis-port", "category": "number", "text": "What is the default port for Redis?", "must_contain": ["6379"] },
+    { "id": "mysql-port", "category": "number", "text": "What is the default port for MySQL?", "must_contain": ["3306"] },
+    { "id": "ssh-port", "category": "number", "text": "What is the default port for SSH?", "must_contain": ["\\b22\\b"] },
+    { "id": "https-port", "category": "number", "text": "What is the default port for HTTPS?", "must_contain": ["443"] },
+    { "id": "mongodb-port", "category": "number", "text": "What is the default port for MongoDB?", "must_contain": ["27017"] },
+    { "id": "smtp-port", "category": "number", "text": "What is the default port for SMTP?", "must_contain": ["\\b25\\b"] },
+    { "id": "dns-label", "category": "number", "text": "What is the maximum length of a single DNS label in octets?", "must_contain": ["63"] },
+
+    { "id": "http-429", "category": "status-code", "text": "Which HTTP status code means Too Many Requests?", "must_contain": ["429"] },
+    { "id": "http-418", "category": "status-code", "text": "What does HTTP status code 418 mean?", "must_contain": ["teapot"] },
+    { "id": "http-404", "category": "status-code", "text": "What does HTTP status code 404 mean?", "must_contain": ["not found"] },
+    { "id": "http-301", "category": "status-code", "text": "What does HTTP status code 301 mean?", "must_contain": ["moved permanently"] },
+    { "id": "http-503", "category": "status-code", "text": "What does HTTP status code 503 mean?", "must_contain": ["service unavailable"] },
+    { "id": "http-451", "category": "status-code", "text": "What does HTTP status code 451 mean?", "must_contain": ["unavailable for legal reasons"] },
+
+    { "id": "acr-sqlite-wal", "category": "acronym", "text": "What does WAL stand for in SQLite journal_mode?", "must_contain": ["write[- ]ahead log"] },
+    { "id": "acr-cors", "category": "acronym", "text": "What does CORS stand for?", "must_contain": ["cross[- ]origin resource sharing"] },
+    { "id": "acr-jwt", "category": "acronym", "text": "What does JWT stand for?", "must_contain": ["json web token"] },
+    { "id": "acr-ssrf", "category": "acronym", "text": "What does SSRF stand for?", "must_contain": ["server[- ]side request forgery"] },
+    { "id": "acr-rest", "category": "acronym", "text": "What does REST stand for in web APIs?", "must_contain": ["representational state transfer"] },
+    { "id": "acr-acid", "category": "acronym", "text": "What does ACID stand for in database transactions?", "must_contain": ["atomicity[\\s\\S]{0,60}consistency[\\s\\S]{0,60}isolation[\\s\\S]{0,60}durability"] },
+    { "id": "acr-dns", "category": "acronym", "text": "What does DNS stand for?", "must_contain": ["domain name system"] },
+    { "id": "acr-tls", "category": "acronym", "text": "What does TLS stand for?", "must_contain": ["transport layer security"] },
+    { "id": "acr-sql", "category": "acronym", "text": "What does SQL stand for?", "must_contain": ["structured query language"] },
+    { "id": "acr-html", "category": "acronym", "text": "What does HTML stand for?", "must_contain": ["hypertext markup language"] },
+    { "id": "acr-css", "category": "acronym", "text": "What does CSS stand for?", "must_contain": ["cascading style sheets"] },
+    { "id": "acr-crud", "category": "acronym", "text": "What does CRUD stand for?", "must_contain": ["create[\\s\\S]{0,40}read[\\s\\S]{0,40}update[\\s\\S]{0,40}delete"] },
+
+    { "id": "lic-playwright", "category": "fact", "text": "What software license is Playwright released under?", "must_contain": ["apache"] },
+    { "id": "lic-node", "category": "fact", "text": "What software license is Node.js released under?", "must_contain": ["\\bMIT\\b"] },
+    { "id": "lic-linux", "category": "fact", "text": "What software license is the Linux kernel released under?", "must_contain": ["GPL"] },
+    { "id": "rust-origin", "category": "fact", "text": "Which organization originally sponsored the Rust programming language?", "must_contain": ["mozilla"] },
+    { "id": "git-default-branch", "category": "fact", "text": "What is the default branch name for new repositories on GitHub?", "must_contain": ["\\bmain\\b"] },
+    { "id": "json-content-type", "category": "fact", "text": "What is the standard Content-Type header value for JSON?", "must_contain": ["application/json"] },
+    { "id": "semver-parts", "category": "fact", "text": "What are the three parts of a semantic version number?", "must_contain": ["major[^a-z]{0,4}minor[^a-z]{0,4}patch", "major, minor,? and patch"] },
+    { "id": "etag-header", "category": "fact", "text": "Which HTTP request header is used to make a conditional request with an ETag?", "must_contain": ["if-none-match"] }
   ]
 }

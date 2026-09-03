@@ -56,6 +56,9 @@ function fetched(html: string): FetchedPage {
 function shellDeps(cache: Cache): RouterDeps {
   return {
     cache,
+    // The browser tier runs the SSRF guard too, so these fixtures need a
+    // resolver or the suite would depend on shell.example resolving.
+    ssrf: { resolve: async () => ["93.184.216.34"] },
     fetchPage: vi.fn().mockResolvedValue(fetched(SHELL_HTML)),
     extractWithReadability: vi.fn().mockReturnValue(null),
     extractStructuredData: vi.fn().mockReturnValue(EMPTY_STRUCTURED),
@@ -191,6 +194,58 @@ describe("domain-profile browser shortcut", () => {
     cache.setDomain("shell.example", { stale: true });
 
     await getPage("https://shell.example/p", {}, shellDeps(cache));
+
+    expect(renderWithBrowser).toHaveBeenCalled();
+  });
+});
+
+
+describe("browser tier SSRF guard", () => {
+  /**
+   * Regression test for a real bypass.
+   *
+   * The guard used to live only in fetchPage. The router swallows a fetch
+   * failure so the pipeline can escalate, so a blocked URL produced empty
+   * html, skipped Levels 1 and 2, and was then loaded by Playwright. Verified
+   * against a local server before the fix: the HTTP tier reported
+   * BlockedUrlError and the browser tier returned the page body.
+   */
+  function blockedDeps(cache: Cache): RouterDeps {
+    return {
+      ...shellDeps(cache),
+      // Whatever the hostname, it resolves somewhere private.
+      ssrf: { resolve: async () => ["127.0.0.1"] },
+    };
+  }
+
+  it("does not render a URL the fetch guard would refuse", async () => {
+    const result = await getPage(
+      "http://internal.example/admin",
+      {},
+      blockedDeps(new Cache({ memory: true })),
+    );
+
+    expect(renderWithBrowser).not.toHaveBeenCalled();
+    expect(result.extraction.rendered).toBe(false);
+  });
+
+  it("refuses a literal private address even in forced browser mode", async () => {
+    await getPage(
+      "http://169.254.169.254/latest/meta-data/",
+      { mode: "browser" },
+      shellDeps(new Cache({ memory: true })),
+    );
+
+    // mode: "browser" must not be an escape hatch around the guard.
+    expect(renderWithBrowser).not.toHaveBeenCalled();
+  });
+
+  it("still renders a public URL", async () => {
+    await getPage(
+      "https://shell.example/p",
+      {},
+      shellDeps(new Cache({ memory: true })),
+    );
 
     expect(renderWithBrowser).toHaveBeenCalled();
   });

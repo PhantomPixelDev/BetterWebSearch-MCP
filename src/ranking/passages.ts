@@ -76,12 +76,30 @@ export function splitPassages(content: string): Passage[] {
   let bufferEnd = -1;
   let buffer = "";
 
+  /**
+   * Record a passage, keeping `start`/`end` addressing the exact span.
+   *
+   * Trimming the text without moving the offsets would break the contract that
+   * `content.slice(start, end) === text`, which is what makes a citation
+   * anchor verifiable.
+   */
+  const push = (raw: string, start: number): void => {
+    const leading = raw.length - raw.trimStart().length;
+    const text = raw.trim();
+    if (text === "") {
+      return;
+    }
+    const from = start + leading;
+    passages.push({ text, start: from, end: from + text.length, score: 0 });
+  };
+
   const emit = (text: string, start: number, end: number): void => {
+    void end;
     if (text.trim() === "") {
       return;
     }
     if (text.length <= MAX_PASSAGE_CHARS) {
-      passages.push({ text: text.trim(), start, end, score: 0 });
+      push(text, start);
       return;
     }
     // Window an over-long block on sentence boundaries, keeping offsets
@@ -100,15 +118,7 @@ export function splitPassages(content: string): Passage[] {
           windowEnd = windowStart + cut;
         }
       }
-      const chunk = text.slice(windowStart, windowEnd);
-      if (chunk.trim() !== "") {
-        passages.push({
-          text: chunk.trim(),
-          start: start + windowStart,
-          end: start + windowEnd,
-          score: 0,
-        });
-      }
+      push(text.slice(windowStart, windowEnd), start + windowStart);
       windowStart = windowEnd;
     }
   };
@@ -132,8 +142,11 @@ export function splitPassages(content: string): Passage[] {
       flush();
       bufferStart = index;
     }
-    buffer = buffer === "" ? paragraph : `${buffer}\n\n${paragraph}`;
     bufferEnd = index + paragraph.length;
+    // Slice the original rather than rejoining with a literal "\n\n": the
+    // source separator may be "\n\n\n" or "\n \n", and rebuilding the text
+    // would leave it a different length from the span start/end describe.
+    buffer = content.slice(bufferStart, bufferEnd);
     if (buffer.length >= TARGET_PASSAGE_CHARS) {
       flush();
     }

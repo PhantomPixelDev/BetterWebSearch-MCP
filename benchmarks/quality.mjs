@@ -89,6 +89,7 @@ async function measure(question) {
 
   return {
     id: question.id,
+    category: question.category ?? "uncategorized",
     question: question.text,
     answer_in_baseline: inBaseline,
     answer_in_retained: inRetained,
@@ -107,6 +108,24 @@ function summarize(rows) {
   const kept = found.filter((row) => row.answer_in_retained);
   const baselineChars = ok.reduce((n, r) => n + r.baseline_chars, 0);
   const retainedChars = ok.reduce((n, r) => n + r.retained_chars, 0);
+  // Per-category retention is what tells a systematic weakness apart from a
+  // single unlucky question. The first run lost one acronym case; without this
+  // split there is no way to know whether that was the category or the luck.
+  const categories = {};
+  for (const row of ok) {
+    const key = row.category ?? "uncategorized";
+    categories[key] ??= { found: 0, kept: 0 };
+    if (row.answer_in_baseline) {
+      categories[key].found += 1;
+      if (row.answer_in_retained) {
+        categories[key].kept += 1;
+      }
+    }
+  }
+  for (const stats of Object.values(categories)) {
+    stats.retention = stats.found > 0 ? stats.kept / stats.found : 0;
+  }
+
   return {
     questions_attempted: rows.length,
     questions_measured: ok.length,
@@ -114,6 +133,7 @@ function summarize(rows) {
     answer_retained: kept.length,
     // Conditioned on the baseline: this is compression loss, not retrieval.
     retention: found.length > 0 ? kept.length / found.length : 0,
+    by_category: categories,
     baseline_chars: baselineChars,
     retained_chars: retainedChars,
     reduction: baselineChars > 0 ? 1 - retainedChars / baselineChars : 0,
@@ -170,6 +190,12 @@ async function main() {
   console.log(`Answer retained      ${summary.answer_retained}`);
   console.log(`Retention            ${pct(summary.retention)}  of answers that were there to keep`);
   console.log(`Payload reduction    ${pct(summary.reduction)} on this set`);
+  console.log(`${"-".repeat(66)}`);
+  for (const [category, stats] of Object.entries(summary.by_category)) {
+    console.log(
+      `  ${category.padEnd(14)} ${String(stats.kept).padStart(2)}/${String(stats.found).padEnd(3)} ${pct(stats.retention)}`,
+    );
+  }
   console.log(`${"=".repeat(66)}`);
   console.log(`\nReport written to ${args.out}`);
 }

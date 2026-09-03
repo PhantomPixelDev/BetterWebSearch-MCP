@@ -140,11 +140,12 @@ async function extractOne(
 
 /** Map a routed page to the spec-shaped response. */
 function toResponse(page: RoutedPage): ExtractResponse {
-  const security = screenContent(page.content);
+  const screened = screenContent(page.content);
+  const { content, report: security } = annotateContent(page.content, screened);
   return {
     url: page.url,
     title: page.title,
-    content: annotateContent(page.content, security),
+    content,
     extraction: {
       method: page.extraction.method,
       confidence: page.extraction.confidence,
