@@ -4,6 +4,32 @@ All notable changes to **better-web-search-mcp** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.3] - 2026-09-04
+
+### Fixed
+- **Acronym expansion now works, and the 58.3% is measured away.** The 0.5.2
+  attempt shipped without moving the benchmark, and an A/B on a frozen corpus
+  showed two mistakes of mine. The matcher was too loose: under the `i` flag
+  `[a-z]*` also consumes uppercase, so each initial swallowed the acronym's own
+  letters and a heading like "DNS definition: What does DNS stand for in
+  networking" counted as an expansion, making the bonus uniform and useless.
+  And the guard requiring the acronym in the same passage as the expansion
+  blocked the exact case it was meant to help, since the sentence defining DNS
+  or CSS routinely omits the letters
+- A score bonus alone could not surface the answer either. Acronym pages are
+  full of headings repeating every query term and callers keep two passages per
+  page, so the defining sentence never became a candidate. Definition questions
+  now order the expansion first, gated by `isDefinitionQuery` so queries that
+  merely mention an acronym are untouched
+
+### Changed
+- Retention improves from **82.4% to 97.1%** overall and **58.3% to 100%** on
+  acronym questions. Verified by replaying one frozen corpus so the only
+  variable is the code (6/12 to 12/12, 27/34 to 33/34), then confirmed by a
+  live run at the same figures
+- The scraped page corpus is no longer committed. It is multi-megabyte
+  third-party content and regenerable with `npm run bench:corpus -- fetch`
+
 ## [0.5.2] - 2026-09-03
 
 ### Added
@@ -343,6 +369,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 - Add `BRAVE_API_KEY` for richer ranking & recency filtering
 - Publish-ready: `npm pack --dry-run` validated, `prepare`/`prepublishOnly` hooks, `files` whitelist
 
+[0.5.3]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.5.3
 [0.5.2]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.5.2
 [0.5.1]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.5.1
 [0.5.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.5.0

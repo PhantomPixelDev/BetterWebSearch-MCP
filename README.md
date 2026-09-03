@@ -135,20 +135,22 @@ as compression losses:
 |---|---|---|
 | Numbers (ports, limits) | 8 / 8 | 100% |
 | HTTP status codes | 6 / 6 | 100% |
+| Acronym expansions | 12 / 12 | 100% |
 | Facts (licenses, defaults) | 7 / 8 | 87.5% |
-| **Acronym expansions** | **7 / 12** | **58.3%** |
-| **Overall** | **28 / 34** | **82.4%** |
+| **Overall** | **33 / 34** | **97.1%** |
 
-So roughly **one question in six loses its answer to compression**, and it is
-not spread evenly: acronym-expansion questions fail 4 times out of 10. The
-sentence that spells out "write-ahead logging" or "transport layer security"
-usually does not repeat the query terms, so BM25 ranks other passages above it.
-Everything with a distinctive literal token — a port, a status code — survives
-intact.
+Acronym questions used to retain only 58.3%: the sentence spelling out
+"transport layer security" states it once while surrounding pages repeat the
+acronym, so BM25 ranked the answer below the noise. Passage selection now
+recognises acronym-definition questions and surfaces the expansion. Verified by
+replaying one frozen page corpus so the only variable is the code — acronyms
+went 6/12 to 12/12, overall 27/34 to 33/34 — and confirmed by a live run at the
+same figures.
 
-An earlier 12-question run reported 91.7%. Widening the set to 34 dropped it to
-82.4% and turned a single unlucky question into a visible category-level
-weakness, which is the honest number.
+The remaining loss is not an acronym question: *"Which HTTP request header is
+used to make a conditional request with an ETag?"*, where the answer
+(`If-None-Match`) appears in reference tables that the passage splitter does
+not keep intact.
 
 Method and raw per-question results: [`benchmarks/`](benchmarks/).
 

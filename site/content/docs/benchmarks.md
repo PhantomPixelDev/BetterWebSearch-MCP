@@ -93,35 +93,48 @@ Retention is conditioned on the baseline on purpose. A question whose marker
 never appeared in the fetched pages is a retrieval miss, not a compression
 loss, and would otherwise blame the passage selector for weak search results.
 
-34 questions, run 2026-09-03:
+34 questions, run 2026-09-04:
 
 | | |
 |---|---|
 | Answer present in baseline | 34 / 34 |
-| Answer retained after compression | **28 / 34** |
-| **Retention** | **82.4%** |
+| Answer retained after compression | **33 / 34** |
+| **Retention** | **97.1%** |
 | Payload reduction on this set | 92.4% |
 
-Retention is not spread evenly, which is the point of splitting by category:
+By category:
 
 | Category | Retained | Retention |
 |---|---|---|
 | Numbers (ports, limits) | 8 / 8 | 100% |
 | HTTP status codes | 6 / 6 | 100% |
+| Acronym expansions | 12 / 12 | 100% |
 | Facts (licenses, defaults) | 7 / 8 | 87.5% |
-| Acronym expansions | 7 / 12 | 58.3% |
 
-**Acronym expansion is a systematic weakness, not bad luck.** A question like
-*"What does TLS stand for?"* keeps its query terms — TLS — while the sentence
-that actually spells out "transport layer security" often contains none of them
-densely, so BM25 ranks other passages above it. The same pattern lost WAL,
-ACID, HTML and CRUD. Anything with a distinctive literal token, such as a port
-number or a status code, survives intact.
+### Acronym questions: 58.3% to 100%
 
-The first version of this benchmark used 12 questions and reported 91.7%.
-Widening it to 34 dropped the figure to 82.4% and converted one unlucky
-question into a measurable category failure. The wider number is the honest
-one, and the narrow one is left here as a caution about small evaluation sets.
+Earlier runs retained only 58.3% of acronym questions. The cause was specific:
+*"What does TLS stand for?"* is answered by a sentence that states the
+expansion once, while the pages around it repeat the acronym constantly, so
+BM25 ranked the answer below the noise. Passage selection now detects an
+acronym-definition question and surfaces the passage that spells the acronym
+out.
+
+That claim is measured rather than asserted. Replaying a single frozen page
+corpus, so the only variable is the selection code:
+
+| | Before | After |
+|---|---|---|
+| Acronym | 6 / 12 (50.0%) | **12 / 12 (100%)** |
+| Overall | 27 / 34 (79.4%) | **33 / 34 (97.1%)** |
+
+A live run afterwards reported the same 97.1% and 12/12, which is the check
+that the offline harness is not flattering itself.
+
+The one remaining loss is not an acronym question. *"Which HTTP request header
+is used to make a conditional request with an ETag?"* is answered by
+`If-None-Match` inside reference tables, which the paragraph-based splitter
+does not keep intact.
 
 This still does not measure whether the sources are *correct*, only whether the
 answer survived the pipeline.

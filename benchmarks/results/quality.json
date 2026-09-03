@@ -1,11 +1,11 @@
 {
-  "generated": "2026-09-03T22:20:12.639Z",
+  "generated": "2026-09-03T22:20:41.503Z",
   "summary": {
-    "questions_attempted": 32,
-    "questions_measured": 32,
-    "answer_found_in_baseline": 32,
-    "answer_retained": 32,
-    "retention": 1,
+    "questions_attempted": 34,
+    "questions_measured": 34,
+    "answer_found_in_baseline": 34,
+    "answer_retained": 33,
+    "retention": 0.9705882352941176,
     "by_category": {
       "number": {
         "found": 8,
@@ -23,14 +23,14 @@
         "retention": 1
       },
       "fact": {
-        "found": 6,
-        "kept": 6,
-        "retention": 1
+        "found": 8,
+        "kept": 7,
+        "retention": 0.875
       }
     },
-    "baseline_chars": 2304993,
-    "retained_chars": 181828,
-    "reduction": 0.9211155955788152
+    "baseline_chars": 2535170,
+    "retained_chars": 192398,
+    "reduction": 0.9241084424318685
   },
   "rows": [
     {
@@ -511,6 +511,34 @@
       "retained_chars": 4115,
       "cited_spans": 5,
       "independent_sources": 4,
+      "sources_opened": 5
+    },
+    {
+      "id": "semver-parts",
+      "category": "fact",
+      "question": "What are the three parts of a semantic version number?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "major[^a-z]{0,4}minor[^a-z]{0,4}patch"
+      ],
+      "baseline_chars": 104491,
+      "retained_chars": 4895,
+      "cited_spans": 5,
+      "independent_sources": 5,
+      "sources_opened": 5
+    },
+    {
+      "id": "etag-header",
+      "category": "fact",
+      "question": "Which HTTP request header is used to make a conditional request with an ETag?",
+      "answer_in_baseline": true,
+      "answer_in_retained": false,
+      "matched_markers": [],
+      "baseline_chars": 125686,
+      "retained_chars": 5675,
+      "cited_spans": 5,
+      "independent_sources": 3,
       "sources_opened": 5
     }
   ]
