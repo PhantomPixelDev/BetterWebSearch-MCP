@@ -40,6 +40,13 @@ const { getPage } = await import(dist("extraction/router.js"));
 /** Top results a hand-driven agent would open, matching run.mjs. */
 const BASELINE_PAGES = 5;
 
+/**
+ * Minimum share of questions whose answer must appear in the baseline before
+ * the retention figure is trustworthy. Below this the run is reporting on
+ * search failures rather than on compression.
+ */
+const MIN_COVERAGE = 0.7;
+
 function parseArgs(argv) {
   const args = { out: join(here, "results", "quality.json") };
   for (let i = 0; i < argv.length; i += 1) {
@@ -198,6 +205,26 @@ async function main() {
   }
   console.log(`${"=".repeat(66)}`);
   console.log(`\nReport written to ${args.out}`);
+
+  // A rate-limited run still produces a retention percentage, and it looks
+  // exactly like a real one. This exact situation already caused a wrong
+  // conclusion: providers returned nothing for 26 of 34 questions, every
+  // acronym baseline came back at ~120 characters, and the resulting figure
+  // was read as evidence that a ranking change had not helped.
+  const coverage =
+    summary.questions_measured > 0
+      ? summary.answer_found_in_baseline / summary.questions_measured
+      : 0;
+  if (coverage < MIN_COVERAGE) {
+    console.error(
+      `\nUNRELIABLE RUN: the answer was found in only ` +
+        `${summary.answer_found_in_baseline}/${summary.questions_measured} baselines ` +
+        `(${pct(coverage)}). Providers returned little or nothing, so the ` +
+        `retention figure above is not meaningful. DuckDuckGo rate-limiting is ` +
+        `the usual cause — wait, or set BRAVE_API_KEY / TAVILY_API_KEY.`,
+    );
+    process.exitCode = 1;
+  }
 }
 
 await main();

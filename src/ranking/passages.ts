@@ -54,6 +54,82 @@ const STOP_WORDS = new Set([
   "who", "why", "will", "with", "you", "your",
 ]);
 
+/**
+ * Shortest acronym worth expanding.
+ *
+ * Two-letter sequences match far too much ordinary prose to be a useful
+ * signal, so only three letters and up are considered.
+ */
+const MIN_ACRONYM_LENGTH = 3;
+
+/** Longest acronym worth expanding; beyond this the regex is noise. */
+const MAX_ACRONYM_LENGTH = 8;
+
+/**
+ * Weight of an acronym-expansion match, as a multiple of the mean query IDF.
+ *
+ * Expressed relative to the query's own IDF so it stays comparable to BM25
+ * scores instead of being a magic constant tuned to one corpus.
+ */
+const ACRONYM_EXPANSION_WEIGHT = 1.5;
+
+/** Words allowed between expansion initials without breaking the match. */
+const CONNECTORS = "(?:of|and|the|for|in|to|a)";
+
+/**
+ * Uppercase acronyms appearing in a query, e.g. "TLS" from "What does TLS
+ * stand for?".
+ */
+export function findAcronyms(query: string): string[] {
+  const found =
+    query.match(
+      new RegExp(`\\b[A-Z]{${MIN_ACRONYM_LENGTH},${MAX_ACRONYM_LENGTH}}\\b`, "g"),
+    ) ?? [];
+  return [...new Set(found)];
+}
+
+/**
+ * Whether `text` contains a phrase whose initials spell `acronym`.
+ *
+ * "Transport Layer Security" expands TLS; "Atomicity, Consistency, Isolation,
+ * Durability" expands ACID. Separators allow the punctuation these lists are
+ * usually written with, and a short connector word may sit between initials
+ * so "Cross-Origin Resource Sharing" and similar still match.
+ *
+ * This exists because the expansion is exactly the text a lexical scorer
+ * cannot find: the sentence that answers "what does TLS stand for" frequently
+ * never repeats the letters TLS, so it shares no term with the query and is
+ * dropped before ranking.
+ */
+export function expandsAcronym(text: string, acronym: string): boolean {
+  const letters = [...acronym.toUpperCase()];
+  if (letters.length < MIN_ACRONYM_LENGTH) {
+    return false;
+  }
+  // Between initials: run out the current word, then optionally a separator
+  // and a connector. Letting the separator be optional is what allows a
+  // compound word to supply two initials, as "HyperText" does for HTML.
+  const gap = `[a-z]*(?:[\\s,;:/()-]+(?:${CONNECTORS}[\\s,;:/()-]+)?)?`;
+  const pattern = letters.join(gap) + "[a-z]*";
+  const regex = new RegExp(`\\b${pattern}\\b`, "gi");
+
+  // Every gap may be empty, so the pattern also matches the bare acronym —
+  // "TLS" itself satisfies T[a-z]*L[a-z]*S[a-z]*. Without this length floor
+  // any passage merely mentioning the acronym would count as expanding it,
+  // and the bonus would apply everywhere and rank nothing.
+  const minLength = acronym.length * 2;
+  for (const match of text.matchAll(regex)) {
+    const found = match[0];
+    if (
+      found.length >= minLength &&
+      found.toUpperCase() !== acronym.toUpperCase()
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
 /** Lowercase alphanumeric tokens, stop words removed. */
 export function tokenize(text: string): string[] {
   const tokens = text.toLowerCase().match(/[a-z0-9_]+/g) ?? [];
@@ -168,7 +244,11 @@ export function rankPassages(
   query: string,
 ): Passage[] {
   const queryTerms = tokenize(query);
-  if (queryTerms.length === 0 || passages.length === 0) {
+  const acronyms = findAcronyms(query).filter((acronym) =>
+    // An acronym the query also spells out needs no special handling.
+    queryTerms.includes(acronym.toLowerCase()),
+  );
+  if ((queryTerms.length === 0 && acronyms.length === 0) || passages.length === 0) {
     return [];
   }
 
@@ -188,6 +268,20 @@ export function rankPassages(
     docFreq.set(term, count);
   }
 
+  // Sized from the query's own IDF so the bonus stays comparable to the BM25
+  // scores it is added to, rather than being a constant tuned to one corpus.
+  const idfOf = (term: string): number => {
+    const n = docFreq.get(term) ?? 0;
+    return Math.log(1 + (docs.length - n + 0.5) / (n + 0.5));
+  };
+  const uniqueTerms = [...new Set(queryTerms)];
+  const meanIdf =
+    uniqueTerms.length === 0
+      ? 1
+      : uniqueTerms.reduce((total, term) => total + idfOf(term), 0) /
+        uniqueTerms.length;
+  const expansionBonus = ACRONYM_EXPANSION_WEIGHT * meanIdf;
+
   const scored: Passage[] = [];
   passages.forEach((passage, index) => {
     const doc = docs[index] ?? [];
@@ -200,17 +294,35 @@ export function rankPassages(
     }
 
     let score = 0;
-    for (const term of new Set(queryTerms)) {
+    for (const term of uniqueTerms) {
       const freq = counts.get(term);
       if (freq === undefined) {
         continue;
       }
-      const n = docFreq.get(term) ?? 0;
       // BM25 IDF, the +1 keeping it positive for terms in every passage.
-      const idf = Math.log(1 + (docs.length - n + 0.5) / (n + 0.5));
+      const idf = idfOf(term);
       const norm = freq * (K1 + 1);
       const denom = freq + K1 * (1 - B + (B * doc.length) / (avgLength || 1));
       score += idf * (norm / denom);
+    }
+
+    // A passage that spells an acronym out is usually the one answering "what
+    // does X stand for", but it says the expansion once while pages that merely
+    // use the acronym repeat it, so BM25 ranks the answer below the noise.
+    //
+    // The expansion must sit alongside the acronym itself. The loose gap that
+    // lets "HyperText Markup Language" expand HTML also matches ordinary prose
+    // — "The lazy squirrel" expands TLS — and requiring the acronym in the same
+    // passage removes those without weakening the real case, since the answer
+    // sentence almost always names the acronym it is defining.
+    if (
+      acronyms.some(
+        (acronym) =>
+          counts.has(acronym.toLowerCase()) &&
+          expandsAcronym(passage.text, acronym),
+      )
+    ) {
+      score += expansionBonus;
     }
 
     if (score > 0) {

@@ -55,6 +55,7 @@
     "check:publish": "npm pack --dry-run",
     "bench": "node benchmarks/run.mjs",
     "bench:quality": "node benchmarks/quality.mjs",
+    "bench:corpus": "node benchmarks/corpus.mjs",
     "docs:api": "typedoc --options typedoc.json && node scripts/typedoc-postprocess.mjs",
     "docs:changelog": "node scripts/sync-docs-changelog.mjs",
     "docs:build": "npm run docs:api && npm run docs:changelog && hugo --source site --gc --minify",

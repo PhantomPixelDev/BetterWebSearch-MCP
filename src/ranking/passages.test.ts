@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import {
   MAX_PASSAGE_CHARS,
+  expandsAcronym,
+  findAcronyms,
   TARGET_PASSAGE_CHARS,
   rankPassages,
   selectPassages,
@@ -159,5 +161,83 @@ describe("selectPassages", () => {
     const scores = selected.map((p) => p.score);
 
     expect(scores).toEqual([...scores].sort((a, b) => b - a));
+  });
+});
+
+
+describe("findAcronyms", () => {
+  it("picks uppercase tokens out of a query", () => {
+    expect(findAcronyms("What does TLS stand for?")).toEqual(["TLS"]);
+  });
+
+  it("ignores tokens shorter than three letters", () => {
+    expect(findAcronyms("What is AI?")).toEqual([]);
+  });
+
+  it("deduplicates", () => {
+    expect(findAcronyms("TLS versus TLS")).toEqual(["TLS"]);
+  });
+});
+
+describe("expandsAcronym", () => {
+  it.each([
+    ["TLS", "Transport Layer Security"],
+    ["ACID", "Atomicity, Consistency, Isolation, Durability"],
+    ["WAL", "Write-ahead logging"],
+    ["CRUD", "Create, read, update and delete"],
+    ["HTML", "HyperText Markup Language"],
+    ["HTML", "Hypertext Markup Language"],
+    ["CORS", "Cross-Origin Resource Sharing"],
+    ["SSRF", "Server-side request forgery"],
+    ["SQL", "Structured Query Language"],
+    ["DNS", "Domain Name System"],
+    ["CSS", "Cascading Style Sheets"],
+    ["JWT", "JSON Web Token"],
+    ["REST", "Representational State Transfer"],
+  ])("expands %s from %j", (acronym, text) => {
+    expect(expandsAcronym(text, acronym)).toBe(true);
+  });
+
+  it("does not treat the bare acronym as its own expansion", () => {
+    // Every gap in the pattern may be empty, so "TLS" matches T[a-z]*L[a-z]*S.
+    // Without a length floor the bonus would apply to any passage mentioning
+    // the acronym and rank nothing.
+    expect(expandsAcronym("TLS is enabled on this server.", "TLS")).toBe(false);
+  });
+
+  it("ignores acronyms shorter than three letters", () => {
+    expect(expandsAcronym("Artificial Intelligence", "AI")).toBe(false);
+  });
+});
+
+describe("acronym expansion ranking", () => {
+  const SPAM = "TLS is enabled on this server. ".repeat(30);
+  const MORE = "Configure TLS ciphers carefully. ".repeat(30);
+  const ANSWER =
+    "TLS stands for Transport Layer Security, a cryptographic protocol " +
+    "that secures data in transit between two applications.";
+  const PAGE = `${SPAM}\n\n${MORE}\n\n${ANSWER}`;
+
+  it("surfaces the defining sentence over passages that merely repeat it", () => {
+    // The answer states the expansion once while the rest repeat the acronym,
+    // so plain BM25 ranked the answer last. This was a measured 58% retention
+    // for acronym questions in the benchmark.
+    const [best] = selectPassages(PAGE, "What does TLS stand for?", 1);
+
+    expect(best?.text).toMatch(/Transport Layer Security/i);
+  });
+
+  it("leaves non-acronym queries alone", () => {
+    const page = `The capital of France is Paris.\n\n${"Filler about weather. ".repeat(20)}`;
+    const [best] = selectPassages(page, "What is the capital of France?", 1);
+
+    expect(best?.text).toContain("Paris");
+  });
+
+  it("does not reward unrelated prose that accidentally fits the initials", () => {
+    // "The lazy squirrel" spells TLS, but the passage never names the acronym.
+    const prose = "The lazy squirrel ate a nut. ".repeat(20);
+
+    expect(selectPassages(prose, "What does TLS stand for?", 1)).toEqual([]);
   });
 });

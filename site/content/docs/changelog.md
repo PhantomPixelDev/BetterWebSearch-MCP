@@ -8,6 +8,33 @@ All notable changes to **better-web-search-mcp** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.2] - 2026-09-03
+
+### Added
+- **Acronym-expansion matching in passage selection.** A question like "What
+  does TLS stand for?" is answered by a sentence that states the expansion
+  once, while the pages around it repeat the acronym, so BM25 ranked the
+  answer below the noise. Passages that spell an acronym out now receive a
+  bonus sized from the query's own mean IDF, so it stays comparable to the
+  scores it is added to. Compound words are handled, so "HyperText Markup
+  Language" expands HTML. Two guards keep it honest: the bare acronym does not
+  count as its own expansion, and the expansion must sit alongside the acronym
+  in the same passage, which stops ordinary prose such as "The lazy squirrel"
+  from matching TLS
+- **`npm run bench:corpus`**, which freezes a page corpus and replays it, so a
+  ranking change can be A/B tested without live-web variance
+- **`bench:quality` now fails a run whose baselines are mostly empty.** Below
+  70% coverage it exits non-zero and says so
+
+### Notes
+- **The effect of the acronym change on the measured 58.3% is unverified.**
+  The unit tests show the mechanism works on controlled input, but the live
+  rerun that was meant to confirm it was rate-limited: providers returned
+  nothing for 26 of 34 questions, every acronym baseline came back around 120
+  characters, and the resulting figure was briefly misread as evidence the
+  change had not helped. The published 82.4% and 58.3% figures are left
+  unchanged until a clean run can replace them
+
 ## [0.5.1] - 2026-09-03
 
 ### Security
@@ -320,6 +347,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 - Add `BRAVE_API_KEY` for richer ranking & recency filtering
 - Publish-ready: `npm pack --dry-run` validated, `prepare`/`prepublishOnly` hooks, `files` whitelist
 
+[0.5.2]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.5.2
 [0.5.1]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.5.1
 [0.5.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.5.0
 [0.4.4]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.4.4

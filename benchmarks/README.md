@@ -49,6 +49,25 @@ A smaller payload is only a win if the retained passages still answer the
 question. `query_term_coverage` is a weak proxy for that and is reported
 alongside, not folded into the headline number.
 
+## Offline A/B for ranking changes
+
+A live run cannot resolve a few percent: the same question returns different
+pages minutes apart, so a rerun moves for reasons unrelated to the code. To
+evaluate a ranking change, freeze the pages first and replay them.
+
+```bash
+npm run bench:corpus -- fetch   # fetch pages once into results/corpus.json
+npm run bench:corpus -- eval    # score the current build against them
+```
+
+Two `eval` runs differ only if the selection code changed. Re-fetch the corpus
+only when you deliberately want new pages.
+
+`bench:quality` exits non-zero when the answer was found in fewer than 70% of
+baselines. A rate-limited run still prints a retention percentage that looks
+exactly like a real one, and reading one of those as evidence about a ranking
+change is a mistake this guard exists to prevent.
+
 ## Reproducibility
 
 Runs hit the live web, so they are not bit-reproducible: pages change, and
