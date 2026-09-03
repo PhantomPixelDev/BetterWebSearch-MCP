@@ -17,6 +17,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
   same guard, `mode: "browser"` is not an escape hatch, and three regression
   tests cover it. **Anyone on 0.3.0 through 0.5.0 should upgrade.**
 
+### Changed
+- **The retention benchmark grew from 12 questions to 34, and the headline
+  number got worse.** Overall retention is **82.4%** (28/34), not the 91.7%
+  the narrow set reported. Splitting by category shows why: numbers and status
+  codes retain 100%, facts 87.5%, but **acronym expansions only 58.3% (7/12)**.
+  A question like "What does TLS stand for?" keeps its query terms while the
+  sentence spelling out "transport layer security" repeats none of them, so
+  BM25 ranks other passages above it — the same pattern lost WAL, ACID, HTML
+  and CRUD. One unlucky question at 12 questions was a measurable category
+  failure at 34
+
 ### Fixed
 - Injection finding offsets are rebased onto the annotated content. `index`
   was measured against the raw page while the returned `content` had the

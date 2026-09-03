@@ -93,22 +93,35 @@ Retention is conditioned on the baseline on purpose. A question whose marker
 never appeared in the fetched pages is a retrieval miss, not a compression
 loss, and would otherwise blame the passage selector for weak search results.
 
-12 questions, run 2026-09-02:
+34 questions, run 2026-09-03:
 
 | | |
 |---|---|
-| Answer present in baseline | 12 / 12 |
-| Answer retained after compression | **11 / 12** |
-| **Retention** | **91.7%** |
-| Payload reduction on this set | 92.5% |
+| Answer present in baseline | 34 / 34 |
+| Answer retained after compression | **28 / 34** |
+| **Retention** | **82.4%** |
+| Payload reduction on this set | 92.4% |
 
-The one loss is instructive rather than mysterious. *"What does WAL stand for
-in SQLite journal_mode?"* keeps the query terms — WAL, SQLite, journal_mode —
-but the sentence that actually spells out "write-ahead logging" often contains
-none of them densely, so BM25 ranks other passages above it. **Acronym-expansion
-questions are a known weak spot of lexical passage selection**, and the honest
-reading is that roughly one question in twelve on this set loses its answer to
-compression.
+Retention is not spread evenly, which is the point of splitting by category:
+
+| Category | Retained | Retention |
+|---|---|---|
+| Numbers (ports, limits) | 8 / 8 | 100% |
+| HTTP status codes | 6 / 6 | 100% |
+| Facts (licenses, defaults) | 7 / 8 | 87.5% |
+| Acronym expansions | 7 / 12 | 58.3% |
+
+**Acronym expansion is a systematic weakness, not bad luck.** A question like
+*"What does TLS stand for?"* keeps its query terms — TLS — while the sentence
+that actually spells out "transport layer security" often contains none of them
+densely, so BM25 ranks other passages above it. The same pattern lost WAL,
+ACID, HTML and CRUD. Anything with a distinctive literal token, such as a port
+number or a status code, survives intact.
+
+The first version of this benchmark used 12 questions and reported 91.7%.
+Widening it to 34 dropped the figure to 82.4% and converted one unlucky
+question into a measurable category failure. The wider number is the honest
+one, and the narrow one is left here as a caution about small evaluation sets.
 
 This still does not measure whether the sources are *correct*, only whether the
 answer survived the pipeline.

@@ -127,20 +127,28 @@ Honest caveats, because these are the ones that matter:
 ### Does compression keep the answer?
 
 Reduction only counts if the answer survives it. `npm run bench:quality` checks
-that on 12 questions with an unambiguous marker (a port number, a status code, a
-license name), conditioned on the baseline so retrieval misses are not counted
+that on 34 questions with an unambiguous marker (a port number, a status code, a
+license name), conditioned on the baseline so retrieval misses are never counted
 as compression losses:
 
-| | |
-|---|---|
-| Answer present in baseline | 12 / 12 |
-| Answer retained after compression | **11 / 12** |
-| **Retention** | **91.7%** |
+| Category | Retained | Retention |
+|---|---|---|
+| Numbers (ports, limits) | 8 / 8 | 100% |
+| HTTP status codes | 6 / 6 | 100% |
+| Facts (licenses, defaults) | 7 / 8 | 87.5% |
+| **Acronym expansions** | **7 / 12** | **58.3%** |
+| **Overall** | **28 / 34** | **82.4%** |
 
-The single loss is *"What does WAL stand for in SQLite journal_mode?"* — the
-sentence spelling out "write-ahead logging" often does not repeat the query
-terms, so BM25 ranks other passages above it. Acronym-expansion questions are a
-known weak spot of lexical selection.
+So roughly **one question in six loses its answer to compression**, and it is
+not spread evenly: acronym-expansion questions fail 4 times out of 10. The
+sentence that spells out "write-ahead logging" or "transport layer security"
+usually does not repeat the query terms, so BM25 ranks other passages above it.
+Everything with a distinctive literal token — a port, a status code — survives
+intact.
+
+An earlier 12-question run reported 91.7%. Widening the set to 34 dropped it to
+82.4% and turned a single unlucky question into a visible category-level
+weakness, which is the honest number.
 
 Method and raw per-question results: [`benchmarks/`](benchmarks/).
 

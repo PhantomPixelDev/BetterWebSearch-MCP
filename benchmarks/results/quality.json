@@ -1,11 +1,11 @@
 {
-  "generated": "2026-09-03T19:04:49.911Z",
+  "generated": "2026-09-03T19:12:13.377Z",
   "summary": {
-    "questions_attempted": 21,
-    "questions_measured": 21,
-    "answer_found_in_baseline": 21,
-    "answer_retained": 19,
-    "retention": 0.9047619047619048,
+    "questions_attempted": 34,
+    "questions_measured": 34,
+    "answer_found_in_baseline": 34,
+    "answer_retained": 28,
+    "retention": 0.8235294117647058,
     "by_category": {
       "number": {
         "found": 8,
@@ -18,14 +18,19 @@
         "retention": 1
       },
       "acronym": {
-        "found": 7,
-        "kept": 5,
-        "retention": 0.7142857142857143
+        "found": 12,
+        "kept": 7,
+        "retention": 0.5833333333333334
+      },
+      "fact": {
+        "found": 8,
+        "kept": 7,
+        "retention": 0.875
       }
     },
-    "baseline_chars": 1212846,
-    "retained_chars": 112905,
-    "reduction": 0.9069090387402853
+    "baseline_chars": 2470659,
+    "retained_chars": 188570,
+    "reduction": 0.9236762337497809
   },
   "rows": [
     {
@@ -338,6 +343,193 @@
       "cited_spans": 5,
       "independent_sources": 4,
       "sources_opened": 4
+    },
+    {
+      "id": "acr-tls",
+      "category": "acronym",
+      "question": "What does TLS stand for?",
+      "answer_in_baseline": true,
+      "answer_in_retained": false,
+      "matched_markers": [],
+      "baseline_chars": 19678,
+      "retained_chars": 7435,
+      "cited_spans": 5,
+      "independent_sources": 4,
+      "sources_opened": 4
+    },
+    {
+      "id": "acr-sql",
+      "category": "acronym",
+      "question": "What does SQL stand for?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "structured query language"
+      ],
+      "baseline_chars": 45785,
+      "retained_chars": 5309,
+      "cited_spans": 5,
+      "independent_sources": 3,
+      "sources_opened": 4
+    },
+    {
+      "id": "acr-html",
+      "category": "acronym",
+      "question": "What does HTML stand for?",
+      "answer_in_baseline": true,
+      "answer_in_retained": false,
+      "matched_markers": [],
+      "baseline_chars": 167209,
+      "retained_chars": 4423,
+      "cited_spans": 5,
+      "independent_sources": 3,
+      "sources_opened": 4
+    },
+    {
+      "id": "acr-css",
+      "category": "acronym",
+      "question": "What does CSS stand for?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "cascading style sheets"
+      ],
+      "baseline_chars": 39533,
+      "retained_chars": 6825,
+      "cited_spans": 5,
+      "independent_sources": 3,
+      "sources_opened": 3
+    },
+    {
+      "id": "acr-crud",
+      "category": "acronym",
+      "question": "What does CRUD stand for?",
+      "answer_in_baseline": true,
+      "answer_in_retained": false,
+      "matched_markers": [],
+      "baseline_chars": 39471,
+      "retained_chars": 5839,
+      "cited_spans": 5,
+      "independent_sources": 5,
+      "sources_opened": 5
+    },
+    {
+      "id": "lic-playwright",
+      "category": "fact",
+      "question": "What software license is Playwright released under?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "apache"
+      ],
+      "baseline_chars": 48991,
+      "retained_chars": 7675,
+      "cited_spans": 5,
+      "independent_sources": 3,
+      "sources_opened": 4
+    },
+    {
+      "id": "lic-node",
+      "category": "fact",
+      "question": "What software license is Node.js released under?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "\\bMIT\\b"
+      ],
+      "baseline_chars": 160613,
+      "retained_chars": 7679,
+      "cited_spans": 5,
+      "independent_sources": 3,
+      "sources_opened": 5
+    },
+    {
+      "id": "lic-linux",
+      "category": "fact",
+      "question": "What software license is the Linux kernel released under?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "GPL"
+      ],
+      "baseline_chars": 296005,
+      "retained_chars": 3675,
+      "cited_spans": 4,
+      "independent_sources": 2,
+      "sources_opened": 3
+    },
+    {
+      "id": "rust-origin",
+      "category": "fact",
+      "question": "Which organization originally sponsored the Rust programming language?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "mozilla"
+      ],
+      "baseline_chars": 35660,
+      "retained_chars": 5365,
+      "cited_spans": 5,
+      "independent_sources": 3,
+      "sources_opened": 4
+    },
+    {
+      "id": "git-default-branch",
+      "category": "fact",
+      "question": "What is the default branch name for new repositories on GitHub?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "\\bmain\\b"
+      ],
+      "baseline_chars": 62219,
+      "retained_chars": 7341,
+      "cited_spans": 5,
+      "independent_sources": 4,
+      "sources_opened": 4
+    },
+    {
+      "id": "json-content-type",
+      "category": "fact",
+      "question": "What is the standard Content-Type header value for JSON?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "application/json"
+      ],
+      "baseline_chars": 114117,
+      "retained_chars": 3917,
+      "cited_spans": 4,
+      "independent_sources": 2,
+      "sources_opened": 3
+    },
+    {
+      "id": "semver-parts",
+      "category": "fact",
+      "question": "What are the three parts of a semantic version number?",
+      "answer_in_baseline": true,
+      "answer_in_retained": true,
+      "matched_markers": [
+        "major[^a-z]{0,4}minor[^a-z]{0,4}patch"
+      ],
+      "baseline_chars": 99596,
+      "retained_chars": 4507,
+      "cited_spans": 5,
+      "independent_sources": 5,
+      "sources_opened": 5
+    },
+    {
+      "id": "etag-header",
+      "category": "fact",
+      "question": "Which HTTP request header is used to make a conditional request with an ETag?",
+      "answer_in_baseline": true,
+      "answer_in_retained": false,
+      "matched_markers": [],
+      "baseline_chars": 128936,
+      "retained_chars": 5675,
+      "cited_spans": 5,
+      "independent_sources": 3,
+      "sources_opened": 5
     }
   ]
 }
