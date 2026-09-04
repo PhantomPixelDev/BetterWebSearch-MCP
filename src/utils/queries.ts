@@ -49,6 +49,20 @@ const SYNONYMS: readonly SynonymGroup[] = [
  *
  * Returns `[""]` for an empty question.
  */
+/**
+ * A comparison key that ignores differences no search engine cares about.
+ *
+ * Case, punctuation and a trailing plural are all collapsed, so "… Type R
+ * review" and "… Type R reviews" reduce to the same key. Without this the
+ * expander emitted both, spending a provider call and a rank slot on a query
+ * that returns the same page twice.
+ */
+export function variantKey(query: string): string {
+  return (query.toLowerCase().match(/[a-z0-9]+/g) ?? [])
+    .map((token) => (token.length > 3 && token.endsWith("s") ? token.slice(0, -1) : token))
+    .join(" ");
+}
+
 export function expandQueries(question: string): string[] {
   const trimmed = question.trim();
   if (trimmed === "") {
@@ -56,7 +70,9 @@ export function expandQueries(question: string): string[] {
   }
 
   const variants: string[] = [trimmed];
-  const seen = new Set<string>([trimmed.toLowerCase()]);
+  // Keyed on the normalized form so a variant that differs only by plural or
+  // punctuation never makes it into the list.
+  const seen = new Set<string>([variantKey(trimmed)]);
 
   for (const group of SYNONYMS) {
     if (variants.length >= 6) {
@@ -71,7 +87,7 @@ export function expandQueries(question: string): string[] {
         break;
       }
       const variant = replaceTerm(trimmed, group.term, replacement);
-      const key = variant.toLowerCase();
+      const key = variantKey(variant);
       if (!seen.has(key)) {
         seen.add(key);
         variants.push(variant);

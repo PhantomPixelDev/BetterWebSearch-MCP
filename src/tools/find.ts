@@ -9,7 +9,7 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
-import { aggregateSearch } from "../providers/index.js";
+import { aggregateSearchDetailed } from "../providers/index.js";
 import { deduplicate } from "../ranking/deduplicate.js";
 import { rerank, type RankedResult } from "../ranking/rerank.js";
 import { Cache } from "../utils/cache.js";
@@ -27,6 +27,8 @@ export interface FindResponse {
   answer: string;
   sources: SearchSource[];
   queries_used: string[];
+  /** Providers that refused or failed, so an empty result reads correctly. */
+  warnings?: string[];
 }
 
 /** Map a ranked result to the spec-shaped source entry. */
@@ -64,7 +66,7 @@ export async function runFind(args: {
     return cached as FindResponse;
   }
 
-  const raw = await aggregateSearch(siteQuery, {
+  const { results: raw, warnings } = await aggregateSearchDetailed(siteQuery, {
     count: maxResults,
     extraSnippets: true,
   });
@@ -77,9 +79,12 @@ export async function runFind(args: {
     answer: `Top ${top.length} results from ${site} for "${query}"`,
     sources: top.map(toSource),
     queries_used: [siteQuery],
+    ...(warnings.length > 0 ? { warnings } : {}),
   };
 
-  cache?.setSearch(cacheKey, siteQuery, response);
+  if (warnings.length === 0) {
+    cache?.setSearch(cacheKey, siteQuery, response);
+  }
   return response;
 }
 

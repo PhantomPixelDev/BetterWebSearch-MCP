@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+import { ProviderBlockedError } from "./types.js";
 import { DuckDuckGoProvider, parseHtmlResults } from "./duckduckgo.js";
 
 const SAMPLE_HTML = `
@@ -74,18 +75,49 @@ describe("DuckDuckGoProvider", () => {
     expect(results[0]?.source).toBe("duckduckgo");
   });
 
-  it("returns [] on non-ok response without throwing", async () => {
+  it("reports a non-ok response as a refusal rather than an empty result", async () => {
+    // "No results" and "we were turned away" are different facts. Collapsing
+    // them made a throttled search look like a query that matched nothing.
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue({ ok: false, status: 503 }),
     );
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     const provider = new DuckDuckGoProvider();
 
-    const results = await provider.search("hello", {});
+    await expect(provider.search("hello", {})).rejects.toBeInstanceOf(
+      ProviderBlockedError,
+    );
+  });
 
-    expect(results).toEqual([]);
-    expect(warn).toHaveBeenCalled();
+  it("reports a 2xx challenge page as a refusal", async () => {
+    // The endpoint answers a throttled request with a 202 and an anomaly page,
+    // so `response.ok` is true and parsing simply finds nothing.
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        status: 202,
+        text: async () =>
+          "<html><body>If this error persists, please let us know: unusual traffic anomaly detected</body></html>",
+      }),
+    );
+    const provider = new DuckDuckGoProvider();
+
+    await expect(provider.search("hello", {})).rejects.toThrow(/rate limited/);
+  });
+
+  it("does not mistake a genuinely empty result page for a block", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        text: async () => '<html><body><div class="result">no matches</div></body></html>',
+      }),
+    );
+    const provider = new DuckDuckGoProvider();
+
+    await expect(provider.search("hello", {})).resolves.toEqual([]);
   });
 
   it("retries on 429 then succeeds", async () => {

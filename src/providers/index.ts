@@ -2,6 +2,7 @@ import { BraveProvider } from "./brave.js";
 import { DuckDuckGoProvider } from "./duckduckgo.js";
 import { TavilyProvider } from "./tavily.js";
 import type { SearchOptions, SearchProvider, SearchResult } from "./types.js";
+import { ProviderBlockedError } from "./types.js";
 import { loadConfig } from "../utils/config.js";
 
 /**
@@ -66,10 +67,30 @@ function withTimeout<T>(
  * Rejected and timed-out providers are logged as warnings and skipped;
  * fulfilled results are flattened into a single array.
  */
-export async function aggregateSearch(
+/** What aggregation produced, including why any provider contributed nothing. */
+export interface AggregateOutcome {
+  /** Results flattened across every provider that answered. */
+  results: SearchResult[];
+  /**
+   * Human-readable notes about providers that refused or failed.
+   *
+   * Surfaced so a caller can tell "the search was throttled" from "nothing
+   * matched". Those were previously indistinguishable, which made a working
+   * site-restricted query look broken.
+   */
+  warnings: string[];
+}
+
+/**
+ * Aggregate search and report which providers failed.
+ *
+ * {@link aggregateSearch} keeps the older results-only shape for callers that
+ * do not care why a provider was quiet.
+ */
+export async function aggregateSearchDetailed(
   query: string,
   opts: SearchOptions = {},
-): Promise<SearchResult[]> {
+): Promise<AggregateOutcome> {
   const providers = enabledProviders();
   const settled = await Promise.allSettled(
     providers.map((provider) =>
@@ -82,16 +103,33 @@ export async function aggregateSearch(
   );
 
   const results: SearchResult[] = [];
+  const warnings: string[] = [];
   settled.forEach((outcome, index) => {
     const provider = providers[index];
+    const name = provider?.name ?? "unknown";
     if (outcome.status === "rejected") {
-      console.warn(
-        `[aggregate] provider "${provider?.name ?? "unknown"}" rejected: ${outcome.reason instanceof Error ? outcome.reason.message : String(outcome.reason)}`,
+      const reason =
+        outcome.reason instanceof Error
+          ? outcome.reason.message
+          : String(outcome.reason);
+      console.warn(`[aggregate] provider "${name}" rejected: ${reason}`);
+      warnings.push(
+        outcome.reason instanceof ProviderBlockedError
+          ? reason
+          : `${name} failed: ${reason}`,
       );
       return;
     }
     results.push(...outcome.value);
   });
 
-  return results;
+  return { results, warnings };
+}
+
+/** Aggregate search across providers, discarding failure detail. */
+export async function aggregateSearch(
+  query: string,
+  opts: SearchOptions = {},
+): Promise<SearchResult[]> {
+  return (await aggregateSearchDetailed(query, opts)).results;
 }

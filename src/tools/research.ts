@@ -12,7 +12,7 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
-import { aggregateSearch } from "../providers/index.js";
+import { aggregateSearchDetailed } from "../providers/index.js";
 import { deduplicate } from "../ranking/deduplicate.js";
 import { rerank, type RankedResult } from "../ranking/rerank.js";
 import { expandQueries } from "../utils/queries.js";
@@ -77,6 +77,13 @@ export interface ResearchResponse {
    * statement to a span rather than to a whole page.
    */
   citations: Citation[];
+  /**
+   * Providers that refused or failed during the search phase.
+   *
+   * Without this a throttled research run is indistinguishable from a question
+   * the web has no answer to.
+   */
+  warnings?: string[];
   /**
    * Countable facts about the evidence behind the answer.
    *
@@ -441,7 +448,7 @@ export async function runResearch(args: {
     : freshnessFromRecencyDays(recencyDays);
   const settled = await Promise.all(
     queries.map((query) =>
-      aggregateSearch(query, {
+      aggregateSearchDetailed(query, {
         count: countPerQuery,
         freshness,
         recency_days: recencyDays,
@@ -451,7 +458,9 @@ export async function runResearch(args: {
   );
 
   // 3) Merge flat, deduplicate, and re-rank against the original question.
-  const merged = settled.flat();
+  const merged = settled.flatMap((outcome) => outcome.results);
+  // De-duplicated so one throttled provider does not repeat its note per query.
+  const warnings = [...new Set(settled.flatMap((outcome) => outcome.warnings))];
   const deduped = deduplicate(merged);
   const ranked = rerank(deduped, question, recencyDays ?? 30);
 
@@ -498,6 +507,7 @@ export async function runResearch(args: {
     sources,
     queries_used: queries,
     citations,
+    ...(warnings.length > 0 ? { warnings } : {}),
     evidence: {
       sources_opened: pages.length,
       independent_sources: independentSources,
@@ -510,7 +520,11 @@ export async function runResearch(args: {
     extraction_stats: extractionStats(pages),
   };
 
-  cache?.setSearch(cacheKey, question, response);
+  // Never cache a run whose searches were refused: it would keep serving the
+  // gap for the rest of the TTL.
+  if (warnings.length === 0) {
+    cache?.setSearch(cacheKey, question, response);
+  }
   return response;
 }
 

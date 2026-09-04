@@ -2,6 +2,7 @@ import * as cheerio from "cheerio";
 
 import { withRetry } from "../utils/retry.js";
 import type { SearchOptions, SearchProvider, SearchResult } from "./types.js";
+import { ProviderBlockedError } from "./types.js";
 
 const DDG_ENDPOINT = "https://html.duckduckgo.com/html/";
 const TIMEOUT_MS = 8_000;
@@ -41,15 +42,30 @@ export class DuckDuckGoProvider implements SearchProvider {
       );
 
       if (!response.ok) {
-        console.warn(
-          `[duckduckgo] endpoint returned ${response.status}; returning no results.`,
+        throw new ProviderBlockedError(
+          "duckduckgo",
+          `endpoint returned ${response.status}`,
         );
-        return [];
       }
 
       const html = await response.text();
+      // A challenge page is served with a 2xx status, so `response.ok` does
+      // not catch it. Parsing one yields no matches and used to be reported as
+      // "no results", which is indistinguishable from a genuinely empty search
+      // and made rate limiting look like a broken query.
+      if (isChallengePage(html)) {
+        throw new ProviderBlockedError(
+          "duckduckgo",
+          `rate limited (HTTP ${response.status} challenge page)`,
+        );
+      }
       return parseHtmlResults(html, opts.count ?? 10);
     } catch (error) {
+      // A block is not the same as an empty result set: let it reach the
+      // aggregator so callers can be told the search was refused.
+      if (error instanceof ProviderBlockedError) {
+        throw error;
+      }
       console.warn(
         `[duckduckgo] search failed (${error instanceof Error ? error.message : String(error)}); returning no results.`,
       );
@@ -58,6 +74,21 @@ export class DuckDuckGoProvider implements SearchProvider {
       clearTimeout(timer);
     }
   }
+}
+
+/**
+ * Whether the HTML is a bot-detection challenge rather than a result page.
+ *
+ * The endpoint answers a throttled request with a 2xx status and an anomaly
+ * page, so status alone cannot tell the two apart. Requiring both the absence
+ * of result markup and a challenge marker avoids calling a genuinely empty
+ * search a block.
+ */
+export function isChallengePage(html: string): boolean {
+  if (html.includes("result__a") || html.includes('class="result')) {
+    return false;
+  }
+  return /anomaly|unusual traffic|captcha|blocked/i.test(html);
 }
 
 /** Parse DuckDuckGo HTML search results into normalized {@link SearchResult}s. */

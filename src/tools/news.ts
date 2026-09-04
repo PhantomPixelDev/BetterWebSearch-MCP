@@ -9,7 +9,7 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
-import { aggregateSearch } from "../providers/index.js";
+import { aggregateSearchDetailed } from "../providers/index.js";
 import { deduplicate } from "../ranking/deduplicate.js";
 import { rerank, type RankedResult } from "../ranking/rerank.js";
 import { freshnessFromRecencyDays } from "../providers/brave.js";
@@ -29,6 +29,8 @@ export interface NewsResponse {
   sources: SearchSource[];
   timeline: Record<string, SearchSource[]>;
   queries_used: string[];
+  /** Providers that refused or failed, so an empty result reads correctly. */
+  warnings?: string[];
 }
 
 /** Milliseconds per day. */
@@ -99,7 +101,7 @@ export async function runNews(args: {
   }
 
   const freshness = freshnessFromRecencyDays(recencyDays);
-  const raw = await aggregateSearch(topic, {
+  const { results: raw, warnings } = await aggregateSearchDetailed(topic, {
     count: maxResults * 3,
     freshness,
     recency_days: recencyDays,
@@ -139,9 +141,12 @@ export async function runNews(args: {
     sources,
     timeline: buildTimeline(sources),
     queries_used: [topic],
+    ...(warnings.length > 0 ? { warnings } : {}),
   };
 
-  cache?.setSearch(cacheKey, topic, response);
+  if (warnings.length === 0) {
+    cache?.setSearch(cacheKey, topic, response);
+  }
   return response;
 }
 

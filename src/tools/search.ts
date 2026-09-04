@@ -9,7 +9,7 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
-import { aggregateSearch } from "../providers/index.js";
+import { aggregateSearchDetailed } from "../providers/index.js";
 import { deduplicate } from "../ranking/deduplicate.js";
 import { rerank, type RankedResult } from "../ranking/rerank.js";
 import { freshnessFromRecencyDays } from "../providers/brave.js";
@@ -36,6 +36,13 @@ export interface SearchResponse {
   answer: string;
   sources: SearchSource[];
   queries_used: string[];
+  /**
+   * Providers that refused or failed, when any did.
+   *
+   * Present so an empty `sources` can be read correctly: a throttled search
+   * and a query that matched nothing used to look identical.
+   */
+  warnings?: string[];
 }
 
 /** Map a ranked result to the spec-shaped source entry. */
@@ -76,7 +83,7 @@ export async function runSearch(args: {
     ? undefined
     : freshnessFromRecencyDays(recencyDays);
 
-  const raw = await aggregateSearch(query, {
+  const { results: raw, warnings } = await aggregateSearchDetailed(query, {
     count: maxResults,
     freshness,
     recency_days: recencyDays,
@@ -91,9 +98,15 @@ export async function runSearch(args: {
     answer: `Top ${top.length} results for "${query}"`,
     sources: top.map(toSource),
     queries_used: [query],
+    ...(warnings.length > 0 ? { warnings } : {}),
   };
 
-  cache?.setSearch(cacheKey, query, response);
+  // A throttled search is not a result worth serving from cache for 15
+  // minutes: it would keep reporting an empty search long after the provider
+  // recovered.
+  if (warnings.length === 0) {
+    cache?.setSearch(cacheKey, query, response);
+  }
   return response;
 }
 

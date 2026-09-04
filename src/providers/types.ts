@@ -48,3 +48,24 @@ export interface SearchProvider {
    */
   search(query: string, opts: SearchOptions): Promise<SearchResult[]>;
 }
+
+/**
+ * A provider refused the request rather than finding nothing.
+ *
+ * Rate limiting, a challenge page, or an auth failure all mean "we do not know
+ * what the results are", which is a different fact from "there are no
+ * results". Collapsing the two made a throttled search look like a query that
+ * matched nothing, which is how a working `site:` search appeared broken and
+ * how a rate-limited benchmark run produced a retention figure that read as
+ * real.
+ */
+export class ProviderBlockedError extends Error {
+  /** The provider that refused. */
+  readonly provider: string;
+
+  constructor(provider: string, reason: string) {
+    super(`${provider} refused the request: ${reason}`);
+    this.name = "ProviderBlockedError";
+    this.provider = provider;
+  }
+}

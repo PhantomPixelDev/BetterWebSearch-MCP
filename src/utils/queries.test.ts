@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { expandQueries } from "./queries.js";
+import { expandQueries, variantKey } from "./queries.js";
 
 describe("expandQueries", () => {
   it("includes the original question first", () => {
@@ -37,5 +37,37 @@ describe("expandQueries", () => {
     const queries = expandQueries("unlimited mobile internet");
     const unique = new Set(queries.map((q) => q.toLowerCase()));
     expect(unique.size).toBe(queries.length);
+  });
+});
+
+describe("variantKey", () => {
+  it("collapses case, punctuation and a trailing plural", () => {
+    expect(variantKey("Type R review")).toBe(variantKey("type r reviews!"));
+  });
+
+  it("keeps genuinely different wording apart", () => {
+    expect(variantKey("best framework")).not.toBe(variantKey("top framework"));
+  });
+
+  it("does not strip a short word ending in s", () => {
+    // "is" and "i" must not collapse together.
+    expect(variantKey("what is x")).toBe("what is x");
+  });
+});
+
+describe("expandQueries deduplication", () => {
+  it("does not emit a variant that differs only by plural", () => {
+    // The expander used to return both "… Type R review" and "… reviews",
+    // spending a provider call and a rank slot on the same search.
+    const variants = expandQueries(
+      "2005 Honda Civic EP specifications variants EP1 EP2 EP3 Type R review",
+    );
+    const keys = variants.map(variantKey);
+
+    expect(new Set(keys).size).toBe(keys.length);
+  });
+
+  it("still expands genuinely distinct synonyms", () => {
+    expect(expandQueries("best python web framework").length).toBeGreaterThan(1);
   });
 });

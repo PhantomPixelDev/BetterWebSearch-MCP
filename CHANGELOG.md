@@ -4,6 +4,31 @@ All notable changes to **better-web-search-mcp** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2026-09-04
+
+### Fixed
+- **A throttled search no longer looks like a search that found nothing.**
+  DuckDuckGo answers a rate-limited request with a 2xx status and an anomaly
+  page, so `response.ok` was true, parsing found no results, and the provider
+  reported an empty list. That made a working `site:` query look broken, and
+  it is also how a rate-limited benchmark run earlier produced a retention
+  figure that read as real. Challenge pages and non-ok responses are now
+  reported as `ProviderBlockedError`
+- **Tool responses carry `warnings` when a provider refused.** `web_search`,
+  `web_find`, `web_news` and `web_research` include the reason, so an empty
+  `sources` can be read correctly:
+  `["duckduckgo refused the request: rate limited (HTTP 202 challenge page)"]`
+- **A refused search is no longer cached.** Caching one kept serving the empty
+  result for the rest of the 15-minute TTL, long after the provider recovered
+- **Query expansion no longer emits near-identical variants.** "… Type R
+  review" and "… Type R reviews" were both issued, spending a provider call
+  and a rank slot on the same search. Variants are now keyed on a normalized
+  form that ignores case, punctuation and a trailing plural
+
+### Added
+- `aggregateSearchDetailed`, returning results together with the reason any
+  provider contributed nothing. `aggregateSearch` keeps the results-only shape
+
 ## [0.7.0] - 2026-09-04
 
 ### Fixed
@@ -450,6 +475,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 - Add `BRAVE_API_KEY` for richer ranking & recency filtering
 - Publish-ready: `npm pack --dry-run` validated, `prepare`/`prepublishOnly` hooks, `files` whitelist
 
+[0.8.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.8.0
 [0.7.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.7.0
 [0.6.1]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.6.1
 [0.6.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.6.0

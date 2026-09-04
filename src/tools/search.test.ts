@@ -8,6 +8,12 @@ const { aggregateSearchMock } = vi.hoisted(() => ({
 
 vi.mock("../providers/index.js", () => ({
   aggregateSearch: aggregateSearchMock,
+  // Tools call the detailed form; wrap the same mock so existing cases that
+  // resolve a plain array keep working.
+  aggregateSearchDetailed: async (...args: unknown[]) => ({
+    results: await aggregateSearchMock(...args),
+    warnings: [],
+  }),
 }));
 
 import { runSearch, searchInputSchema } from "./search.js";
