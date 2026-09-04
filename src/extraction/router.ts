@@ -36,7 +36,7 @@ import {
   assertPublicUrl,
   type SsrfDeps,
 } from "../utils/ssrf.js";
-import { hydrationText } from "./hydration.js";
+import { hydrationText, publishableStructured } from "./hydration.js";
 
 /** The extraction method chosen by the router. */
 export type RouterMethod =
@@ -303,7 +303,10 @@ function bestEffort(
       confidence: BEST_EFFORT_CONFIDENCE,
       rendered: false,
     },
-    structured_data: html === "" ? undefined : deps.extractStructuredData(html),
+    structured_data:
+      html === ""
+        ? undefined
+        : publishableStructured(deps.extractStructuredData(html)),
     api_endpoints: undefined,
     metadata,
   };
@@ -448,7 +451,7 @@ export async function getPage(
           confidence,
           rendered: false,
         },
-        structured_data: structured,
+        structured_data: publishableStructured(structured, content.length),
         api_endpoints: undefined,
         metadata,
       };
@@ -490,7 +493,9 @@ export async function getPage(
         title: readability?.title ?? renderedMetadata.title,
         content,
         extraction: { method, confidence, rendered: true },
-        structured_data: d.extractStructuredData(renderedHtml),
+        structured_data: publishableStructured(
+          d.extractStructuredData(renderedHtml),
+        ),
         api_endpoints: hasApi ? captured : undefined,
         metadata: renderedMetadata,
       };

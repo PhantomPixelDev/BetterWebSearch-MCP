@@ -2,8 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import {
   MAX_HYDRATION_CHARS,
+  MAX_JSONLD_CHARS,
   hydrationText,
   isReadableString,
+  publishableStructured,
   stripTags,
 } from "./hydration.js";
 
@@ -128,5 +130,71 @@ describe("hydrationText", () => {
 
     expect(() => hydrationText(cyclic)).not.toThrow();
     expect(hydrationText(cyclic)).toContain("entity tag");
+  });
+});
+
+describe("publishableStructured", () => {
+  const ARTICLE = { "@context": "https://schema.org", "@type": "Article", headline: "ETag" };
+
+  it("drops the hydration payload but records that it was there", () => {
+    // Cleaning `content` was only half the fix: the response still carried the
+    // raw payload here, so web_extract on a Next.js page shipped ~80KB anyway.
+    const out = publishableStructured(
+      { jsonLd: [ARTICLE], nextData: PAYLOAD, nextFlight: "", nuxt: undefined },
+      5413,
+    );
+
+    expect(JSON.stringify(out)).not.toContain("pageProps");
+    expect(out?.hydration.present).toContain("__NEXT_DATA__");
+    expect(out?.hydration.readable_chars).toBe(5413);
+  });
+
+  it("keeps JSON-LD, which is small and directly useful", () => {
+    const out = publishableStructured({ jsonLd: [ARTICLE] });
+
+    expect(out?.jsonLd).toEqual([ARTICLE]);
+  });
+
+  it("caps an enormous entity graph", () => {
+    const big = Array.from({ length: 500 }, (_, i) => ({
+      "@type": "Article",
+      headline: `Entry ${i} ${"padding ".repeat(20)}`,
+    }));
+
+    const out = publishableStructured({ jsonLd: big });
+
+    expect(JSON.stringify(out?.jsonLd).length).toBeLessThanOrEqual(
+      MAX_JSONLD_CHARS + 500,
+    );
+    expect(out?.jsonLd.length).toBeLessThan(big.length);
+  });
+
+  it("names every hydration container it found", () => {
+    const out = publishableStructured({
+      jsonLd: [],
+      nextData: { a: 1 },
+      nextFlight: "x",
+      nuxt: { b: 2 },
+      apollo: { c: 3 },
+      initialState: { d: 4 },
+    });
+
+    expect(out?.hydration.present).toEqual([
+      "__NEXT_DATA__",
+      "next_flight",
+      "__NUXT__",
+      "apollo_state",
+      "initial_state",
+    ]);
+  });
+
+  it("reports nothing present for a plain page", () => {
+    const out = publishableStructured({ jsonLd: [], nextFlight: "" });
+
+    expect(out?.hydration.present).toEqual([]);
+  });
+
+  it("passes undefined through", () => {
+    expect(publishableStructured(undefined)).toBeUndefined();
   });
 });

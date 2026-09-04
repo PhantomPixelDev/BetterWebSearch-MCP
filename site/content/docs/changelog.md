@@ -8,6 +8,26 @@ All notable changes to **better-web-search-mcp** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-09-04
+
+### Fixed
+- **The hydration payload was still being shipped, just under a different
+  field.** 0.6.0 cleaned the page `content` but left `structured_data`
+  carrying the raw `__NEXT_DATA__`, so `web_extract` on a Next.js page still
+  returned about 80KB. Measured on a real page: content 5,413 characters and
+  structured_data 79,995, for a response of 86,170. Responses now carry
+  `{ jsonLd, hydration: { present, readable_chars } }` — schema.org entities
+  kept and capped, hydration containers reduced to a note of which were
+  present, since their readable text is already in the page content. The same
+  page now returns **8,974 characters, a 90% reduction**, with JSON-LD intact
+- Found by running the server through OpenCode rather than by reading it: the
+  module tests only ever asserted on `content`, so they all passed while the
+  response was still 86KB
+
+### Changed
+- `structured_data` on `web_extract` results is now a summary rather than the
+  raw extraction. `jsonLd` keeps its meaning; the hydration payload is gone
+
 ## [0.6.1] - 2026-09-04
 
 ### Fixed
@@ -434,6 +454,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 - Add `BRAVE_API_KEY` for richer ranking & recency filtering
 - Publish-ready: `npm pack --dry-run` validated, `prepare`/`prepublishOnly` hooks, `files` whitelist
 
+[0.7.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.7.0
 [0.6.1]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.6.1
 [0.6.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.6.0
 [0.5.4]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.5.4

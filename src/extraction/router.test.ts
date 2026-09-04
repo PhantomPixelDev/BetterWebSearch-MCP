@@ -136,7 +136,14 @@ describe("getPage Level 2 (hydration_data)", () => {
     expect(result.extraction.method).toBe("hydration_data");
     expect(result.extraction.confidence).toBe(0.9);
     expect(result.extraction.rendered).toBe(false);
-    expect(result.structured_data).toBe(STRUCTURED);
+    // The response carries a summary, not the payload: shipping the raw
+    // structured data is what made web_extract return ~80KB on hydrated pages.
+    const structured = result.structured_data as {
+      jsonLd: unknown[];
+      hydration: { present: string[]; readable_chars: number };
+    };
+    expect(structured.jsonLd).toEqual(STRUCTURED.jsonLd);
+    expect(structured.hydration.present).toEqual([]);
     expect(result.content.length).toBeGreaterThan(200);
   });
 
