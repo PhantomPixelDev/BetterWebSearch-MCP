@@ -112,6 +112,42 @@ export function densitySignals(content: string): DensitySignals {
   };
 }
 
+/**
+ * Punctuation share above which text reads as serialized data, not prose.
+ *
+ * Hydration payloads are mostly braces, quotes, colons and commas; English
+ * prose sits far below this even when it contains code.
+ */
+const SERIALIZED_PUNCTUATION_RATIO = 0.12;
+
+/** Minimum length before the ratio means anything. */
+const SERIALIZED_MIN_CHARS = 80;
+
+/**
+ * Whether text is a serialized data blob rather than readable content.
+ *
+ * Extraction sometimes leaves `__NEXT_DATA__`-style payloads in the page text,
+ * and they score well: they repeat every query term the article uses, so they
+ * won citation slots and spent an agent's context on `{"props":{"pageProps"…`.
+ * Quoting one is pure waste, since nothing in it is prose an agent can read.
+ *
+ * The test is deliberately narrow. A fenced code sample or a config snippet is
+ * legitimate evidence for a developer question, so it requires both a high
+ * punctuation share and the quoted-key shape that marks JSON.
+ */
+export function looksLikeSerializedData(text: string): boolean {
+  if (text.length < SERIALIZED_MIN_CHARS) {
+    return false;
+  }
+  const punctuation = (text.match(/[{}[\]":,]/g) ?? []).length;
+  if (punctuation / text.length < SERIALIZED_PUNCTUATION_RATIO) {
+    return false;
+  }
+  // Quoted keys mapping to values: the signature of a serialized object.
+  const quotedKeys = (text.match(/"[^"]{1,60}"\s*:/g) ?? []).length;
+  return quotedKeys >= 3;
+}
+
 /** Clamp to the 0..1 range. */
 function clamp01(value: number): number {
   return Math.min(1, Math.max(0, value));

@@ -45,6 +45,18 @@ export interface IndependenceResult {
   primary: boolean;
   /** How many other documents share this cluster. */
   duplicates: number;
+  /**
+   * Whether this document's *text* duplicates another in the cluster, as
+   * opposed to merely sharing a host.
+   *
+   * The distinction matters because the two facts support different
+   * decisions. For counting corroboration, two articles on one site are one
+   * account. For gathering evidence they are not interchangeable: a second
+   * article on the same host is different writing that may hold the answer,
+   * and discarding it loses real material, whereas a syndicated reprint adds
+   * nothing to quote.
+   */
+  contentDuplicate: boolean;
 }
 
 /** Lowercase word tokens used to build shingles. */
@@ -147,6 +159,9 @@ export function analyzeIndependence(
   const fingerprints = docs.map((doc) => shingles(doc.content));
   const hosts = docs.map((doc) => hostOf(doc.url));
   const lengths = docs.map((doc) => tokens(doc.content).length);
+  // Recorded separately from the clustering so a same-host pair does not get
+  // treated as a reprint.
+  const contentMatched = docs.map(() => false);
 
   for (let i = 0; i < docs.length; i += 1) {
     for (let j = i + 1; j < docs.length; j += 1) {
@@ -166,6 +181,8 @@ export function analyzeIndependence(
         fingerprints[j] ?? new Set(),
       );
       if (similarity >= DUPLICATE_THRESHOLD) {
+        contentMatched[i] = true;
+        contentMatched[j] = true;
         union(i, j);
       }
     }
@@ -188,6 +205,8 @@ export function analyzeIndependence(
       cluster: clusterIds.get(root) ?? 0,
       primary: root === index,
       duplicates: (members.get(root) ?? 1) - 1,
+      // Only a text match makes a document a reprint; sharing a host does not.
+      contentDuplicate: root !== index && (contentMatched[index] ?? false),
     };
   });
 }

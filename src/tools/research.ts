@@ -25,7 +25,10 @@ import {
   countIndependent,
   type IndependenceResult,
 } from "../ranking/independence.js";
-import { informationDensity } from "../ranking/density.js";
+import {
+  informationDensity,
+  looksLikeSerializedData,
+} from "../ranking/density.js";
 import type { SearchSource } from "./search.js";
 
 /** Input schema for `web_research`. */
@@ -129,6 +132,12 @@ const MAX_PAGES = 10;
 
 /** Passages considered from each page before the cross-page ranking. */
 const PASSAGES_PER_PAGE = 2;
+
+/**
+ * How many extra passages to score per page so that discarding serialized
+ * payloads does not shrink the page's quota.
+ */
+const SERIALIZED_OVERSAMPLE = 4;
 
 /**
  * Version of the {@link ResearchResponse} shape, embedded in the cache key.
@@ -259,15 +268,30 @@ export function collectCitations(
     if (content === "") {
       return;
     }
-    // A derivative source republishes another source's text. Quoting it adds
-    // no evidence and, once the breadth pass has run, the remaining slots
-    // would otherwise be filled with the same story under a second byline.
-    if (independence[index]?.primary === false) {
+    // A reprint republishes another source's text, so quoting it adds no
+    // evidence. Two different articles on one host are a different case: they
+    // count as one account for corroboration but are not interchangeable as
+    // evidence, and excluding them lost the page that actually answered the
+    // ETag question.
+    if (independence[index]?.contentDuplicate === true) {
       return;
     }
     const source = sources[index];
     const weight = densityWeight(densities[index] ?? 1);
-    for (const passage of selectPassages(content, question, PASSAGES_PER_PAGE)) {
+    // Hydration payloads left in the extracted text repeat every term the
+    // article uses, so they score well. Discard them before applying the
+    // per-page quota rather than after: dropping one that has already taken a
+    // slot silently costs the page a passage, which is how the sentence
+    // answering the ETag question lost its place to a `__NEXT_DATA__` blob.
+    const usable = selectPassages(
+      content,
+      question,
+      PASSAGES_PER_PAGE * SERIALIZED_OVERSAMPLE,
+    )
+      .filter((passage) => !looksLikeSerializedData(passage.text))
+      .slice(0, PASSAGES_PER_PAGE);
+
+    for (const passage of usable) {
       const weighted = passage.score * weight;
       candidates.push({
         citation: index + 1,

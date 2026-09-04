@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { densitySignals, informationDensity } from "./density.js";
+import {
+  densitySignals,
+  informationDensity,
+  looksLikeSerializedData,
+} from "./density.js";
 
 /** A substantial prose page: the kind of source worth ranking highly. */
 const ARTICLE = [
@@ -125,5 +129,43 @@ describe("informationDensity", () => {
     expect(result).toHaveProperty("duplicateRatio");
     expect(result).toHaveProperty("boilerplateRatio");
     expect(result).toHaveProperty("meanSentenceWords");
+  });
+});
+
+describe("looksLikeSerializedData", () => {
+  const BLOB =
+    '{"props":{"pageProps":{"postDataFromWriteApi":{"id":1718817,' +
+    '"post_content":"<h3>ETag</h3>","author":{"name":"x"},"tags":["a","b"],' +
+    '"status":"fulfilled","endpointName":"getArticleDataFromWriteApi"}}}}';
+
+  it("detects a hydration payload", () => {
+    // These leak into extracted text, repeat every term the article uses, and
+    // so score well enough to take a citation slot while containing nothing
+    // an agent can read.
+    expect(looksLikeSerializedData(BLOB)).toBe(true);
+  });
+
+  it("leaves prose alone", () => {
+    const prose =
+      "The ETag or entity tag is part of HTTP, the protocol for the World " +
+      "Wide Web. It is one of several mechanisms that HTTP provides for Web " +
+      "cache validation, which allows a client to make conditional requests.";
+
+    expect(looksLikeSerializedData(prose)).toBe(false);
+  });
+
+  it("leaves a code sample alone", () => {
+    // A config or code snippet is legitimate evidence for a developer
+    // question, so the test needs both high punctuation and quoted keys.
+    const code =
+      'const config = { port: 5432, host: "localhost" };\n' +
+      "await client.connect(config);\n" +
+      'console.log("connected to the database successfully");';
+
+    expect(looksLikeSerializedData(code)).toBe(false);
+  });
+
+  it("ignores text too short to judge", () => {
+    expect(looksLikeSerializedData('{"a":1}')).toBe(false);
   });
 });

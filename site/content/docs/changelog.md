@@ -8,6 +8,34 @@ All notable changes to **better-web-search-mcp** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.4] - 2026-09-04
+
+### Fixed
+- **Hydration payloads are no longer cited.** `__NEXT_DATA__`-style blobs left
+  in extracted text repeat every term an article uses, so they scored well and
+  took citation slots while containing nothing an agent can read. Across the
+  34-question corpus this removed 2 of 168 citations, all of them markup. The
+  check requires both a high punctuation share and JSON's quoted-key shape, so
+  a code or config sample still counts as evidence
+- Blobs are now discarded *before* the per-page passage quota rather than
+  after. Dropping one that had already taken a slot silently cost that page a
+  passage
+- **A second article on the same host is no longer discarded as a reprint.**
+  Same-host pages are one account for counting corroboration, but they are
+  different writing, and treating the second as syndicated threw away material
+  that may hold the answer. `IndependenceResult` now distinguishes
+  `contentDuplicate` (a genuine text match) from merely sharing a cluster
+
+### Notes
+- **`etag-header` is still not retained, and is being left that way.** Three
+  changes were tried against it and measured: an MMR-style novelty term for the
+  fill pass, the serialized-data filter, and the content-duplicate split. Only
+  the last two earned their place on other grounds, and the MMR change was
+  reverted after measuring identical output. The honest reading is that at five
+  citations across four independent accounts, a question whose answer sits
+  fourth on one page does not make the cut, and forcing it would be tuning to
+  one question. Retention stays at 33/34
+
 ## [0.5.3] - 2026-09-04
 
 ### Fixed
@@ -373,6 +401,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 - Add `BRAVE_API_KEY` for richer ranking & recency filtering
 - Publish-ready: `npm pack --dry-run` validated, `prepare`/`prepublishOnly` hooks, `files` whitelist
 
+[0.5.4]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.5.4
 [0.5.3]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.5.3
 [0.5.2]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.5.2
 [0.5.1]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.5.1

@@ -81,7 +81,13 @@ async function evaluate() {
     process.exitCode = 1;
     return;
   }
-  const { selectPassages } = await import(dist("ranking/passages.js"));
+  // Use the real selection path rather than an approximation of it: an offline
+  // harness that scores differently from production ends up measuring the
+  // harness. collectCitations applies independence clustering, density
+  // weighting and the fill rule, none of which a bare selectPassages loop does.
+  const { collectCitations } = await import(dist("tools/research.js"));
+  const { analyzeIndependence } = await import(dist("ranking/independence.js"));
+  const { informationDensity } = await import(dist("ranking/density.js"));
   const corpus = JSON.parse(readFileSync(CORPUS, "utf8"));
 
   const byCategory = {};
@@ -93,19 +99,34 @@ async function evaluate() {
 
     const inCorpus = pages.some((page) => matches(page.content));
 
-    // Mirror the cross-page selection: best passages per page, then the top
-    // LIMIT overall by score.
-    const candidates = [];
-    for (const page of pages) {
-      for (const passage of selectPassages(page.content, question.text, PER_PAGE)) {
-        candidates.push(passage);
-      }
-    }
-    candidates.sort((a, b) => b.score - a.score);
-    const retained = candidates
-      .slice(0, LIMIT)
-      .map((passage) => passage.text)
-      .join("\n\n");
+    const routed = pages.map((page) => ({
+      url: page.url,
+      title: "",
+      content: page.content,
+      extraction: { method: "http_fetch", confidence: 0.85, rendered: false },
+      structured_data: undefined,
+      api_endpoints: undefined,
+      metadata: { title: "", description: "", published: "", author: "", siteName: "" },
+    }));
+    const sources = routed.map((page) => ({
+      title: "",
+      url: page.url,
+      snippet: "",
+      relevance: 1,
+    }));
+    const independence = analyzeIndependence(
+      routed.map((page) => ({ url: page.url, content: page.content })),
+    );
+    const densities = routed.map((page) => informationDensity(page.content).score);
+    const citations = collectCitations(
+      routed,
+      sources,
+      question.text,
+      LIMIT,
+      independence,
+      densities,
+    );
+    const retained = citations.map((citation) => citation.quote).join("\n\n");
     const kept = matches(retained);
 
     const category = question.category ?? "uncategorized";

@@ -171,3 +171,38 @@ describe("analyzeIndependence", () => {
     expect(DUPLICATE_THRESHOLD).toBeLessThan(1);
   });
 });
+
+describe("content duplication versus shared host", () => {
+  it("marks a syndicated reprint as a content duplicate", () => {
+    const results = analyzeIndependence([
+      { url: "https://wire.example/story", content: WIRE },
+      { url: "https://outlet.example/story", content: WIRE_REPRINT },
+    ]);
+
+    expect(results[1]?.contentDuplicate).toBe(true);
+  });
+
+  it("does not mark a second article on the same host as a duplicate", () => {
+    // Same host means one account for counting corroboration, but the pages
+    // are different writing. Treating the second as a reprint discarded it
+    // wholesale, which lost the page that answered a benchmark question.
+    const results = analyzeIndependence([
+      { url: "https://site.example/a", content: WIRE },
+      { url: "https://site.example/b", content: INDEPENDENT },
+    ]);
+
+    expect(results[1]?.primary).toBe(false);
+    expect(results[1]?.contentDuplicate).toBe(false);
+    // Still one independent account for corroboration purposes.
+    expect(countIndependent(results)).toBe(1);
+  });
+
+  it("never marks a primary as a content duplicate", () => {
+    const results = analyzeIndependence([
+      { url: "https://a.example/1", content: WIRE },
+      { url: "https://b.example/2", content: WIRE_REPRINT },
+    ]);
+
+    expect(results[0]?.contentDuplicate).toBe(false);
+  });
+});
