@@ -1,8 +1,9 @@
 import * as cheerio from "cheerio";
 
-import { withRetry } from "../utils/retry.js";
+import { parseRetryAfter, withRetry } from "../utils/retry.js";
 import type { SearchOptions, SearchProvider, SearchResult } from "./types.js";
 import { ProviderBlockedError } from "./types.js";
+import { CoolingDownError, limiterFor } from "../utils/rateLimit.js";
 
 const DDG_ENDPOINT = "https://html.duckduckgo.com/html/";
 const TIMEOUT_MS = 8_000;
@@ -26,9 +27,13 @@ export class DuckDuckGoProvider implements SearchProvider {
 
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+    // Paced so an expanded research question does not fire several queries at
+    // the endpoint at once, which is what earns a challenge page.
+    const limiter = limiterFor("duckduckgo");
 
     try {
-      const response = await withRetry(
+      const response = await limiter.schedule(() =>
+        withRetry(
         () =>
           fetch(`${DDG_ENDPOINT}?${params.toString()}`, {
             headers: {
@@ -38,10 +43,15 @@ export class DuckDuckGoProvider implements SearchProvider {
             },
             signal: controller.signal,
           }),
-        { retryOn: [429, 503], retryNetworkErrors: true },
+          { retryOn: [429, 503], retryNetworkErrors: true },
+        ),
       );
 
       if (!response.ok) {
+        limiter.startCooldown(
+          parseRetryAfter(response.headers?.get("retry-after")) ??
+            undefined,
+        );
         throw new ProviderBlockedError(
           "duckduckgo",
           `endpoint returned ${response.status}`,
@@ -54,17 +64,25 @@ export class DuckDuckGoProvider implements SearchProvider {
       // "no results", which is indistinguishable from a genuinely empty search
       // and made rate limiting look like a broken query.
       if (isChallengePage(html)) {
+        // Back off rather than keep asking: further requests during the
+        // cooldown fail immediately instead of deepening the block.
+        limiter.startCooldown();
         throw new ProviderBlockedError(
           "duckduckgo",
           `rate limited (HTTP ${response.status} challenge page)`,
         );
       }
+      limiter.clearCooldown();
       return parseHtmlResults(html, opts.count ?? 10);
     } catch (error) {
       // A block is not the same as an empty result set: let it reach the
       // aggregator so callers can be told the search was refused.
       if (error instanceof ProviderBlockedError) {
         throw error;
+      }
+      // A cooldown is a refusal too, reported with the reason and the wait.
+      if (error instanceof CoolingDownError) {
+        throw new ProviderBlockedError("duckduckgo", error.message);
       }
       console.warn(
         `[duckduckgo] search failed (${error instanceof Error ? error.message : String(error)}); returning no results.`,

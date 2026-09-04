@@ -1,4 +1,5 @@
 import { withRetry } from "../utils/retry.js";
+import { CoolingDownError, limiterFor } from "../utils/rateLimit.js";
 import type { SearchOptions, SearchProvider, SearchResult } from "./types.js";
 
 const TAVILY_ENDPOINT = "https://api.tavily.com/search";
@@ -36,9 +37,11 @@ export class TavilyProvider implements SearchProvider {
 
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+    const limiter = limiterFor("tavily");
 
     try {
-      const response = await withRetry(
+      const response = await limiter.schedule(() =>
+        withRetry(
         () =>
           fetch(TAVILY_ENDPOINT, {
             method: "POST",
@@ -56,7 +59,8 @@ export class TavilyProvider implements SearchProvider {
             }),
             signal: controller.signal,
           }),
-        { retryOn: [429, 503], retryNetworkErrors: true },
+          { retryOn: [429, 503], retryNetworkErrors: true },
+        ),
       );
 
       if (!response.ok) {

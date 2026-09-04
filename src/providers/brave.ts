@@ -1,8 +1,17 @@
 import { withRetry } from "../utils/retry.js";
+import { CoolingDownError, limiterFor } from "../utils/rateLimit.js";
 import type { SearchOptions, SearchProvider, SearchResult } from "./types.js";
 
 const BRAVE_ENDPOINT = "https://api.search.brave.com/res/v1/web/search";
 const TIMEOUT_MS = 8_000;
+
+/**
+ * Spacing between Brave requests, in milliseconds.
+ *
+ * The free tier allows one request per second, so an expanded research
+ * question would otherwise spend most of its queries on 429s.
+ */
+const BRAVE_INTERVAL_MS = 1_100;
 
 /**
  * Map a number of days to a Brave `freshness` filter value.
@@ -94,9 +103,11 @@ export class BraveProvider implements SearchProvider {
 
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+    const limiter = limiterFor("brave", BRAVE_INTERVAL_MS);
 
     try {
-      const response = await withRetry(
+      const response = await limiter.schedule(() =>
+        withRetry(
         () =>
           fetch(`${BRAVE_ENDPOINT}?${params.toString()}`, {
             headers: {
@@ -105,7 +116,8 @@ export class BraveProvider implements SearchProvider {
             },
             signal: controller.signal,
           }),
-        { retryOn: [429, 503], retryNetworkErrors: true },
+          { retryOn: [429, 503], retryNetworkErrors: true },
+        ),
       );
 
       if (response.status === 401) {

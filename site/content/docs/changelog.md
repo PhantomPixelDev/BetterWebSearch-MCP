@@ -8,6 +8,29 @@ All notable changes to **better-web-search-mcp** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] - 2026-09-04
+
+### Added
+- **Request pacing per provider.** `web_research` expands a question into
+  several queries and runs them in parallel across every provider, so one call
+  could fire three or more requests at a single endpoint within milliseconds.
+  That is what earns a DuckDuckGo challenge page, and reporting it accurately
+  was the previous release; not provoking it is this one. Requests to one
+  provider are now spaced by a minimum interval, with the first request never
+  waiting so a single search is as fast as before. Brave is paced to 1.1s
+  because its free tier allows one request per second
+- **Cooldown after a refusal.** Once a provider turns us away, further requests
+  fail immediately for a while rather than hammering an endpoint that is
+  already blocking us. `Retry-After` is honoured when the provider sends one,
+  and a second refusal during a cooldown never shortens it
+- `BETTER_WEB_SEARCH_RATE_LIMIT_MS` tunes the interval; `0` disables pacing,
+  which is what the test suite does so unit tests are not slowed by real waits
+
+### Measured
+- Three expanded queries run in parallel: 5 results each, **no warnings**,
+  4.7s total. A full `web_research` with the browser tier enabled completes in
+  14.4s with 3 queries, 7 sources and 5 citations
+
 ## [0.8.1] - 2026-09-04
 
 ### Fixed
@@ -494,6 +517,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 - Add `BRAVE_API_KEY` for richer ranking & recency filtering
 - Publish-ready: `npm pack --dry-run` validated, `prepare`/`prepublishOnly` hooks, `files` whitelist
 
+[0.9.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.9.0
 [0.8.1]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.8.1
 [0.8.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.8.0
 [0.7.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.7.0
