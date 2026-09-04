@@ -4,6 +4,28 @@ All notable changes to **better-web-search-mcp** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-09-04
+
+### Fixed
+- **`web_extract` no longer returns hydration payloads as page content.** The
+  structured-data tier used `JSON.stringify` on a page's `__NEXT_DATA__` and
+  called the result content, so on a Next.js site an agent received tens of
+  kilobytes of braces, quoted keys and escaped markup. Measured on two real
+  pages: **76,987 characters to 4,474 (94% smaller) and 77,849 to 5,413 (93%)**,
+  with pages that have no hydration unchanged. Across a 34-question page
+  corpus, pages containing hydration JSON went from 2 to 0
+- The tier now walks the payload and keeps only prose-shaped strings, dropping
+  URLs, slugs, ids and base64, de-duplicating text that appears under several
+  keys, and capping the total so one page cannot flood a response. That
+  preserves what the tier exists for — content a server rendered into JSON
+  rather than HTML — without the machinery around it
+
+### Notes
+- Whether this also recovers the `etag-header` benchmark question is
+  **unmeasured**: the provider returned no results for it while re-measuring,
+  so the published 33/34 retention figure stands unchanged rather than being
+  replaced by a number from a partial run
+
 ## [0.5.4] - 2026-09-04
 
 ### Fixed
@@ -397,6 +419,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 - Add `BRAVE_API_KEY` for richer ranking & recency filtering
 - Publish-ready: `npm pack --dry-run` validated, `prepare`/`prepublishOnly` hooks, `files` whitelist
 
+[0.6.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.6.0
 [0.5.4]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.5.4
 [0.5.3]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.5.3
 [0.5.2]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.5.2

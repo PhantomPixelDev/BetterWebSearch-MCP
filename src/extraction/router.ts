@@ -32,6 +32,7 @@ import type { Evidence } from "./evidence.js";
 import type { DomainProfile } from "../utils/domainProfile.js";
 import { loadConfig } from "../utils/config.js";
 import { assertPublicUrl, type SsrfDeps } from "../utils/ssrf.js";
+import { hydrationText } from "./hydration.js";
 
 /** The extraction method chosen by the router. */
 export type RouterMethod =
@@ -261,7 +262,12 @@ function structuredContent(structured: StructuredData): string {
     }
   }
   if (structured.nextData !== undefined) {
-    parts.push(JSON.stringify(structured.nextData));
+    // Never the raw payload: see hydrationText. Serializing it made
+    // web_extract return tens of kilobytes of braces and quoted keys.
+    const text = hydrationText(structured.nextData);
+    if (text !== "") {
+      parts.push(text);
+    }
   }
   return parts.join("\n\n");
 }
