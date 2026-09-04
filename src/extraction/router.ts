@@ -31,7 +31,11 @@ import { recordApiPatterns, updateDomainProfile } from "./learn.js";
 import type { Evidence } from "./evidence.js";
 import type { DomainProfile } from "../utils/domainProfile.js";
 import { loadConfig } from "../utils/config.js";
-import { assertPublicUrl, type SsrfDeps } from "../utils/ssrf.js";
+import {
+  BlockedUrlError,
+  assertPublicUrl,
+  type SsrfDeps,
+} from "../utils/ssrf.js";
 import { hydrationText } from "./hydration.js";
 
 /** The extraction method chosen by the router. */
@@ -392,7 +396,13 @@ export async function getPage(
   let fetched: FetchedPage | null = null;
   try {
     fetched = await d.fetchPage(url);
-  } catch {
+  } catch (error) {
+    // A refusal is not a network hiccup. Swallowing it returned an empty page
+    // at best-effort confidence, so an agent saw a blank result with no reason
+    // for it and could not tell a blocked address from a dead site.
+    if (error instanceof BlockedUrlError) {
+      throw error;
+    }
     fetched = null;
   }
   const html = fetched?.html ?? "";

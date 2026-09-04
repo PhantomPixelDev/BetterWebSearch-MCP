@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Cache } from "../utils/cache.js";
+import { BlockedUrlError } from "../utils/ssrf.js";
 import type { FetchedPage } from "./fetch.js";
 import type { PageMetadata } from "./metadata.js";
 import type { StructuredData } from "./structured.js";
@@ -248,5 +249,42 @@ describe("browser tier SSRF guard", () => {
     );
 
     expect(renderWithBrowser).toHaveBeenCalled();
+  });
+});
+
+
+describe("blocked URLs are reported, not silently empty", () => {
+  it("propagates the refusal instead of returning a blank best-effort page", async () => {
+    // Swallowing the guard's error returned an empty page at best-effort
+    // confidence, so a caller could not tell a blocked address from a dead
+    // site and got no reason for either.
+    // The guard lives in fetchPage, so the seam under test is how the router
+    // reacts to its refusal.
+    const deps = {
+      ...shellDeps(new Cache({ memory: true })),
+      fetchPage: vi
+        .fn()
+        .mockRejectedValue(
+          new BlockedUrlError(
+            "http://internal.example/admin",
+            "address 10.0.0.5 is not public",
+          ),
+        ),
+    };
+
+    await expect(
+      getPage("http://internal.example/admin", {}, deps),
+    ).rejects.toBeInstanceOf(BlockedUrlError);
+  });
+
+  it("still degrades quietly for an ordinary network failure", async () => {
+    const deps = {
+      ...shellDeps(new Cache({ memory: true })),
+      fetchPage: vi.fn().mockRejectedValue(new Error("ECONNRESET")),
+    };
+
+    const result = await getPage("https://shell.example/p", {}, deps);
+
+    expect(result.extraction.confidence).toBeLessThanOrEqual(0.9);
   });
 });

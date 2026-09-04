@@ -4,6 +4,17 @@ All notable changes to **better-web-search-mcp** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.1] - 2026-09-04
+
+### Fixed
+- **A refused URL now says so.** The router swallowed the SSRF guard's error
+  along with ordinary network failures, so `web_extract` on a private address
+  returned an empty page at best-effort confidence 0.5. A caller could not tell
+  a blocked address from a dead site, and got no reason for either. Refusals
+  propagate and surface as `confidence: 0` with
+  `Extraction failed: Refusing to fetch <url>: address <ip> is not public`.
+  Genuine network errors still degrade quietly, as before
+
 ## [0.6.0] - 2026-09-04
 
 ### Fixed
@@ -419,6 +430,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 - Add `BRAVE_API_KEY` for richer ranking & recency filtering
 - Publish-ready: `npm pack --dry-run` validated, `prepare`/`prepublishOnly` hooks, `files` whitelist
 
+[0.6.1]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.6.1
 [0.6.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.6.0
 [0.5.4]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.5.4
 [0.5.3]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.5.3
