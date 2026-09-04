@@ -8,6 +8,26 @@ All notable changes to **better-web-search-mcp** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.0] - 2026-09-04
+
+### Fixed
+- **`web_news` returned nothing for every topic on the keyless path.** It
+  required a publication date, and DuckDuckGo's HTML endpoint supplies none, so
+  every result was filtered out and the tool answered an empty list — which
+  reads exactly like "no news exists". Live check before the fix: 9 results
+  found for "artificial intelligence", 0 with a date, 0 returned. It now falls
+  back to the topical matches instead of nothing: 9 and 8 sources for the two
+  topics tested
+- The tool had **no test file at all**, which is how it shipped broken. It now
+  has 10, covering both paths
+
+### Added
+- `recency_verified` on `web_news` responses. False means the results match the
+  topic but their age is unknown, so an agent must not describe them as recent.
+  The `answer` string says the same thing, and a warning names the API keys
+  that would supply dates. Nothing is silently labelled "within N days" that
+  cannot be shown to be
+
 ## [0.9.0] - 2026-09-04
 
 ### Added
@@ -517,6 +537,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 - Add `BRAVE_API_KEY` for richer ranking & recency filtering
 - Publish-ready: `npm pack --dry-run` validated, `prepare`/`prepublishOnly` hooks, `files` whitelist
 
+[0.10.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.10.0
 [0.9.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.9.0
 [0.8.1]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.8.1
 [0.8.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.8.0

@@ -4,6 +4,12 @@
  * Recency-filtered news search. Runs a search with a tight freshness window,
  * post-filters results by their published date, ensures domain diversity, and
  * groups the results into a timeline keyed by publication date.
+ *
+ * Publication dates come from Brave and Tavily. DuckDuckGo's HTML endpoint
+ * supplies none, so requiring a date made this tool return an empty list for
+ * every topic on the keyless path, which reads exactly like "no news exists".
+ * When no result is dated the search still returns its topical matches and
+ * sets `recency_verified` to false, so a caller can tell the difference.
  */
 
 import { z } from "zod";
@@ -31,6 +37,15 @@ export interface NewsResponse {
   queries_used: string[];
   /** Providers that refused or failed, so an empty result reads correctly. */
   warnings?: string[];
+  /**
+   * Whether every returned source carried a publication date inside the
+   * requested window.
+   *
+   * False means the results are topical but their age is unknown, which
+   * happens on the keyless path: DuckDuckGo's HTML endpoint does not supply
+   * dates. An agent should not describe those as "from the last N days".
+   */
+  recency_verified: boolean;
 }
 
 /** Milliseconds per day. */
@@ -112,7 +127,17 @@ export async function runNews(args: {
   const ranked = rerank(deduped, topic, recencyDays);
 
   // Post-filter by published date within the recency window.
-  const recent = ranked.filter((r) => withinWindow(r.published, recencyDays));
+  const dated = ranked.filter((r) => withinWindow(r.published, recencyDays));
+
+  // Falling back to undated results rather than returning nothing. The only
+  // keyless provider does not supply publication dates, so requiring one made
+  // web_news return an empty list for every topic — indistinguishable from
+  // "no news exists". Recency is reported as unverified instead of silently
+  // claiming a window the data cannot support.
+  const recencyVerified = dated.length > 0;
+  const recent = recencyVerified
+    ? dated
+    : ranked.filter((r) => r.published === undefined || r.published === "");
 
   // Ensure domain diversity: keep at most one result per host, in rank order.
   const seenHosts = new Set<string>();
@@ -136,12 +161,24 @@ export async function runNews(args: {
 
   const sources = diverse.map(toSource);
 
+  const notes = [...warnings];
+  if (!recencyVerified && sources.length > 0) {
+    notes.push(
+      `No result carried a publication date, so recency could not be verified. ` +
+        `DuckDuckGo does not supply dates; set BRAVE_API_KEY or TAVILY_API_KEY ` +
+        `for date-filtered news. Showing ${sources.length} undated results for the topic.`,
+    );
+  }
+
   const response: NewsResponse = {
-    answer: `Top ${sources.length} recent news results for "${topic}" within ${recencyDays} days`,
+    answer: recencyVerified
+      ? `Top ${sources.length} recent news results for "${topic}" within ${recencyDays} days`
+      : `Top ${sources.length} results for "${topic}" (publication dates unavailable, recency unverified)`,
     sources,
     timeline: buildTimeline(sources),
     queries_used: [topic],
-    ...(warnings.length > 0 ? { warnings } : {}),
+    recency_verified: recencyVerified,
+    ...(notes.length > 0 ? { warnings: notes } : {}),
   };
 
   if (warnings.length === 0) {
@@ -157,7 +194,7 @@ export function registerNews(server: McpServer, cache?: Cache): void {
     {
       title: "Web News",
       description:
-        "Search for recent news on a topic within a recency window. Results are filtered by publication date, deduplicated across domains for diversity, and grouped into a timeline keyed by publication date.",
+        "Search for recent news on a topic within a recency window. Results are filtered by publication date, deduplicated across domains for diversity, and grouped into a timeline keyed by publication date. Check `recency_verified`: publication dates require BRAVE_API_KEY or TAVILY_API_KEY, and on the keyless path it is false, meaning the results match the topic but their age is unknown and must not be described as recent.",
       inputSchema: newsInputSchema,
     },
     async (args) => {
