@@ -4,6 +4,21 @@ All notable changes to **better-web-search-mcp** are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.1] - 2026-09-04
+
+### Fixed
+- **The cache no longer follows the working directory.** It defaulted to the
+  relative path `data/cache.db`, and an MCP client spawns the server from
+  wherever it happens to be, so `data/cache.db` files accumulated around the
+  filesystem — two were sitting in the home and Downloads folders — while the
+  domain profiles and page cache never built up, because every launch
+  directory got its own empty database. The default is now a per-user
+  location: `%LOCALAPPDATA%` on Windows, `~/Library/Caches` on macOS,
+  `$XDG_CACHE_HOME` or `~/.cache` elsewhere, falling back to the old relative
+  path only when there is no home directory to write into.
+  `BETTER_WEB_SEARCH_CACHE_PATH` still overrides, and a relative override is
+  still honoured for a project-local cache
+
 ## [0.8.0] - 2026-09-04
 
 ### Fixed
@@ -475,6 +490,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 - Add `BRAVE_API_KEY` for richer ranking & recency filtering
 - Publish-ready: `npm pack --dry-run` validated, `prepare`/`prepublishOnly` hooks, `files` whitelist
 
+[0.8.1]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.8.1
 [0.8.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.8.0
 [0.7.0]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.7.0
 [0.6.1]: https://github.com/PhantomPixelDev/BetterWebSearch-MCP/releases/tag/v0.6.1

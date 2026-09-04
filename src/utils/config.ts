@@ -7,6 +7,8 @@
  * (e.g. BETTER_WEB_SEARCH_BRAVE_API_KEY) as an alias for the bare name.
  */
 
+import { join } from "node:path";
+
 const KEY_ALIASES: Record<string, string[]> = {
   BRAVE_API_KEY: ["BETTER_WEB_SEARCH_BRAVE_API_KEY", "BRAVE_SEARCH_API_KEY"],
   TAVILY_API_KEY: ["BETTER_WEB_SEARCH_TAVILY_API_KEY"],
@@ -37,6 +39,48 @@ export interface AppConfig {
   browserEnabled: boolean;
 }
 
+/**
+ * Where the cache lives when nothing overrides it.
+ *
+ * The default used to be the relative path `data/cache.db`, which resolves
+ * against the working directory. An MCP client spawns the server from
+ * wherever it happens to be, so that scattered `data/cache.db` files around
+ * the filesystem — two were sitting in the home and Downloads folders — and
+ * meant the domain profiles and page cache never accumulated, because every
+ * launch directory got its own empty database. A per-user location is stable
+ * across launches and keeps the writes inside a directory meant for them.
+ *
+ * `BETTER_WEB_SEARCH_CACHE_PATH` still overrides, and a relative override is
+ * still honoured for anyone who wants a project-local cache.
+ */
+export function defaultCachePath(
+  env: NodeJS.ProcessEnv = process.env,
+  platform: string = process.platform,
+): string {
+  const home = env.HOME ?? env.USERPROFILE;
+  const app = "better-web-search-mcp";
+
+  if (platform === "win32") {
+    const base = env.LOCALAPPDATA ?? (home ? join(home, "AppData", "Local") : undefined);
+    if (base) {
+      return join(base, app, "cache.db");
+    }
+  } else if (platform === "darwin") {
+    if (home) {
+      return join(home, "Library", "Caches", app, "cache.db");
+    }
+  } else {
+    const base = env.XDG_CACHE_HOME ?? (home ? join(home, ".cache") : undefined);
+    if (base) {
+      return join(base, app, "cache.db");
+    }
+  }
+
+  // No home directory to write into: fall back to the old relative path
+  // rather than failing to start.
+  return join("data", "cache.db");
+}
+
 export function loadConfig(): AppConfig {
   const braveApiKey = readKey("BRAVE_API_KEY");
   const tavilyApiKey = readKey("TAVILY_API_KEY");
@@ -49,7 +93,7 @@ export function loadConfig(): AppConfig {
   const cachePath =
     process.env.BETTER_WEB_SEARCH_CACHE_PATH ??
     process.env.CACHE_PATH ??
-    "data/cache.db";
+    defaultCachePath();
 
   const browserEnabled =
     (process.env.BETTER_WEB_SEARCH_DISABLE_BROWSER ?? "").toLowerCase() !== "true" &&
