@@ -10,12 +10,13 @@ draft: false
 
 [better-web-search-mcp](../index.html) / extraction/browser
 
+# extraction/browser
 
 ## Classes
 
 ### BrowserPool
 
-Defined in: [src/extraction/browser.ts:151](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L151)
+Defined in: [src/extraction/browser.ts:151](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L151)
 
 A pool of reusable browser contexts backed by a single chromium instance.
 
@@ -29,7 +30,7 @@ reused round-robin, so no render launches a browser per request.
 
 > **new BrowserPool**(`size?`): [`BrowserPool`](#browserpool)
 
-Defined in: [src/extraction/browser.ts:158](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L158)
+Defined in: [src/extraction/browser.ts:158](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L158)
 
 ###### Parameters
 
@@ -47,7 +48,7 @@ Defined in: [src/extraction/browser.ts:158](https://github.com/PhantomPixelDev/B
 
 > **close**(): `Promise`\<`void`\>
 
-Defined in: [src/extraction/browser.ts:251](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L251)
+Defined in: [src/extraction/browser.ts:251](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L251)
 
 Close every context and the shared browser, resetting the pool.
 
@@ -59,7 +60,7 @@ Close every context and the shared browser, resetting the pool.
 
 > **renderWithBrowser**(`url`, `opts?`): `Promise`\<[`RenderResult`](#renderresult)\>
 
-Defined in: [src/extraction/browser.ts:223](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L223)
+Defined in: [src/extraction/browser.ts:223](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L223)
 
 Render a URL in a pooled context and return its HTML plus captured JSON
 API responses.
@@ -83,7 +84,7 @@ listener removed, even on error.
 
 ### PlaywrightMissingError
 
-Defined in: [src/extraction/browser.ts:66](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L66)
+Defined in: [src/extraction/browser.ts:66](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L66)
 
 Thrown when the Playwright browser binary is not installed.
 
@@ -97,7 +98,7 @@ Thrown when the Playwright browser binary is not installed.
 
 > **new PlaywrightMissingError**(): [`PlaywrightMissingError`](#playwrightmissingerror)
 
-Defined in: [src/extraction/browser.ts:67](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L67)
+Defined in: [src/extraction/browser.ts:67](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L67)
 
 ###### Returns
 
@@ -213,7 +214,7 @@ https://v8.dev/docs/stack-trace-api#customizing-stack-traces
 
 ### RenderOptions
 
-Defined in: [src/extraction/browser.ts:53](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L53)
+Defined in: [src/extraction/browser.ts:53](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L53)
 
 Options controlling a single browser render.
 
@@ -221,13 +222,13 @@ Options controlling a single browser render.
 
 | Property | Type | Description | Defined in |
 | ------ | ------ | ------ | ------ |
-| <a id="navigationtimeoutms"></a> `navigationTimeoutMs?` | `number` | Timeout for the initial navigation, in ms. Default 15s. | [src/extraction/browser.ts:55](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L55) |
+| <a id="navigationtimeoutms"></a> `navigationTimeoutMs?` | `number` | Timeout for the initial navigation, in ms. Default 15s. | [src/extraction/browser.ts:55](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L55) |
 
 ***
 
 ### RenderResult
 
-Defined in: [src/extraction/browser.ts:45](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L45)
+Defined in: [src/extraction/browser.ts:45](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L45)
 
 The result of a browser render.
 
@@ -235,14 +236,14 @@ The result of a browser render.
 
 | Property | Type | Description | Defined in |
 | ------ | ------ | ------ | ------ |
-| <a id="captured"></a> `captured` | readonly [`CapturedApiResponse`](apiIntercept.html#capturedapiresponse)[] | JSON API responses captured during the render. | [src/extraction/browser.ts:49](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L49) |
-| <a id="html"></a> `html` | `string` | The rendered page HTML. | [src/extraction/browser.ts:47](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L47) |
+| <a id="captured"></a> `captured` | readonly [`CapturedApiResponse`](apiIntercept.html#capturedapiresponse)[] | JSON API responses captured during the render. | [src/extraction/browser.ts:49](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L49) |
+| <a id="html"></a> `html` | `string` | The rendered page HTML. | [src/extraction/browser.ts:47](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L47) |
 
 ***
 
 ### WaitPage
 
-Defined in: [src/extraction/browser.ts:90](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L90)
+Defined in: [src/extraction/browser.ts:90](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L90)
 
 The minimal `Page` surface the wait helpers depend on.
 
@@ -252,7 +253,7 @@ The minimal `Page` surface the wait helpers depend on.
 
 > **evaluate**(`fn`): `Promise`\<`string`\>
 
-Defined in: [src/extraction/browser.ts:97](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L97)
+Defined in: [src/extraction/browser.ts:97](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L97)
 
 ###### Parameters
 
@@ -268,7 +269,7 @@ Defined in: [src/extraction/browser.ts:97](https://github.com/PhantomPixelDev/Be
 
 > **waitForFunction**(`fn`, `opts`): `Promise`\<`unknown`\>
 
-Defined in: [src/extraction/browser.ts:96](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L96)
+Defined in: [src/extraction/browser.ts:96](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L96)
 
 ###### Parameters
 
@@ -286,7 +287,7 @@ Defined in: [src/extraction/browser.ts:96](https://github.com/PhantomPixelDev/Be
 
 > **waitForLoadState**(`state`, `opts`): `Promise`\<`void`\>
 
-Defined in: [src/extraction/browser.ts:91](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L91)
+Defined in: [src/extraction/browser.ts:91](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L91)
 
 ###### Parameters
 
@@ -304,7 +305,7 @@ Defined in: [src/extraction/browser.ts:91](https://github.com/PhantomPixelDev/Be
 
 > **waitForSelector**(`selector`, `opts`): `Promise`\<`unknown`\>
 
-Defined in: [src/extraction/browser.ts:95](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L95)
+Defined in: [src/extraction/browser.ts:95](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L95)
 
 ###### Parameters
 
@@ -324,7 +325,7 @@ Defined in: [src/extraction/browser.ts:95](https://github.com/PhantomPixelDev/Be
 
 > `const` **DEFAULT\_POOL\_SIZE**: `3` = `3`
 
-Defined in: [src/extraction/browser.ts:24](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L24)
+Defined in: [src/extraction/browser.ts:24](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L24)
 
 Default number of contexts to keep open in the pool.
 
@@ -334,7 +335,7 @@ Default number of contexts to keep open in the pool.
 
 > `const` **DOM\_STABILITY\_POLL\_MS**: `200` = `200`
 
-Defined in: [src/extraction/browser.ts:42](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L42)
+Defined in: [src/extraction/browser.ts:42](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L42)
 
 Delay between DOM-stability polls, in milliseconds.
 
@@ -344,7 +345,7 @@ Delay between DOM-stability polls, in milliseconds.
 
 > `const` **DOM\_STABILITY\_TIMEOUT\_MS**: `4000` = `4_000`
 
-Defined in: [src/extraction/browser.ts:36](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L36)
+Defined in: [src/extraction/browser.ts:36](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L36)
 
 Timeout for the DOM-stability poll, in milliseconds.
 
@@ -354,7 +355,7 @@ Timeout for the DOM-stability poll, in milliseconds.
 
 > `const` **MIN\_CONTENT\_LENGTH**: `1000` = `1_000`
 
-Defined in: [src/extraction/browser.ts:39](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L39)
+Defined in: [src/extraction/browser.ts:39](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L39)
 
 Minimum `innerText` length that signals meaningful content.
 
@@ -364,7 +365,7 @@ Minimum `innerText` length that signals meaningful content.
 
 > `const` **NAVIGATION\_TIMEOUT\_MS**: `15000` = `15_000`
 
-Defined in: [src/extraction/browser.ts:30](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L30)
+Defined in: [src/extraction/browser.ts:30](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L30)
 
 Timeout for the initial navigation, in milliseconds.
 
@@ -374,7 +375,7 @@ Timeout for the initial navigation, in milliseconds.
 
 > `const` **WAIT\_LEG\_TIMEOUT\_MS**: `4000` = `4_000`
 
-Defined in: [src/extraction/browser.ts:33](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L33)
+Defined in: [src/extraction/browser.ts:33](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L33)
 
 Timeout for each intelligent-wait race leg, in milliseconds.
 
@@ -384,7 +385,7 @@ Timeout for each intelligent-wait race leg, in milliseconds.
 
 > **intelligentWait**(`page`): `Promise`\<`void`\>
 
-Defined in: [src/extraction/browser.ts:108](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L108)
+Defined in: [src/extraction/browser.ts:108](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L108)
 
 Wait intelligently for content to appear.
 
@@ -409,7 +410,7 @@ so a slow page never throws here.
 
 > **shouldBlockResource**(`resourceType`): `boolean`
 
-Defined in: [src/extraction/browser.ts:76](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L76)
+Defined in: [src/extraction/browser.ts:76](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L76)
 
 Whether a resource type should be blocked (image/font/media).
 
@@ -429,7 +430,7 @@ Whether a resource type should be blocked (image/font/media).
 
 > **waitForDomStability**(`page`): `Promise`\<`void`\>
 
-Defined in: [src/extraction/browser.ts:131](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/browser.ts#L131)
+Defined in: [src/extraction/browser.ts:131](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/browser.ts#L131)
 
 Poll the DOM until `innerText` stops growing (content is stable).
 

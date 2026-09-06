@@ -10,22 +10,24 @@ draft: false
 
 [better-web-search-mcp](../index.html) / tools/find
 
+# tools/find
 
 ## Interfaces
 
 ### FindResponse
 
-Defined in: [src/tools/find.ts:26](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/find.ts#L26)
+Defined in: [src/tools/find.ts:26](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/find.ts#L26)
 
 The spec-shaped `web_find` response.
 
 #### Properties
 
-| Property | Type | Defined in |
-| ------ | ------ | ------ |
-| <a id="answer"></a> `answer` | `string` | [src/tools/find.ts:27](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/find.ts#L27) |
-| <a id="queries_used"></a> `queries_used` | `string`[] | [src/tools/find.ts:29](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/find.ts#L29) |
-| <a id="sources"></a> `sources` | [`SearchSource`](search.html#searchsource)[] | [src/tools/find.ts:28](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/find.ts#L28) |
+| Property | Type | Description | Defined in |
+| ------ | ------ | ------ | ------ |
+| <a id="answer"></a> `answer` | `string` | - | [src/tools/find.ts:27](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/find.ts#L27) |
+| <a id="queries_used"></a> `queries_used` | `string`[] | - | [src/tools/find.ts:29](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/find.ts#L29) |
+| <a id="sources"></a> `sources` | [`SearchSource`](search.html#searchsource)[] | - | [src/tools/find.ts:28](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/find.ts#L28) |
+| <a id="warnings"></a> `warnings?` | `string`[] | Providers that refused or failed, so an empty result reads correctly. | [src/tools/find.ts:31](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/find.ts#L31) |
 
 ## Variables
 
@@ -33,7 +35,7 @@ The spec-shaped `web_find` response.
 
 > `const` **findInputSchema**: \{ `max_results`: `ZodDefault`\<`ZodNumber`\>; `query`: `ZodString`; `site`: `ZodString`; \}
 
-Defined in: [src/tools/find.ts:19](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/find.ts#L19)
+Defined in: [src/tools/find.ts:19](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/find.ts#L19)
 
 Input schema for `web_find`.
 
@@ -41,9 +43,9 @@ Input schema for `web_find`.
 
 | Name | Type | Defined in |
 | ------ | ------ | ------ |
-| <a id="property-max_results"></a> `max_results` | `ZodDefault`\<`ZodNumber`\> | [src/tools/find.ts:22](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/find.ts#L22) |
-| <a id="property-query"></a> `query` | `ZodString` | [src/tools/find.ts:20](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/find.ts#L20) |
-| <a id="property-site"></a> `site` | `ZodString` | [src/tools/find.ts:21](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/find.ts#L21) |
+| <a id="property-max_results"></a> `max_results` | `ZodDefault`\<`ZodNumber`\> | [src/tools/find.ts:22](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/find.ts#L22) |
+| <a id="property-query"></a> `query` | `ZodString` | [src/tools/find.ts:20](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/find.ts#L20) |
+| <a id="property-site"></a> `site` | `ZodString` | [src/tools/find.ts:21](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/find.ts#L21) |
 
 ## Functions
 
@@ -51,7 +53,7 @@ Input schema for `web_find`.
 
 > **registerFind**(`server`, `cache?`): `void`
 
-Defined in: [src/tools/find.ts:87](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/find.ts#L87)
+Defined in: [src/tools/find.ts:92](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/find.ts#L92)
 
 Register the `web_find` tool on the given MCP server.
 
@@ -72,7 +74,7 @@ Register the `web_find` tool on the given MCP server.
 
 > **runFind**(`args`): `Promise`\<[`FindResponse`](#findresponse)\>
 
-Defined in: [src/tools/find.ts:49](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/find.ts#L49)
+Defined in: [src/tools/find.ts:51](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/find.ts#L51)
 
 Run a site-restricted search and return the spec-shaped response.
 

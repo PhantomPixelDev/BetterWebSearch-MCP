@@ -10,12 +10,13 @@ draft: false
 
 [better-web-search-mcp](../index.html) / providers/brave
 
+# providers/brave
 
 ## Classes
 
 ### BraveProvider
 
-Defined in: [src/providers/brave.ts:71](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/providers/brave.ts#L71)
+Defined in: [src/providers/brave.ts:80](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/providers/brave.ts#L80)
 
 Brave Search provider (primary).
 
@@ -41,7 +42,7 @@ logs a warning rather than throwing.
 
 | Property | Modifier | Type | Default value | Description | Defined in |
 | ------ | ------ | ------ | ------ | ------ | ------ |
-| <a id="name"></a> `name` | `readonly` | `"brave"` | `"brave"` | Stable provider identifier (e.g. "brave", "tavily", "duckduckgo"). | [src/providers/brave.ts:72](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/providers/brave.ts#L72) |
+| <a id="name"></a> `name` | `readonly` | `"brave"` | `"brave"` | Stable provider identifier (e.g. "brave", "tavily", "duckduckgo"). | [src/providers/brave.ts:81](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/providers/brave.ts#L81) |
 
 #### Methods
 
@@ -49,7 +50,7 @@ logs a warning rather than throwing.
 
 > **search**(`query`, `opts`): `Promise`\<[`SearchResult`](types.html#searchresult)[]\>
 
-Defined in: [src/providers/brave.ts:74](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/providers/brave.ts#L74)
+Defined in: [src/providers/brave.ts:83](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/providers/brave.ts#L83)
 
 Run a search and return normalized results.
 
@@ -78,7 +79,7 @@ so one failing provider never breaks the aggregate search.
 
 > **freshnessFromRecencyDays**(`days`): `string` \| `undefined`
 
-Defined in: [src/providers/brave.ts:15](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/providers/brave.ts#L15)
+Defined in: [src/providers/brave.ts:24](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/providers/brave.ts#L24)
 
 Map a number of days to a Brave `freshness` filter value.
 

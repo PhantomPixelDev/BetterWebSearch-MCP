@@ -10,12 +10,13 @@ draft: false
 
 [better-web-search-mcp](../index.html) / providers/duckduckgo
 
+# providers/duckduckgo
 
 ## Classes
 
 ### DuckDuckGoProvider
 
-Defined in: [src/providers/duckduckgo.ts:16](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/providers/duckduckgo.ts#L16)
+Defined in: [src/providers/duckduckgo.ts:18](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/providers/duckduckgo.ts#L18)
 
 DuckDuckGo provider (free, keyless fallback).
 
@@ -41,7 +42,7 @@ parse) it returns an empty array and logs a warning rather than throwing.
 
 | Property | Modifier | Type | Default value | Description | Defined in |
 | ------ | ------ | ------ | ------ | ------ | ------ |
-| <a id="name"></a> `name` | `readonly` | `"duckduckgo"` | `"duckduckgo"` | Stable provider identifier (e.g. "brave", "tavily", "duckduckgo"). | [src/providers/duckduckgo.ts:17](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/providers/duckduckgo.ts#L17) |
+| <a id="name"></a> `name` | `readonly` | `"duckduckgo"` | `"duckduckgo"` | Stable provider identifier (e.g. "brave", "tavily", "duckduckgo"). | [src/providers/duckduckgo.ts:19](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/providers/duckduckgo.ts#L19) |
 
 #### Methods
 
@@ -49,7 +50,7 @@ parse) it returns an empty array and logs a warning rather than throwing.
 
 > **search**(`query`, `opts`): `Promise`\<[`SearchResult`](types.html#searchresult)[]\>
 
-Defined in: [src/providers/duckduckgo.ts:19](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/providers/duckduckgo.ts#L19)
+Defined in: [src/providers/duckduckgo.ts:21](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/providers/duckduckgo.ts#L21)
 
 Run a search and return normalized results.
 
@@ -74,11 +75,36 @@ so one failing provider never breaks the aggregate search.
 
 ## Functions
 
+### isChallengePage()
+
+> **isChallengePage**(`html`): `boolean`
+
+Defined in: [src/providers/duckduckgo.ts:105](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/providers/duckduckgo.ts#L105)
+
+Whether the HTML is a bot-detection challenge rather than a result page.
+
+The endpoint answers a throttled request with a 2xx status and an anomaly
+page, so status alone cannot tell the two apart. Requiring both the absence
+of result markup and a challenge marker avoids calling a genuinely empty
+search a block.
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `html` | `string` |
+
+#### Returns
+
+`boolean`
+
+***
+
 ### parseHtmlResults()
 
 > **parseHtmlResults**(`html`, `limit`): [`SearchResult`](types.html#searchresult)[]
 
-Defined in: [src/providers/duckduckgo.ts:64](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/providers/duckduckgo.ts#L64)
+Defined in: [src/providers/duckduckgo.ts:113](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/providers/duckduckgo.ts#L113)
 
 Parse DuckDuckGo HTML search results into normalized [SearchResult](types.html#searchresult)s.
 

@@ -1,0 +1,7 @@
+{
+  "name": "better-web-search-mcp",
+  "version": "0.10.0",
+  "license": "MIT",
+  "description": "MCP server for genuinely better web research — keyless-first (DuckDuckGo), 3-tier extraction, deep research. Brave/Tavily optional.",
+  "nodeVersion": ">=22"
+}

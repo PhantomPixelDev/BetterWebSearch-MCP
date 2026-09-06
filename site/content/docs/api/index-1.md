@@ -10,3 +10,4 @@ draft: false
 
 [better-web-search-mcp](index.html) / index
 
+# index

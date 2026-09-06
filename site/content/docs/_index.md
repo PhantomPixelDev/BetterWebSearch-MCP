@@ -14,7 +14,7 @@ A local [Model Context Protocol](https://modelcontextprotocol.io) server that gi
 |---|---|
 | **Install** | `npx -y better-web-search-mcp` |
 | **Keys required** | None — DuckDuckGo works immediately |
-| **Node** | 20+ |
+| **Node** | 22+ |
 | **License** | MIT |
 | **npm** | [better-web-search-mcp](https://www.npmjs.com/package/better-web-search-mcp) |
 

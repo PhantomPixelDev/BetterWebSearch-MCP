@@ -12,8 +12,9 @@ dist/
 .env.local
 .env.*.local
 
-# Cache database
-data/
+# Cache database. Anchored: an unanchored `data/` also matched site/data/,
+# which is Hugo's data directory and must be tracked.
+/data/
 
 # Logs
 *.log
@@ -33,3 +34,7 @@ site/resources/
 # OS / editor
 .DS_Store
 Thumbs.db
+
+# Local preview config for the docs site; `npm run docs:serve` is the
+# documented way in.
+.claude/

@@ -10,12 +10,13 @@ draft: false
 
 [better-web-search-mcp](../index.html) / utils/memoryCache
 
+# utils/memoryCache
 
 ## Classes
 
 ### MemoryCache
 
-Defined in: [src/utils/memoryCache.ts:24](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/memoryCache.ts#L24)
+Defined in: [src/utils/memoryCache.ts:24](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/memoryCache.ts#L24)
 
 A cache backend backed by a plain `Map`.
 
@@ -38,7 +39,7 @@ Search entries expire after [SEARCH\_TTL\_MS](cacheTypes.html#search_ttl_ms), pa
 
 > **addApiPattern**(`domain`, `endpointPattern`, `method`, `contentType`): `void`
 
-Defined in: [src/utils/memoryCache.ts:76](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/memoryCache.ts#L76)
+Defined in: [src/utils/memoryCache.ts:76](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/memoryCache.ts#L76)
 
 Record a discovered API endpoint pattern for a domain.
 
@@ -59,7 +60,7 @@ Record a discovered API endpoint pattern for a domain.
 
 > **clear**(): `void`
 
-Defined in: [src/utils/memoryCache.ts:28](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/memoryCache.ts#L28)
+Defined in: [src/utils/memoryCache.ts:28](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/memoryCache.ts#L28)
 
 Drop every entry (used on close).
 
@@ -71,7 +72,7 @@ Drop every entry (used on close).
 
 > **getApiPatterns**(`domain`): [`ApiPattern`](cacheTypes.html#apipattern)[]
 
-Defined in: [src/utils/memoryCache.ts:99](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/memoryCache.ts#L99)
+Defined in: [src/utils/memoryCache.ts:99](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/memoryCache.ts#L99)
 
 List all API patterns for a domain, newest first.
 
@@ -89,7 +90,7 @@ List all API patterns for a domain, newest first.
 
 > **getDomain**(`domain`): `unknown`
 
-Defined in: [src/utils/memoryCache.ts:66](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/memoryCache.ts#L66)
+Defined in: [src/utils/memoryCache.ts:66](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/memoryCache.ts#L66)
 
 Read a cached domain profile, or `null` on miss.
 
@@ -107,7 +108,7 @@ Read a cached domain profile, or `null` on miss.
 
 > **getPage**(`url`): [`PageCacheEntry`](cacheTypes.html#pagecacheentry) \| `null`
 
-Defined in: [src/utils/memoryCache.ts:43](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/memoryCache.ts#L43)
+Defined in: [src/utils/memoryCache.ts:43](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/memoryCache.ts#L43)
 
 Read a cached page entry, or `null` on miss / expiry.
 
@@ -125,7 +126,7 @@ Read a cached page entry, or `null` on miss / expiry.
 
 > **getSearch**(`key`): `unknown`
 
-Defined in: [src/utils/memoryCache.ts:33](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/memoryCache.ts#L33)
+Defined in: [src/utils/memoryCache.ts:33](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/memoryCache.ts#L33)
 
 Read a search result, or `null` on miss / expiry.
 
@@ -143,7 +144,7 @@ Read a search result, or `null` on miss / expiry.
 
 > **pruneExpired**(): `void`
 
-Defined in: [src/utils/memoryCache.ts:108](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/memoryCache.ts#L108)
+Defined in: [src/utils/memoryCache.ts:108](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/memoryCache.ts#L108)
 
 Delete every search/page entry whose TTL has expired.
 
@@ -155,7 +156,7 @@ Delete every search/page entry whose TTL has expired.
 
 > **setDomain**(`domain`, `profile`): `void`
 
-Defined in: [src/utils/memoryCache.ts:71](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/memoryCache.ts#L71)
+Defined in: [src/utils/memoryCache.ts:71](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/memoryCache.ts#L71)
 
 Upsert a domain profile.
 
@@ -174,7 +175,7 @@ Upsert a domain profile.
 
 > **setPage**(`url`, `content`, `extractionMethod`, `confidence`): `void`
 
-Defined in: [src/utils/memoryCache.ts:49](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/memoryCache.ts#L49)
+Defined in: [src/utils/memoryCache.ts:49](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/memoryCache.ts#L49)
 
 Store a page extraction, refreshing the TTL on overwrite.
 
@@ -195,7 +196,7 @@ Store a page extraction, refreshing the TTL on overwrite.
 
 > **setSearch**(`key`, `_query`, `results`): `void`
 
-Defined in: [src/utils/memoryCache.ts:38](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/memoryCache.ts#L38)
+Defined in: [src/utils/memoryCache.ts:38](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/memoryCache.ts#L38)
 
 Store a search result, refreshing the TTL on overwrite.
 

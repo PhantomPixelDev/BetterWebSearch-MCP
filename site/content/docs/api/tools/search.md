@@ -10,28 +10,30 @@ draft: false
 
 [better-web-search-mcp](../index.html) / tools/search
 
+# tools/search
 
 ## Interfaces
 
 ### SearchResponse
 
-Defined in: [src/tools/search.ts:35](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/search.ts#L35)
+Defined in: [src/tools/search.ts:35](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/search.ts#L35)
 
 The spec-shaped `web_search` response.
 
 #### Properties
 
-| Property | Type | Defined in |
-| ------ | ------ | ------ |
-| <a id="answer"></a> `answer` | `string` | [src/tools/search.ts:36](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/search.ts#L36) |
-| <a id="queries_used"></a> `queries_used` | `string`[] | [src/tools/search.ts:38](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/search.ts#L38) |
-| <a id="sources"></a> `sources` | [`SearchSource`](#searchsource)[] | [src/tools/search.ts:37](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/search.ts#L37) |
+| Property | Type | Description | Defined in |
+| ------ | ------ | ------ | ------ |
+| <a id="answer"></a> `answer` | `string` | - | [src/tools/search.ts:36](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/search.ts#L36) |
+| <a id="queries_used"></a> `queries_used` | `string`[] | - | [src/tools/search.ts:38](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/search.ts#L38) |
+| <a id="sources"></a> `sources` | [`SearchSource`](#searchsource)[] | - | [src/tools/search.ts:37](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/search.ts#L37) |
+| <a id="warnings"></a> `warnings?` | `string`[] | Providers that refused or failed, when any did. Present so an empty `sources` can be read correctly: a throttled search and a query that matched nothing used to look identical. | [src/tools/search.ts:45](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/search.ts#L45) |
 
 ***
 
 ### SearchSource
 
-Defined in: [src/tools/search.ts:26](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/search.ts#L26)
+Defined in: [src/tools/search.ts:26](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/search.ts#L26)
 
 The spec-shaped source entry returned for each result.
 
@@ -39,11 +41,11 @@ The spec-shaped source entry returned for each result.
 
 | Property | Type | Defined in |
 | ------ | ------ | ------ |
-| <a id="published"></a> `published?` | `string` | [src/tools/search.ts:30](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/search.ts#L30) |
-| <a id="relevance"></a> `relevance` | `number` | [src/tools/search.ts:31](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/search.ts#L31) |
-| <a id="snippet"></a> `snippet` | `string` | [src/tools/search.ts:29](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/search.ts#L29) |
-| <a id="title"></a> `title` | `string` | [src/tools/search.ts:27](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/search.ts#L27) |
-| <a id="url"></a> `url` | `string` | [src/tools/search.ts:28](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/search.ts#L28) |
+| <a id="published"></a> `published?` | `string` | [src/tools/search.ts:30](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/search.ts#L30) |
+| <a id="relevance"></a> `relevance` | `number` | [src/tools/search.ts:31](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/search.ts#L31) |
+| <a id="snippet"></a> `snippet` | `string` | [src/tools/search.ts:29](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/search.ts#L29) |
+| <a id="title"></a> `title` | `string` | [src/tools/search.ts:27](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/search.ts#L27) |
+| <a id="url"></a> `url` | `string` | [src/tools/search.ts:28](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/search.ts#L28) |
 
 ## Variables
 
@@ -51,7 +53,7 @@ The spec-shaped source entry returned for each result.
 
 > `const` **searchInputSchema**: \{ `max_results`: `ZodDefault`\<`ZodNumber`\>; `query`: `ZodString`; `recency_days`: `ZodOptional`\<`ZodNumber`\>; \}
 
-Defined in: [src/tools/search.ts:19](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/search.ts#L19)
+Defined in: [src/tools/search.ts:19](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/search.ts#L19)
 
 Input schema for `web_search`.
 
@@ -59,9 +61,9 @@ Input schema for `web_search`.
 
 | Name | Type | Defined in |
 | ------ | ------ | ------ |
-| <a id="property-max_results"></a> `max_results` | `ZodDefault`\<`ZodNumber`\> | [src/tools/search.ts:21](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/search.ts#L21) |
-| <a id="property-query"></a> `query` | `ZodString` | [src/tools/search.ts:20](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/search.ts#L20) |
-| <a id="property-recency_days"></a> `recency_days` | `ZodOptional`\<`ZodNumber`\> | [src/tools/search.ts:22](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/search.ts#L22) |
+| <a id="property-max_results"></a> `max_results` | `ZodDefault`\<`ZodNumber`\> | [src/tools/search.ts:21](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/search.ts#L21) |
+| <a id="property-query"></a> `query` | `ZodString` | [src/tools/search.ts:20](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/search.ts#L20) |
+| <a id="property-recency_days"></a> `recency_days` | `ZodOptional`\<`ZodNumber`\> | [src/tools/search.ts:22](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/search.ts#L22) |
 
 ## Functions
 
@@ -69,7 +71,7 @@ Input schema for `web_search`.
 
 > **registerSearch**(`server`, `cache?`): `void`
 
-Defined in: [src/tools/search.ts:101](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/search.ts#L101)
+Defined in: [src/tools/search.ts:114](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/search.ts#L114)
 
 Register the `web_search` tool on the given MCP server.
 
@@ -90,7 +92,7 @@ Register the `web_search` tool on the given MCP server.
 
 > **runSearch**(`args`): `Promise`\<[`SearchResponse`](#searchresponse)\>
 
-Defined in: [src/tools/search.ts:58](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/tools/search.ts#L58)
+Defined in: [src/tools/search.ts:65](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/tools/search.ts#L65)
 
 Run a `web_search` and return the spec-shaped response.
 

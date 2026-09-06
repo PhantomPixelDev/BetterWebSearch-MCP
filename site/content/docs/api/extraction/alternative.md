@@ -10,12 +10,13 @@ draft: false
 
 [better-web-search-mcp](../index.html) / extraction/alternative
 
+# extraction/alternative
 
 ## Interfaces
 
 ### AlternativeDeps
 
-Defined in: [src/extraction/alternative.ts:30](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/alternative.ts#L30)
+Defined in: [src/extraction/alternative.ts:30](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/alternative.ts#L30)
 
 Injectable dependencies, defaulting to the real modules.
 
@@ -23,9 +24,9 @@ Injectable dependencies, defaulting to the real modules.
 
 | Property | Type | Description | Defined in |
 | ------ | ------ | ------ | ------ |
-| <a id="aggregatesearch"></a> `aggregateSearch?` | (`query`, `opts`) => `Promise`\<[`SearchResult`](../providers/types.html#searchresult)[]\> | Search aggregator used for snippet fallback. | [src/extraction/alternative.ts:34](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/alternative.ts#L34) |
-| <a id="cache"></a> `cache?` | [`Cache`](../utils/cache.html#cache) | Page cache consulted before fetching each variant. | [src/extraction/alternative.ts:36](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/alternative.ts#L36) |
-| <a id="fetchpage"></a> `fetchPage?` | (`url`, `opts`) => `Promise`\<[`FetchedPage`](fetch.html#fetchedpage)\> | Page fetcher used for URL variants. | [src/extraction/alternative.ts:32](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/alternative.ts#L32) |
+| <a id="aggregatesearch"></a> `aggregateSearch?` | (`query`, `opts`) => `Promise`\<[`SearchResult`](../providers/types.html#searchresult)[]\> | Search aggregator used for snippet fallback. | [src/extraction/alternative.ts:34](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/alternative.ts#L34) |
+| <a id="cache"></a> `cache?` | [`Cache`](../utils/cache.html#cache) | Page cache consulted before fetching each variant. | [src/extraction/alternative.ts:36](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/alternative.ts#L36) |
+| <a id="fetchpage"></a> `fetchPage?` | (`url`, `opts`) => `Promise`\<[`FetchedPage`](fetch.html#fetchedpage)\> | Page fetcher used for URL variants. | [src/extraction/alternative.ts:32](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/alternative.ts#L32) |
 
 ## Variables
 
@@ -33,7 +34,7 @@ Injectable dependencies, defaulting to the real modules.
 
 > `const` **MAX\_SNIPPET\_CHARS**: `200` = `200`
 
-Defined in: [src/extraction/alternative.ts:27](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/alternative.ts#L27)
+Defined in: [src/extraction/alternative.ts:27](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/alternative.ts#L27)
 
 Maximum snippet length for page-variant evidence.
 
@@ -43,7 +44,7 @@ Maximum snippet length for page-variant evidence.
 
 > `const` **MAX\_SNIPPETS**: `3` = `3`
 
-Defined in: [src/extraction/alternative.ts:24](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/alternative.ts#L24)
+Defined in: [src/extraction/alternative.ts:24](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/alternative.ts#L24)
 
 Maximum number of search snippets kept as evidence.
 
@@ -53,7 +54,7 @@ Maximum number of search snippets kept as evidence.
 
 > `const` **SNIPPET\_CONFIDENCE**: `0.6` = `0.6`
 
-Defined in: [src/extraction/alternative.ts:18](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/alternative.ts#L18)
+Defined in: [src/extraction/alternative.ts:18](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/alternative.ts#L18)
 
 Confidence assigned to search-snippet evidence.
 
@@ -63,7 +64,7 @@ Confidence assigned to search-snippet evidence.
 
 > `const` **VARIANT\_CONFIDENCE**: `0.6` = `0.6`
 
-Defined in: [src/extraction/alternative.ts:21](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/alternative.ts#L21)
+Defined in: [src/extraction/alternative.ts:21](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/alternative.ts#L21)
 
 Confidence assigned to a successfully fetched URL variant.
 
@@ -73,7 +74,7 @@ Confidence assigned to a successfully fetched URL variant.
 
 > **buildAlternativeUrls**(`url`): `string`[]
 
-Defined in: [src/extraction/alternative.ts:53](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/alternative.ts#L53)
+Defined in: [src/extraction/alternative.ts:53](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/alternative.ts#L53)
 
 Build the URL variants to try: original, `?output=1`, `/amp`, `?amp`.
 
@@ -97,7 +98,7 @@ it cannot be parsed.
 
 > **buildSearchQueries**(`url`, `title`): `string`[]
 
-Defined in: [src/extraction/alternative.ts:78](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/alternative.ts#L78)
+Defined in: [src/extraction/alternative.ts:78](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/alternative.ts#L78)
 
 Build the search queries for snippet fallback.
 
@@ -122,7 +123,7 @@ domain is still searched.
 
 > **findAlternativeSources**(`url`, `title`, `deps?`): `Promise`\<[`Evidence`](evidence.html#evidence)[]\>
 
-Defined in: [src/extraction/alternative.ts:167](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/alternative.ts#L167)
+Defined in: [src/extraction/alternative.ts:167](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/alternative.ts#L167)
 
 Discover alternative sources for a blocked or low-confidence page.
 

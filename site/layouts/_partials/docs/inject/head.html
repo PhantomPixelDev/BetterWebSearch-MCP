@@ -39,7 +39,33 @@
   "offers" (dict "@type" "Offer" "price" "0" "priceCurrency" "USD")
 }}
 {{- with $image }}{{ $ld = merge $ld (dict "image" .) }}{{ end }}
+{{- with hugo.Data.project }}
+  {{- with .version }}{{ $ld = merge $ld (dict "softwareVersion" .) }}{{ end }}
+  {{- with .nodeVersion }}{{ $ld = merge $ld (dict "softwareRequirements" (printf "Node.js %s" .)) }}{{ end }}
+{{- end }}
 <script type="application/ld+json">{{ $ld | jsonify | safeJS }}</script>
+
+{{- /*
+  FAQ structured data, mirroring the "Frequently asked" section on the home
+  page. Google only shows FAQ rich results when the same questions and answers
+  are visible on the page, so these are kept in step with content/_index.md by
+  hand; changing one without the other makes the markup a lie.
+*/ -}}
+{{- $faq := slice
+  (dict "@type" "Question"
+    "name" "Do I need an API key for web search?"
+    "acceptedAnswer" (dict "@type" "Answer" "text" "No. DuckDuckGo is the default provider and needs no key, no account and no billing. BRAVE_API_KEY or TAVILY_API_KEY are optional and add publication dates and stronger ranking."))
+  (dict "@type" "Question"
+    "name" "Is it free?"
+    "acceptedAnswer" (dict "@type" "Answer" "text" "Yes — MIT licensed, and the default provider costs nothing to query."))
+  (dict "@type" "Question"
+    "name" "How is it different from other web search MCP servers?"
+    "acceptedAnswer" (dict "@type" "Answer" "text" "Most wrap a single search API and hand raw results back. BetterWebSearch MCP aggregates providers, expands the query into variants, escalates extraction only as far as a page demands, clusters near-duplicate sources so a syndicated wire story is not mistaken for five independent confirmations, and returns cited passages instead of whole pages."))
+  (dict "@type" "Question"
+    "name" "Does it run in the cloud?"
+    "acceptedAnswer" (dict "@type" "Answer" "text" "No. It runs locally over stdio, next to your client. Nothing is proxied through a third-party service."))
+}}
+<script type="application/ld+json">{{ dict "@context" "https://schema.org" "@type" "FAQPage" "mainEntity" $faq | jsonify | safeJS }}</script>
 {{- end }}
 
 {{- if and .IsPage (not .IsHome) }}

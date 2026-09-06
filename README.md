@@ -1,22 +1,50 @@
-# BetterWebSearch MCP
+# BetterWebSearch MCP — free web search MCP server for AI agents
 
-> Keyless-first web search for AI agents. DuckDuckGo works out of the box. No API keys.
+> Keyless-first web search and page extraction for AI agents. DuckDuckGo works
+> out of the box. No API keys, no account, no cloud.
 
-[![npm version](https://img.shields.io/npm/v/better-web-search-mcp?color=cb3837)](https://www.npmjs.com/package/better-web-search-mcp)
+[![npm version](https://img.shields.io/npm/v/better-web-search-mcp?color=cb3837&logo=npm)](https://www.npmjs.com/package/better-web-search-mcp)
+[![npm downloads](https://img.shields.io/npm/d18m/better-web-search-mcp?color=cb3837&label=downloads)](https://www.npmjs.com/package/better-web-search-mcp)
 [![CI](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/actions/workflows/ci.yml/badge.svg)](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/actions)
+[![node](https://img.shields.io/node/v/better-web-search-mcp?logo=nodedotjs)](https://nodejs.org)
 [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://phantompixeldev.github.io/BetterWebSearch-MCP/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Smithery](https://smithery.ai/badge/@PhantomPixelDev/better-web-search-mcp)](https://smithery.ai/server/@PhantomPixelDev/better-web-search-mcp)
+[![GitHub stars](https://img.shields.io/github/stars/PhantomPixelDev/BetterWebSearch-MCP?style=flat&logo=github)](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/stargazers)
 
 <p align="center">
-  <img src="./images/banner.jpg" alt="BetterWebSearch MCP — Smarter Web Search · Better Data Extraction · Flexible & Extensible · Open Source" width="100%">
+  <img src="https://raw.githubusercontent.com/PhantomPixelDev/BetterWebSearch-MCP/main/images/banner.jpg" alt="BetterWebSearch MCP — smarter web search, better data extraction, flexible and extensible, open source" width="100%">
 </p>
 
 ## What is this?
 
-BetterWebSearch MCP is a [Model Context Protocol](https://modelcontextprotocol.io) server that gives AI assistants genuinely better web research. It works without API keys by default (DuckDuckGo), and optionally adds Brave or Tavily for richer ranking and recency.
+**BetterWebSearch MCP** is a local [Model Context Protocol](https://modelcontextprotocol.io)
+server that gives AI assistants genuinely better **web search**, **web scraping
+and page extraction**, and **deep research with citations**.
 
-Built for anyone who wants their AI tools to find things on the web reliably, not just when a paid API key is configured.
+It works **without API keys** by default (DuckDuckGo), and optionally adds Brave
+or Tavily for richer ranking and publication dates. Everything runs locally over
+stdio, next to your client — no proxy, no hosted service, no telemetry.
+
+Built for anyone who wants their AI tools to find things on the web reliably,
+not just when a paid search API key is configured.
+
+**Live counters** — downloads, stars and the current release — are on the
+[docs site](https://phantompixeldev.github.io/BetterWebSearch-MCP/).
+
+## Works with
+
+Any MCP client that speaks stdio:
+
+| Client | Config location |
+|---|---|
+| Claude Desktop | `claude_desktop_config.json` |
+| Claude Code | `.mcp.json` or `claude mcp add` |
+| Cursor | `.cursor/mcp.json` |
+| VS Code Copilot | `.vscode/mcp.json` (shipped in the package) |
+| Windsurf, Cline, Zed, OpenCode | their own `mcpServers` block |
+
+The same four-line JSON block below works in all of them.
 
 ## Quick start (30 seconds)
 
@@ -71,6 +99,8 @@ Tier 3: Playwright browser       (full render + API interception)    (3-10s)
 Only escalates when needed. Results carry confidence scores so you know what you're getting.
 
 **Self-learning cache.** The first visit to a domain takes the full path. The second visit skips straight to what worked. Domain profiles and API patterns are remembered.
+
+**Source independence.** Results are clustered by content before they are cited, so a wire story republished by five outlets counts as one account rather than five corroborating sources.
 
 ## Token efficiency
 
@@ -204,11 +234,57 @@ Full guides, API reference, and architecture details live on the docs site:
 
 **[phantompixeldev.github.io/BetterWebSearch-MCP](https://phantompixeldev.github.io/BetterWebSearch-MCP/)**
 
-- [Installation](https://phantompixeldev.github.io/BetterWebSearch-MCP/docs/installation/) - npx, npm, or from source
-- [Quick Start](https://phantompixeldev.github.io/BetterWebSearch-MCP/docs/quickstart/) - Get running in your first AI client
-- [Configuration](https://phantompixeldev.github.io/BetterWebSearch-MCP/docs/configuration/) - All environment variables and options
-- [Contributing](https://phantompixeldev.github.io/BetterWebSearch-MCP/docs/contributing/) - Development setup and PR process
-- [Changelog](CHANGELOG.md) - Release history and version notes
+- [Installation](https://phantompixeldev.github.io/BetterWebSearch-MCP/docs/installation/) — npx, npm, or from source
+- [Quick Start](https://phantompixeldev.github.io/BetterWebSearch-MCP/docs/quickstart/) — Get running in your first AI client
+- [Tools Reference](https://phantompixeldev.github.io/BetterWebSearch-MCP/docs/tools/) — All six tools with their input schemas
+- [Configuration](https://phantompixeldev.github.io/BetterWebSearch-MCP/docs/configuration/) — All environment variables and options
+- [Providers](https://phantompixeldev.github.io/BetterWebSearch-MCP/docs/providers/) — DuckDuckGo, Brave, Tavily
+- [Extraction](https://phantompixeldev.github.io/BetterWebSearch-MCP/docs/extraction/) — The three-tier pipeline in detail
+- [Benchmarks](https://phantompixeldev.github.io/BetterWebSearch-MCP/docs/benchmarks/) — Token efficiency and answer retention
+- [Architecture](https://phantompixeldev.github.io/BetterWebSearch-MCP/docs/architecture/) — System design overview
+- [Contributing](https://phantompixeldev.github.io/BetterWebSearch-MCP/docs/contributing/) — Development setup and PR process
+- [Changelog](CHANGELOG.md) — Release history and version notes
+
+## FAQ
+
+### Do I need an API key for web search?
+
+No. DuckDuckGo is the default provider and needs no key, no account and no
+billing. `BRAVE_API_KEY` and `TAVILY_API_KEY` are optional; they add publication
+dates and stronger ranking.
+
+### Is it free?
+
+Yes. MIT licensed, and the default provider costs nothing to query.
+
+### Which MCP clients does it support?
+
+Any client that speaks MCP over stdio — Claude Desktop, Claude Code, Cursor,
+VS Code Copilot, Windsurf, Cline, Zed, OpenCode. See [Works with](#works-with).
+
+### How is it different from other web search MCP servers?
+
+Most wrap a single search API and hand raw results back. This one aggregates
+providers, expands the query into variants, escalates extraction only as far as
+a page demands, clusters near-duplicate sources, and returns cited passages
+instead of whole pages — which is where the [86.5% payload
+reduction](#token-efficiency) comes from.
+
+### Does it send my queries anywhere besides the search provider?
+
+No. The server runs locally over stdio. There is no analytics, no telemetry and
+no intermediary service.
+
+### Why does `web_news` say `recency_verified: false`?
+
+DuckDuckGo's HTML endpoint carries no publication dates, so on the keyless path
+the results match the topic but their age is unknown. Set `BRAVE_API_KEY` or
+`TAVILY_API_KEY` for date-filtered news.
+
+### Does it need Playwright?
+
+Only for tier 3. Tiers 1 and 2 handle most pages; the browser is launched
+lazily and can be disabled with `BETTER_WEB_SEARCH_DISABLE_BROWSER=true`.
 
 ## License
 

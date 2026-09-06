@@ -10,12 +10,13 @@ draft: false
 
 [better-web-search-mcp](../index.html) / providers/serpapi
 
+# providers/serpapi
 
 ## Classes
 
 ### SerpApiProvider
 
-Defined in: [src/providers/serpapi.ts:10](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/providers/serpapi.ts#L10)
+Defined in: [src/providers/serpapi.ts:10](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/providers/serpapi.ts#L10)
 
 SerpApi provider stub (deferred).
 
@@ -41,7 +42,7 @@ without special-casing, but always returns no results.
 
 | Property | Modifier | Type | Default value | Description | Defined in |
 | ------ | ------ | ------ | ------ | ------ | ------ |
-| <a id="name"></a> `name` | `readonly` | `"serpapi"` | `"serpapi"` | Stable provider identifier (e.g. "brave", "tavily", "duckduckgo"). | [src/providers/serpapi.ts:11](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/providers/serpapi.ts#L11) |
+| <a id="name"></a> `name` | `readonly` | `"serpapi"` | `"serpapi"` | Stable provider identifier (e.g. "brave", "tavily", "duckduckgo"). | [src/providers/serpapi.ts:11](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/providers/serpapi.ts#L11) |
 
 #### Methods
 
@@ -49,7 +50,7 @@ without special-casing, but always returns no results.
 
 > **search**(`_query`, `_opts`): `Promise`\<[`SearchResult`](types.html#searchresult)[]\>
 
-Defined in: [src/providers/serpapi.ts:13](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/providers/serpapi.ts#L13)
+Defined in: [src/providers/serpapi.ts:13](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/providers/serpapi.ts#L13)
 
 Run a search and return normalized results.
 

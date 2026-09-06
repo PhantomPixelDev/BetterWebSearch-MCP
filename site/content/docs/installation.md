@@ -1,12 +1,12 @@
 ---
 title: "Installation"
-description: "Install BetterWebSearch MCP via npx, npm, or from source. Requirements: Node 20+."
+description: "Install BetterWebSearch MCP via npx, npm, or from source. Requirements: Node 22 or newer."
 weight: 15
 ---
 
 ## Requirements
 
-- **Node.js 20+** and **npm**
+- **Node.js 22+** and **npm**
 - No API keys required — DuckDuckGo works out of the box
 
 ## Install via npx (no install)
@@ -37,7 +37,7 @@ npx tsc --noEmit    # lint
 
 ## Native binding note
 
-`better-sqlite3` needs a compiled native addon. If it fails to load (older Node, missing build tools, CI sandbox), the cache automatically falls back to an in-memory Map — no action needed. To restore the SQLite cache, run `npm rebuild better-sqlite3` (Node 20+ recommended).
+`better-sqlite3` needs a compiled native addon. If it fails to load (older Node, missing build tools, CI sandbox), the cache automatically falls back to an in-memory Map — no action needed. To restore the SQLite cache, run `npm rebuild better-sqlite3` (Node 22+ recommended).
 
 ## MCP client configs
 

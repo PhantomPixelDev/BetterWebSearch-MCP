@@ -27,7 +27,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
           cache: npm
 
       - name: Setup Hugo
@@ -44,6 +44,9 @@ jobs:
 
       - name: Generate API reference
         run: npm run docs:api || true
+
+      - name: Sync release facts into site data
+        run: node scripts/sync-site-data.mjs
 
       - name: Build Hugo site
         run: hugo --source site --gc --minify

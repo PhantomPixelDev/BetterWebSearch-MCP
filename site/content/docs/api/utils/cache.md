@@ -10,19 +10,20 @@ draft: false
 
 [better-web-search-mcp](../index.html) / utils/cache
 
+# utils/cache
 
 ## Classes
 
 ### Cache
 
-Defined in: [src/utils/cache.ts:92](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/cache.ts#L92)
+Defined in: [src/utils/cache.ts:164](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/cache.ts#L164)
 
 A cache for search results, pages, API patterns, and domain profiles.
 
 Prefers a SQLite database at `data/cache.db` (WAL mode, auto-created
-directory). When better-sqlite3 cannot be loaded, or when `memory: true`
-is passed, every method transparently operates on an in-memory Map with
-the same TTL semantics.
+directory). When better-sqlite3 cannot be loaded, when opening the
+database fails, or when `memory: true` is passed, every method
+transparently operates on an in-memory Map with the same TTL semantics.
 
 #### Constructors
 
@@ -30,7 +31,7 @@ the same TTL semantics.
 
 > **new Cache**(`opts?`): [`Cache`](#cache)
 
-Defined in: [src/utils/cache.ts:97](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/cache.ts#L97)
+Defined in: [src/utils/cache.ts:169](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/cache.ts#L169)
 
 ###### Parameters
 
@@ -50,7 +51,7 @@ Defined in: [src/utils/cache.ts:97](https://github.com/PhantomPixelDev/BetterWeb
 
 > **get** **isMemory**(): `boolean`
 
-Defined in: [src/utils/cache.ts:124](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/cache.ts#L124)
+Defined in: [src/utils/cache.ts:190](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/cache.ts#L190)
 
 Whether this instance is running on the in-memory Map backend.
 
@@ -64,7 +65,7 @@ Whether this instance is running on the in-memory Map backend.
 
 > **addApiPattern**(`domain`, `endpointPattern`, `method`, `contentType`): `void`
 
-Defined in: [src/utils/cache.ts:255](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/cache.ts#L255)
+Defined in: [src/utils/cache.ts:324](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/cache.ts#L324)
 
 Record a discovered API endpoint pattern for a domain.
 
@@ -85,7 +86,7 @@ Record a discovered API endpoint pattern for a domain.
 
 > **close**(): `void`
 
-Defined in: [src/utils/cache.ts:129](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/cache.ts#L129)
+Defined in: [src/utils/cache.ts:195](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/cache.ts#L195)
 
 Close the underlying database (no-op in memory mode).
 
@@ -97,7 +98,7 @@ Close the underlying database (no-op in memory mode).
 
 > **getApiPatterns**(`domain`): [`ApiPattern`](cacheTypes.html#apipattern)[]
 
-Defined in: [src/utils/cache.ts:275](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/cache.ts#L275)
+Defined in: [src/utils/cache.ts:344](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/cache.ts#L344)
 
 List all API patterns discovered for a domain, newest first.
 
@@ -115,7 +116,7 @@ List all API patterns discovered for a domain, newest first.
 
 > **getDomain**(`domain`): `unknown`
 
-Defined in: [src/utils/cache.ts:222](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/cache.ts#L222)
+Defined in: [src/utils/cache.ts:291](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/cache.ts#L291)
 
 Read a cached domain profile, or `null` on miss / bad JSON.
 
@@ -133,7 +134,7 @@ Read a cached domain profile, or `null` on miss / bad JSON.
 
 > **getPage**(`url`): [`PageCacheEntry`](cacheTypes.html#pagecacheentry) \| `null`
 
-Defined in: [src/utils/cache.ts:176](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/cache.ts#L176)
+Defined in: [src/utils/cache.ts:245](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/cache.ts#L245)
 
 Read a cached page entry, or `null` on miss / expiry.
 
@@ -151,7 +152,7 @@ Read a cached page entry, or `null` on miss / expiry.
 
 > **getSearch**(`key`): `unknown`
 
-Defined in: [src/utils/cache.ts:139](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/cache.ts#L139)
+Defined in: [src/utils/cache.ts:208](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/cache.ts#L208)
 
 Read a cached search result, or `null` on miss / expiry / bad JSON.
 
@@ -169,7 +170,7 @@ Read a cached search result, or `null` on miss / expiry / bad JSON.
 
 > **pruneExpired**(): `void`
 
-Defined in: [src/utils/cache.ts:290](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/cache.ts#L290)
+Defined in: [src/utils/cache.ts:359](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/cache.ts#L359)
 
 Delete every search/page row whose TTL has expired.
 
@@ -181,7 +182,7 @@ Delete every search/page row whose TTL has expired.
 
 > **setDomain**(`domain`, `profile`): `void`
 
-Defined in: [src/utils/cache.ts:236](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/cache.ts#L236)
+Defined in: [src/utils/cache.ts:305](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/cache.ts#L305)
 
 Upsert a domain profile (JSON-serialized), refreshing `updated_at`.
 
@@ -200,7 +201,7 @@ Upsert a domain profile (JSON-serialized), refreshing `updated_at`.
 
 > **setPage**(`url`, `content`, `extractionMethod`, `confidence`): `void`
 
-Defined in: [src/utils/cache.ts:196](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/cache.ts#L196)
+Defined in: [src/utils/cache.ts:265](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/cache.ts#L265)
 
 Store a page extraction, refreshing the TTL on overwrite.
 
@@ -221,7 +222,7 @@ Store a page extraction, refreshing the TTL on overwrite.
 
 > **setSearch**(`key`, `query`, `results`): `void`
 
-Defined in: [src/utils/cache.ts:156](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/utils/cache.ts#L156)
+Defined in: [src/utils/cache.ts:225](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/utils/cache.ts#L225)
 
 Store a search result under a key, refreshing the TTL on overwrite.
 

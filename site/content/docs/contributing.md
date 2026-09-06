@@ -20,7 +20,7 @@ npm run lint      # tsc --noEmit — must be zero errors
 ## Key points
 
 - **Keyless by default** — no API keys needed to develop or test
-- **Node 20+** required
+- **Node 22+** required
 - **TypeScript strict** — no `any`, no `@ts-ignore`
 - **Vitest** for tests — deterministic mocks, no external keys
 - **Conventional Commits** — `feat(extraction): ...`, `fix(providers): ...`, `docs: ...`

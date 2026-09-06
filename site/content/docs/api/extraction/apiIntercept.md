@@ -10,12 +10,13 @@ draft: false
 
 [better-web-search-mcp](../index.html) / extraction/apiIntercept
 
+# extraction/apiIntercept
 
 ## Interfaces
 
 ### ApiPatternRow
 
-Defined in: [src/extraction/apiIntercept.ts:145](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L145)
+Defined in: [src/extraction/apiIntercept.ts:145](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L145)
 
 An `api_patterns` table row (without the auto-increment id/timestamp).
 
@@ -23,16 +24,16 @@ An `api_patterns` table row (without the auto-increment id/timestamp).
 
 | Property | Type | Defined in |
 | ------ | ------ | ------ |
-| <a id="content_type"></a> `content_type` | `string` | [src/extraction/apiIntercept.ts:149](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L149) |
-| <a id="domain"></a> `domain` | `string` | [src/extraction/apiIntercept.ts:146](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L146) |
-| <a id="endpoint_pattern"></a> `endpoint_pattern` | `string` | [src/extraction/apiIntercept.ts:147](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L147) |
-| <a id="method"></a> `method` | `string` | [src/extraction/apiIntercept.ts:148](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L148) |
+| <a id="content_type"></a> `content_type` | `string` | [src/extraction/apiIntercept.ts:149](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L149) |
+| <a id="domain"></a> `domain` | `string` | [src/extraction/apiIntercept.ts:146](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L146) |
+| <a id="endpoint_pattern"></a> `endpoint_pattern` | `string` | [src/extraction/apiIntercept.ts:147](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L147) |
+| <a id="method"></a> `method` | `string` | [src/extraction/apiIntercept.ts:148](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L148) |
 
 ***
 
 ### ApiResponse
 
-Defined in: [src/extraction/apiIntercept.ts:30](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L30)
+Defined in: [src/extraction/apiIntercept.ts:30](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L30)
 
 The minimal Playwright `Response` surface this module depends on.
 
@@ -42,7 +43,7 @@ The minimal Playwright `Response` surface this module depends on.
 
 > **headers**(): `Record`\<`string`, `string`\>
 
-Defined in: [src/extraction/apiIntercept.ts:33](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L33)
+Defined in: [src/extraction/apiIntercept.ts:33](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L33)
 
 ###### Returns
 
@@ -52,7 +53,7 @@ Defined in: [src/extraction/apiIntercept.ts:33](https://github.com/PhantomPixelD
 
 > **json**(): `Promise`\<`unknown`\>
 
-Defined in: [src/extraction/apiIntercept.ts:34](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L34)
+Defined in: [src/extraction/apiIntercept.ts:34](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L34)
 
 ###### Returns
 
@@ -62,7 +63,7 @@ Defined in: [src/extraction/apiIntercept.ts:34](https://github.com/PhantomPixelD
 
 > **request**(): \{ `method`: `string`; \}
 
-Defined in: [src/extraction/apiIntercept.ts:32](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L32)
+Defined in: [src/extraction/apiIntercept.ts:32](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L32)
 
 ###### Returns
 
@@ -70,13 +71,13 @@ Defined in: [src/extraction/apiIntercept.ts:32](https://github.com/PhantomPixelD
 
 | Name | Type | Defined in |
 | ------ | ------ | ------ |
-| `method()` | () => `string` | [src/extraction/apiIntercept.ts:32](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L32) |
+| `method()` | () => `string` | [src/extraction/apiIntercept.ts:32](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L32) |
 
 ##### url()
 
 > **url**(): `string`
 
-Defined in: [src/extraction/apiIntercept.ts:31](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L31)
+Defined in: [src/extraction/apiIntercept.ts:31](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L31)
 
 ###### Returns
 
@@ -86,7 +87,7 @@ Defined in: [src/extraction/apiIntercept.ts:31](https://github.com/PhantomPixelD
 
 ### CapturedApiResponse
 
-Defined in: [src/extraction/apiIntercept.ts:12](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L12)
+Defined in: [src/extraction/apiIntercept.ts:12](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L12)
 
 A single captured JSON API response.
 
@@ -94,16 +95,16 @@ A single captured JSON API response.
 
 | Property | Type | Description | Defined in |
 | ------ | ------ | ------ | ------ |
-| <a id="contenttype"></a> `contentType` | `string` | The response content-type (e.g. `application/json`). | [src/extraction/apiIntercept.ts:18](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L18) |
-| <a id="data"></a> `data` | `unknown` | The parsed JSON body. | [src/extraction/apiIntercept.ts:20](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L20) |
-| <a id="method-1"></a> `method` | `string` | The HTTP method used to request it. | [src/extraction/apiIntercept.ts:16](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L16) |
-| <a id="url-1"></a> `url` | `string` | The absolute URL of the API endpoint. | [src/extraction/apiIntercept.ts:14](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L14) |
+| <a id="contenttype"></a> `contentType` | `string` | The response content-type (e.g. `application/json`). | [src/extraction/apiIntercept.ts:18](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L18) |
+| <a id="data"></a> `data` | `unknown` | The parsed JSON body. | [src/extraction/apiIntercept.ts:20](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L20) |
+| <a id="method-1"></a> `method` | `string` | The HTTP method used to request it. | [src/extraction/apiIntercept.ts:16](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L16) |
+| <a id="url-1"></a> `url` | `string` | The absolute URL of the API endpoint. | [src/extraction/apiIntercept.ts:14](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L14) |
 
 ***
 
 ### CapturedApiResponses
 
-Defined in: [src/extraction/apiIntercept.ts:98](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L98)
+Defined in: [src/extraction/apiIntercept.ts:98](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L98)
 
 A handle over the responses captured by [installApiCapture](#installapicapture).
 
@@ -111,7 +112,7 @@ A handle over the responses captured by [installApiCapture](#installapicapture).
 
 | Property | Modifier | Type | Description | Defined in |
 | ------ | ------ | ------ | ------ | ------ |
-| <a id="captured"></a> `captured` | `readonly` | readonly [`CapturedApiResponse`](#capturedapiresponse)[] | The responses captured so far, in arrival order. | [src/extraction/apiIntercept.ts:100](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L100) |
+| <a id="captured"></a> `captured` | `readonly` | readonly [`CapturedApiResponse`](#capturedapiresponse)[] | The responses captured so far, in arrival order. | [src/extraction/apiIntercept.ts:100](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L100) |
 
 #### Methods
 
@@ -119,7 +120,7 @@ A handle over the responses captured by [installApiCapture](#installapicapture).
 
 > **remove**(): `void`
 
-Defined in: [src/extraction/apiIntercept.ts:102](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L102)
+Defined in: [src/extraction/apiIntercept.ts:102](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L102)
 
 Detach the capture listener from the page.
 
@@ -131,7 +132,7 @@ Detach the capture listener from the page.
 
 ### CapturePage
 
-Defined in: [src/extraction/apiIntercept.ts:24](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L24)
+Defined in: [src/extraction/apiIntercept.ts:24](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L24)
 
 The minimal Playwright `Page` surface this module depends on.
 
@@ -141,7 +142,7 @@ The minimal Playwright `Page` surface this module depends on.
 
 > **off**(`event`, `listener`): `unknown`
 
-Defined in: [src/extraction/apiIntercept.ts:26](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L26)
+Defined in: [src/extraction/apiIntercept.ts:26](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L26)
 
 ###### Parameters
 
@@ -158,7 +159,7 @@ Defined in: [src/extraction/apiIntercept.ts:26](https://github.com/PhantomPixelD
 
 > **on**(`event`, `listener`): `unknown`
 
-Defined in: [src/extraction/apiIntercept.ts:25](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L25)
+Defined in: [src/extraction/apiIntercept.ts:25](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L25)
 
 ###### Parameters
 
@@ -177,7 +178,7 @@ Defined in: [src/extraction/apiIntercept.ts:25](https://github.com/PhantomPixelD
 
 > **discoverApiPatterns**(`domain`, `captured`): [`ApiPatternRow`](#apipatternrow)[]
 
-Defined in: [src/extraction/apiIntercept.ts:113](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L113)
+Defined in: [src/extraction/apiIntercept.ts:113](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L113)
 
 Normalize a captured API URL into an `api_patterns` row.
 
@@ -203,7 +204,7 @@ hostname. `content_type` is normalized to the bare media type (e.g.
 
 > **installApiCapture**(`page`): [`CapturedApiResponses`](#capturedapiresponses)
 
-Defined in: [src/extraction/apiIntercept.ts:63](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/apiIntercept.ts#L63)
+Defined in: [src/extraction/apiIntercept.ts:63](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/apiIntercept.ts#L63)
 
 Install a JSON API capture listener on a page.
 

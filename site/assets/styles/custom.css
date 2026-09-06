@@ -6,3 +6,52 @@
   font-weight: bold;
   margin: 0 auto;
 }
+
+/* Homepage npm/GitHub counters (layouts/_shortcodes/npm-stats.html). Values
+   arrive from JS; the em-dash placeholders must not reflow the row when they
+   are replaced, hence the fixed min-width per cell. */
+.npm-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1.5rem 0;
+}
+
+.npm-stats__item {
+  flex: 1 1 7.5rem;
+  min-width: 7.5rem;
+  padding: 0.75rem 0.5rem;
+  border: 1px solid var(--gray-200);
+  border-radius: 6px;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* The theme colours markdown links, which made the linked cells blue and the
+   one plain cell black. Beat that selector so the row reads as one unit. */
+.markdown .npm-stats a.npm-stats__item,
+.markdown .npm-stats a.npm-stats__item:visited {
+  color: inherit;
+}
+
+.markdown .npm-stats a.npm-stats__item:hover {
+  border-color: var(--color-link);
+  color: var(--color-link);
+}
+
+.npm-stats__value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.npm-stats__label {
+  display: block;
+  font-size: 0.75rem;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}

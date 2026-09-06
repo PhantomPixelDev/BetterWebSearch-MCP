@@ -10,6 +10,7 @@ draft: false
 
 [better-web-search-mcp](../index.html) / extraction/learn
 
+# extraction/learn
 
 ## Functions
 
@@ -17,7 +18,7 @@ draft: false
 
 > **recordApiPatterns**(`url`, `captured`, `cache`): `void`
 
-Defined in: [src/extraction/learn.ts:59](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/learn.ts#L59)
+Defined in: [src/extraction/learn.ts:59](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/learn.ts#L59)
 
 Record discovered API patterns for a domain after a browser render.
 
@@ -39,7 +40,7 @@ Record discovered API patterns for a domain after a browser render.
 
 > **toBestMethod**(`method`): [`BestMethod`](../utils/domainProfile.html#bestmethod-1)
 
-Defined in: [src/extraction/learn.ts:21](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/learn.ts#L21)
+Defined in: [src/extraction/learn.ts:21](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/learn.ts#L21)
 
 Map a router method to the domain-profile `best_method` value.
 
@@ -59,7 +60,7 @@ Map a router method to the domain-profile `best_method` value.
 
 > **updateDomainProfile**(`url`, `html`, `method`, `cache`): `void`
 
-Defined in: [src/extraction/learn.ts:34](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/learn.ts#L34)
+Defined in: [src/extraction/learn.ts:34](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/learn.ts#L34)
 
 Update the domain profile after a successful extraction.
 

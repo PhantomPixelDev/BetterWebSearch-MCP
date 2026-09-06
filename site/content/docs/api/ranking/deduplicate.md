@@ -10,6 +10,7 @@ draft: false
 
 [better-web-search-mcp](../index.html) / ranking/deduplicate
 
+# ranking/deduplicate
 
 ## Functions
 
@@ -17,7 +18,7 @@ draft: false
 
 > **deduplicate**(`results`): [`SearchResult`](../providers/types.html#searchresult)[]
 
-Defined in: [src/ranking/deduplicate.ts:53](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/ranking/deduplicate.ts#L53)
+Defined in: [src/ranking/deduplicate.ts:53](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/ranking/deduplicate.ts#L53)
 
 Deduplicate search results by normalized URL, keeping the highest score
 for each canonical URL. Malformed URLs are skipped, not thrown.
@@ -40,7 +41,7 @@ Does not mutate the input array.
 
 > **normalizeUrl**(`rawUrl`): `string` \| `undefined`
 
-Defined in: [src/ranking/deduplicate.ts:18](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/ranking/deduplicate.ts#L18)
+Defined in: [src/ranking/deduplicate.ts:18](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/ranking/deduplicate.ts#L18)
 
 Normalize a URL to a canonical form suitable for deduplication.
 

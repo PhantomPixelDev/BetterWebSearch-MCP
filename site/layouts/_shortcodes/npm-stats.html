@@ -1,0 +1,38 @@
+{{- /*
+  Live project counters for the home page.
+
+  npm's named download windows are stale — `point/last-week` currently reports
+  a window ending eight days back, which is why the shields.io `npm/dw` badge
+  reads "0/week" for a package with thousands of downloads. The explicit-date
+  `range` endpoint is current, so one request covers the whole history and the
+  windows are summed in the browser (assets/js/npm-stats.js).
+
+  api.npmjs.org and api.github.com both send `Access-Control-Allow-Origin: *`,
+  so no proxy is needed. Fetched slots ship as an em dash and are replaced only
+  on success: if either API is unreachable the row degrades to the links rather
+  than showing a wrong number or a zero. The version is rendered server-side
+  from site/data/project.json, so it is never blank.
+*/ -}}
+{{- $pkg := .Get "package" | default "better-web-search-mcp" -}}
+<div class="npm-stats" data-npm-package="{{ $pkg }}">
+  <a class="npm-stats__item" href="https://www.npmjs.com/package/{{ $pkg }}" rel="noopener">
+    <span class="npm-stats__value" data-npm-stat="total">&mdash;</span>
+    <span class="npm-stats__label">npm downloads</span>
+  </a>
+  <span class="npm-stats__item">
+    <span class="npm-stats__value" data-npm-stat="week">&mdash;</span>
+    <span class="npm-stats__label">last 7 days</span>
+  </span>
+  <a class="npm-stats__item" href="{{ .Site.Params.BookRepo }}/stargazers" rel="noopener">
+    <span class="npm-stats__value" data-npm-stat="stars">&mdash;</span>
+    <span class="npm-stats__label">GitHub stars</span>
+  </a>
+  {{- with hugo.Data.project.version }}
+  <a class="npm-stats__item" href="{{ $.Site.Params.BookRepo }}/releases" rel="noopener">
+    <span class="npm-stats__value">{{ . }}</span>
+    <span class="npm-stats__label">latest version</span>
+  </a>
+  {{- end }}
+</div>
+{{- $js := resources.Get "js/npm-stats.js" | resources.Minify | resources.Fingerprint -}}
+<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>

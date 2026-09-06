@@ -10,6 +10,7 @@ draft: false
 
 [better-web-search-mcp](../index.html) / extraction/fusion
 
+# extraction/fusion
 
 ## Functions
 
@@ -17,7 +18,7 @@ draft: false
 
 > **fuseContent**(`url`, `title`, `strategiesResults`, `metadata?`): [`FusedContent`](evidence.html#fusedcontent)
 
-Defined in: [src/extraction/fusion.ts:118](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/extraction/fusion.ts#L118)
+Defined in: [src/extraction/fusion.ts:118](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/extraction/fusion.ts#L118)
 
 Fuse the results of several extraction strategies into one page extraction.
 

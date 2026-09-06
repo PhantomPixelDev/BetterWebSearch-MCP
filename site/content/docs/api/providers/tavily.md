@@ -10,12 +10,13 @@ draft: false
 
 [better-web-search-mcp](../index.html) / providers/tavily
 
+# providers/tavily
 
 ## Classes
 
 ### TavilyProvider
 
-Defined in: [src/providers/tavily.ts:26](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/providers/tavily.ts#L26)
+Defined in: [src/providers/tavily.ts:27](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/providers/tavily.ts#L27)
 
 Tavily Search provider (optional).
 
@@ -41,7 +42,7 @@ than throwing.
 
 | Property | Modifier | Type | Default value | Description | Defined in |
 | ------ | ------ | ------ | ------ | ------ | ------ |
-| <a id="name"></a> `name` | `readonly` | `"tavily"` | `"tavily"` | Stable provider identifier (e.g. "brave", "tavily", "duckduckgo"). | [src/providers/tavily.ts:27](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/providers/tavily.ts#L27) |
+| <a id="name"></a> `name` | `readonly` | `"tavily"` | `"tavily"` | Stable provider identifier (e.g. "brave", "tavily", "duckduckgo"). | [src/providers/tavily.ts:28](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/providers/tavily.ts#L28) |
 
 #### Methods
 
@@ -49,7 +50,7 @@ than throwing.
 
 > **search**(`query`, `opts`): `Promise`\<[`SearchResult`](types.html#searchresult)[]\>
 
-Defined in: [src/providers/tavily.ts:29](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/39f0ecc9250abe3f8ca4441fa791de241cde992a/src/providers/tavily.ts#L29)
+Defined in: [src/providers/tavily.ts:30](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/blob/da17f6df13d1658b23a75477acaf16c30d00e35e/src/providers/tavily.ts#L30)
 
 Run a search and return normalized results.
 
