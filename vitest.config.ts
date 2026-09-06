@@ -15,10 +15,15 @@ export default defineConfig({
     // tears the addon's N-API environment down between test *files*, so any
     // file boundary after better-sqlite3 has loaded is a chance to abort.
     //
-    // The reliable part of the fix lives in package.json, which runs
-    // cache.test.ts in its own vitest invocation. That file is then the only
-    // one in its process, so the addon's environment is destroyed at process
-    // exit rather than at a file boundary. singleFork is kept for the rest.
+    // The cause was in openDatabase: it required better-sqlite3 before it
+    // checked `memory: true`, so every unit test loaded an addon it had just
+    // declined to use, and any later file boundary could abort. That is fixed
+    // in src/utils/cache.ts and guarded by src/utils/cache.native.test.ts.
+    //
+    // package.json still runs cache.test.ts in its own vitest invocation: it
+    // is the one file that opens real databases on purpose, so it owns the
+    // teardown and its addon environment dies at process exit rather than at
+    // a file boundary. singleFork is kept for the rest.
     pool: "forks",
     poolOptions: {
       forks: { singleFork: true },

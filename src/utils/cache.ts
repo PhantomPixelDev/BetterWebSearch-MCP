@@ -131,8 +131,18 @@ function untrackDatabase(db: SqliteDatabase): void {
  * path fails there rather than in the driver.
  */
 function openDatabase(opts: CacheOptions): SqliteDatabase | null {
+  // Memory mode is checked before the module is required, not after. Loading
+  // better-sqlite3 initializes an N-API environment that vitest then destroys
+  // at the next test-file boundary, aborting the runner with
+  // `Assertion failed: (env) != nullptr`. Every unit test asks for
+  // `memory: true`, so they were all paying for an addon none of them used,
+  // and one CI run in four died of it. Nothing outside this function wants a
+  // native addon loaded for a cache that will never touch disk.
+  if (opts.memory === true) {
+    return null;
+  }
   const Database = loadDatabase();
-  if (opts.memory === true || Database === null) {
+  if (Database === null) {
     return null;
   }
   const dbPath = opts.dbPath ?? "data/cache.db";
