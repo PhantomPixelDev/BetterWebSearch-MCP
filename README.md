@@ -9,7 +9,7 @@
 [![node](https://img.shields.io/node/v/better-web-search-mcp?logo=nodedotjs)](https://nodejs.org)
 [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://phantompixeldev.github.io/BetterWebSearch-MCP/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Smithery](https://smithery.ai/badge/@PhantomPixelDev/better-web-search-mcp)](https://smithery.ai/server/@PhantomPixelDev/better-web-search-mcp)
+[![LightNow capabilities](https://lightnow.ai/badge/io.github.PhantomPixelDev/betterwebsearch-mcp)](https://lightnow.ai/servers/io.github.PhantomPixelDev/betterwebsearch-mcp)
 [![GitHub stars](https://img.shields.io/github/stars/PhantomPixelDev/BetterWebSearch-MCP?style=flat&logo=github)](https://github.com/PhantomPixelDev/BetterWebSearch-MCP/stargazers)
 
 <p align="center">
